@@ -15,6 +15,26 @@ Making websites is good for displaying your work. The internet used to be weird.
 
 But knowing RMD is half the battle. You need a host. This is what we use Github for. Here, we will create a personal website on Github. 
 
-# Creating a repo
+# Example
+
+## Creating a repo
 
 I created a Github repo called ativarovsky.github.io. 
+
+## Getting started
+
+We start with an index html, downloaded from the course website, and saved in this repo. The test website is on that repo. 
+
+## Common Content
+
+Your website can include text, of course; you can also include code and figures generated from analyses. Like I keep saying, you’re writing in RMD.
+
+One important feature of your site will be hyperlinks. The general format for links is [text for link](address.of.link). So, to link to my favorite tool for data science, I’d use [this](google.com).
+
+Your website usually has more than one page. These pages can be created using the same process as index.html: create an Rmd file and knit to html. Once you have another page (e.g. about.html) you need to link to it from your home page (e.g. using use [about](about.html)), or no one will be able to find it.
+
+Sometimes you want to add images – pictures you’ve taken or found on the internets, rather than things that are generated from analyses. This is a bit more involved than other things you might want to do. RMD’s default image settings (using ![](image.jpg)) aren’t great. I often use a line of HTML:
+
+<img src="images/image.jpg" style="width:75%">
+
+
