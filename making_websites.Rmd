@@ -1,0 +1,20 @@
+---
+title: "Making Websites"
+author: "Alice Tivarovsky"
+date: "10/22/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Slides
+
+Making websites is good for displaying your work. The internet used to be weird. Before google, there was geocities, which was a directory where you found websites by topic. You don't need to know html because we've learned RMD. It's sometimes helpful to embed html, but the parts you need to know are easy. 
+
+But knowing RMD is half the battle. You need a host. This is what we use Github for. Here, we will create a personal website on Github. 
+
+# Creating a repo
+
+I created a Github repo called ativarovsky.github.io. 
