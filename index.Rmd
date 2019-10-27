@@ -19,4 +19,7 @@ I often use [google](google.com) for data science.
 
 Here's a picture of Thomas:
 
+![](alice.jpg)
+
+
 
