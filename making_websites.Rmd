@@ -37,4 +37,8 @@ Sometimes you want to add images – pictures you’ve taken or found on the int
 
 <img src="images/image.jpg" style="width:75%">
 
+This will load and display images/image.jpg (I usually keep my images inside an images folder to reduce clutter). The style components control things like adding a border or adjusting the image height or width, along with lots of other things – googling around can help if you want to change the style settings. If you want your style rules to apply to all images it can be easier to write a short CSS file, but that’s beyond what we’re going to do now.
+
+
+
 

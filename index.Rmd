@@ -2,12 +2,14 @@
 title: "My awesome website"
 output: 
   html_document:
-    toc: true
-    toc_float: true
-    theme: cerulean
+    toc: true #table of contents
+    toc_float: true #makes table of contents float
+    theme: cerulean #just the color
 ---
 
 # This is Alice's awesome website
+
+You can learn about me [here](about.html).
 
 ![](https://media.giphy.com/media/drXGoW1iudhKw/giphy.gif)
 
