@@ -11,10 +11,12 @@ navbar:
         href: plotly.html
       - text: "Dashboard"
         href: dashboard.html
+    - icon: fa-linkedin fa-lg
+      href: https://www.linkedin.com/in/alice-tivarovsky-56281131/
     - icon: fa-envelope fa-lg
-      href: mailto:<you@youremail.com>
+      href: mailto:<ativarovsky@gmail.com>
     - icon: fa-github fa-lg
-      href: http://github.com/bst-p8105/
+      href: http://github.com/ativarovsky/
 output:
   html_document:
     theme: journal
