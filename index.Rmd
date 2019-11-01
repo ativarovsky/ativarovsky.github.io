@@ -21,7 +21,7 @@ Hi there! ! I'm Alice and I'm a second-year MPH student at [Columbia Mailman Sch
 
 ## Neat Stuff
 
-If data science is my favorite pastime, eating is close second. Check out some [NYC restaurant analyses](nyc_restaurants.html) I ran. <br><br>
+If data science is my favorite pastime, eating is close second. Check out some [NYC restaurant analyses](restaurant_dashboard.html) I ran. <br><br>
 
 
 

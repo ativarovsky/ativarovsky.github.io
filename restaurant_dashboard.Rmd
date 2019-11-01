@@ -18,7 +18,7 @@ library(p8105.datasets)
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Chart A
+### Coffee Shops in NYC
 
 ```{r}
 data("rest_inspec")
@@ -29,14 +29,13 @@ rest_inspec %>%
   count(boro) %>% 
   rename("Borough" = "boro", "Qty" = "n")  %>% 
   plot_ly(x = ~Qty, y = ~Borough, color = ~Borough, type = "scatter", mode = 'markers', marker = list(size = ~Qty/30, opacity = 0.5)) %>% 
-  layout(title = "Coffee Shops in NYC")
 
 ```
 
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Chart B
+### Favorite Foods by Borough
 
 ```{r}
 rest_inspec %>% 
@@ -53,7 +52,7 @@ rest_inspec %>%
 
 ```
 
-### Chart C
+### Restaurant Violation Scores
 
 ```{r}
 rest_inspec %>% 
