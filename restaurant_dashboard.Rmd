@@ -18,7 +18,7 @@ library(p8105.datasets)
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Coffee Shops in NYC
+### Chart A
 
 ```{r}
 data("rest_inspec")
@@ -29,13 +29,14 @@ rest_inspec %>%
   count(boro) %>% 
   rename("Borough" = "boro", "Qty" = "n")  %>% 
   plot_ly(x = ~Qty, y = ~Borough, color = ~Borough, type = "scatter", mode = 'markers', marker = list(size = ~Qty/30, opacity = 0.5)) %>% 
+  layout(title = "Coffee Shops in NYC")
 
 ```
 
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Favorite Foods by Borough
+### Chart B
 
 ```{r}
 rest_inspec %>% 
@@ -48,11 +49,11 @@ rest_inspec %>%
   drop_na() %>% 
   rename("Borough" = "boro", "Qty" = "n")  %>% 
   plot_ly(x = ~Borough, y = ~Qty, color = ~cuisine_description, type = "bar") %>% 
-  layout(barmode = 'stack')
+  layout(barmode = 'stack', title = "Favorite Foods")
 
 ```
 
-### Restaurant Violation Scores
+### Chart C
 
 ```{r}
 rest_inspec %>% 
@@ -61,7 +62,8 @@ rest_inspec %>%
   drop_na() %>% 
   mutate(cuisine_description = fct_recode(cuisine_description, "Coffee" = "CafÃ©/Coffee/Tea")) %>% 
   rename("Score" = "score", "Cuisine" = "cuisine_description")  %>% 
-  plot_ly(y = ~Score, x = ~Cuisine, color = ~Cuisine, type = "box")
+  plot_ly(y = ~Score, x = ~Cuisine, color = ~Cuisine, type = "box") %>% 
+  layout(title = "Inspection Ratings by Borough")
 
 ```
 
