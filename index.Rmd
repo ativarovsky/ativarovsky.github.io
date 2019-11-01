@@ -1,27 +1,33 @@
 ---
-title: "My awesome website"
+title: "Alice Tivarovsky"
 output: 
   html_document:
-    toc: true #table of contents
-    toc_float: true #makes table of contents float
-    theme: cerulean #just the color
+    toc: true
+    toc_float: true
 ---
 
-# This is Alice's awesome website
 
-You can learn about me [here](about.html).
+B.S. Chemical Engineering (UCLA) 
+Masters of Public Health (Columbia, c/o 2020)
+<br><br>
 
-![](https://media.giphy.com/media/drXGoW1iudhKw/giphy.gif)
+## About
 
-# Let's add some links: 
+Hi there! ! I'm Alice and I'm a second-year MPH student at [Columbia Mailman School of Public Health](https://www.mailman.columbia.edu), studying Epidemiology and Biostats. I'm passionate about using data to improve health outcomes. If you're an employer, please make your way over to my [résumé](resume.html) and/or [LinkedIn page](https://www.linkedin.com/in/alice-tivarovsky-56281131/). 
+<br><br>
 
-I often use [google](google.com) for data science. 
+<img src="IMG_4479.jpg" style="width:65%"><br>
+<br><br>
 
-# Let's add an image
+## Neat Stuff
 
-Here's a picture of Thomas:
+If data science is my favorite pastime, eating is close second. Check out some [NYC restaurant analyses](nyc_restaurants.html) I ran. <br><br>
 
-![](thomas.jpeg)
 
+
+## Contact Info
+
+Alice Tivarovsky <br>
+Email: [ativarovsky@gmail.com](mailto:ativarovsky@gmail.com)
 
 
