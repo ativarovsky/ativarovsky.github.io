@@ -7,10 +7,8 @@ navbar:
       href: resume.html
     - text: Examples
       menu:
-      - text: "Plotly"
-        href: plotly.html
-      - text: "Dashboard"
-        href: dashboard.html
+      - text: "NYC Restaurants"
+        href: restaurant_dashboard.html
     - icon: fa-linkedin fa-lg
       href: https://www.linkedin.com/in/alice-tivarovsky-56281131/
     - icon: fa-envelope fa-lg
