@@ -47,7 +47,8 @@ rest_inspec %>%
   group_by(boro, cuisine_description) %>% 
   summarize(n = n()) %>% 
   drop_na() %>% 
-  plot_ly(x = ~boro, y = ~n, color = ~cuisine_description, type = "bar") %>% 
+  rename("Borough" = "boro", "Qty" = "n")  %>% 
+  plot_ly(x = ~Borough, y = ~Qty, color = ~cuisine_description, type = "bar") %>% 
   layout(barmode = 'stack')
 
 ```
@@ -60,7 +61,8 @@ rest_inspec %>%
   filter(cuisine_description %in% c("Japanese", "Thai", "CafÃ©/Coffee/Tea", "Bagels/Pretzels", "Pizza")) %>% 
   drop_na() %>% 
   mutate(cuisine_description = fct_recode(cuisine_description, "Coffee" = "CafÃ©/Coffee/Tea")) %>% 
-  plot_ly(y = ~score, x = ~cuisine_description, color = ~cuisine_description, type = "box")
+  rename("Score" = "score", "Cuisine" = "cuisine_description")  %>% 
+  plot_ly(y = ~Score, x = ~Cuisine, color = ~Cuisine, type = "box")
 
 ```
 
