@@ -9,6 +9,8 @@ navbar:
       menu:
       - text: "NYC Restaurants"
         href: restaurant_dashboard.html
+      - text: "Depression in NYC"
+        href: practicum.html
     - icon: fa-linkedin fa-lg
       href: https://www.linkedin.com/in/alice-tivarovsky-56281131/
     - icon: fa-envelope fa-lg
@@ -18,3 +20,5 @@ navbar:
 output:
   html_document:
     theme: journal
+    include:
+      after_body: footer.Rhtml
