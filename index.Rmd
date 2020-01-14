@@ -13,13 +13,13 @@ Masters of Public Health (Columbia, c/o 2020)
 
 ## About
 
-Hi there. ! I'm Alice and I'm a second-year MPH student at [Columbia Mailman School of Public Health](https://www.mailman.columbia.edu), studying Epidemiology and Biostatistics. I'm passionate about using data to improve health outcomes. If you're an employer, please make your way over to my [résumé](resume.html) and/or [LinkedIn page](https://www.linkedin.com/in/alice-tivarovsky-56281131/). 
+Hi there. I'm Alice and I'm a second-year MPH student at [Columbia Mailman School of Public Health](https://www.mailman.columbia.edu), studying Epidemiology and Biostatistics. I'm passionate about using data to improve health outcomes. If you're an employer, please make your way over to my [résumé](resume.html) and/or [LinkedIn page](https://www.linkedin.com/in/alice-tivarovsky-56281131/). 
 <br><br>
 
 <img src="IMG_4479.jpg" style="width:65%"><br>
 <br><br>
 
-## Neat Stuff
+## Projects
 
 * If data science is my favorite pastime, eating is close second. Check out some [NYC restaurant analyses](restaurant_dashboard.html) I ran. 
 * I completed the Health Research Training Program (HRTP) with the New York City Department of Health and Mental Hygiene in summer 2019. I analyzed depression rates across NYC. Check out my final poster [here](practicum.html). 
