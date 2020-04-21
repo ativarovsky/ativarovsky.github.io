@@ -7,6 +7,8 @@ navbar:
       href: resume.html
     - text: Examples
       menu:
+      - text: "Covid-19 Dashboard"
+        href: covid_dash.html
       - text: "NYC Restaurants"
         href: restaurant_dashboard.html
       - text: "Depression in NYC"
