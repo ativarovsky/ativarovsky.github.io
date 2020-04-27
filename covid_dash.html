@@ -1,30 +1,42 @@
 <!DOCTYPE html>
-
 <html xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
 
-<meta charset="utf-8" />
+<meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
-
 
 
 
 <title>Covid-19</title>
 
+<meta property="og:title" content="Covid-19" />
+
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+
+<link rel="icon" href="data:image/x-icon;" type="image/x-icon">
+
+
+<script type="text/javascript">
+window.FlexDashboardComponents = [];
+</script>
+
+<script id="flexdashboard-navbar" type="application/json">
+[{"title":"Source Code","icon":"fa-code","href":"source_embed","align":"right"}]
+</script>
 <script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/stickytableheaders-0.1.19/jquery.stickytableheaders.min.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/featherlight-1.3.5/featherlight.min.css" rel="stylesheet" />
+<script src="site_libs/featherlight-1.3.5/featherlight.min.js"></script>
+<link href="site_libs/prism-1.4.1/prism.css" rel="stylesheet" />
+<script src="site_libs/prism-1.4.1/prism.js"></script>
 <script src="site_libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
 <script src="site_libs/plotly-binding-4.9.0/plotly.js"></script>
 <script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
@@ -37,229 +49,762 @@
 <link href="site_libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
 <link href="site_libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
 <script src="site_libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
-
-<style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
-<script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
-  }
-}
-</script>
 
+/*
+ Dashboard CSS from Keen IO Dashboards
+ (https://github.com/keen/dashboards)
+*/
 
-
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
-
-
-
-
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
-}
-.tabbed-pane {
-  padding-top: 12px;
-}
-.html-widget {
-  margin-bottom: 20px;
-}
-button.code-folding-btn:focus {
-  outline: none;
-}
-summary {
-  display: list-item;
-}
-</style>
-
-
-<style type="text/css">
-/* padding for bootstrap navbar */
 body {
-  padding-top: 61px;
-  padding-bottom: 40px;
+  background: #f2f2f2;
+  padding: 60px 0 0 8px; /* padding-top overridden by theme */
 }
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 66px;
-  margin-top: -66px;
+
+body hr {
+  border-color: #d7d7d7;
+  margin: 10px 0;
 }
-.section h2 {
-  padding-top: 66px;
-  margin-top: -66px;
+
+.navbar-inverse .navbar-nav > li > a,
+.navbar .navbar-brand {
+  text-decoration: none;
 }
-.section h3 {
-  padding-top: 66px;
-  margin-top: -66px;
+
+.navbar-logo {
+  margin-top: 1px;
 }
-.section h4 {
-  padding-top: 66px;
-  margin-top: -66px;
+
+.navbar-logo img {
+  margin-right: 12px;
 }
-.section h5 {
-  padding-top: 66px;
-  margin-top: -66px;
-}
-.section h6 {
-  padding-top: 66px;
-  margin-top: -66px;
-}
-.dropdown-submenu {
-  position: relative;
-}
-.dropdown-submenu>.dropdown-menu {
-  top: 0;
-  left: 100%;
-  margin-top: -6px;
-  margin-left: -1px;
-  border-radius: 0 6px 6px 6px;
-}
-.dropdown-submenu:hover>.dropdown-menu {
-  display: block;
-}
-.dropdown-submenu>a:after {
-  display: block;
-  content: " ";
-  float: right;
-  width: 0;
-  height: 0;
-  border-color: transparent;
-  border-style: solid;
-  border-width: 5px 0 5px 5px;
-  border-left-color: #cccccc;
-  margin-top: 5px;
-  margin-right: -10px;
-}
-.dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
-}
-.dropdown-submenu.pull-left {
-  float: none;
-}
-.dropdown-submenu.pull-left>.dropdown-menu {
-  left: -100%;
+
+.navbar-author {
   margin-left: 10px;
-  border-radius: 6px 0 6px 6px;
+  font-size: 15px;
 }
-</style>
 
-<script>
-// manage active state of menu based on current page
-$(document).ready(function () {
-  // active menu anchor
-  href = window.location.pathname
-  href = href.substr(href.lastIndexOf('/') + 1)
-  if (href === "")
-    href = "index.html";
-  var menuAnchor = $('a[href="' + href + '"]');
+.navbar .dropdown-menu .fa {
+  min-width: 20px;
+}
 
-  // mark it active
-  menuAnchor.parent().addClass('active');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
-});
-</script>
-
-<!-- tabsets -->
-
-<style type="text/css">
-.tabset-dropdown > .nav-tabs {
-  display: inline-table;
+.navbar .dropdown-menu {
+  min-width: 150px;
   max-height: 500px;
-  min-height: 44px;
-  overflow-y: auto;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  overflow: auto;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+.chart-wrapper,
+.nav-tabs-custom,
+.sbframe-commentary
+{
+  background: #fff;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  margin-right: 8px;
 }
 
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
+.chart-title {
+  border-bottom: 1px solid #d7d7d7;
+  color: #666;
+  font-size: 14px;
+  font-weight: 300;
+  padding: 7px 10px 4px;
 }
 
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.tabset-dropdown > .nav-tabs > li.active {
-  display: block;
-}
-
-.tabset-dropdown > .nav-tabs > li > a,
-.tabset-dropdown > .nav-tabs > li > a:focus,
-.tabset-dropdown > .nav-tabs > li > a:hover {
-  border: none;
-  display: inline-block;
-  border-radius: 4px;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
-  display: block;
-  float: none;
-}
-
-.tabset-dropdown > .nav-tabs > li {
+.chart-wrapper .chart-title:empty {
   display: none;
 }
+
+.chart-wrapper .chart-stage {
+  overflow: hidden;
+  padding: 5px 10px;
+  position: relative;
+}
+
+.chart-wrapper .chart-notes {
+  background: #fbfbfb;
+  border-top: 1px solid #e2e2e2;
+  color: #808080;
+  font-size: 12px;
+  padding: 8px 10px 5px;
+}
+
+/*
+ CSS for handling flexbox layout
+*/
+
+#dashboard-container {
+  visibility: hidden;
+}
+
+.tab-content>.dashboard-page-wrapper.active {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.dashboard-page-wrapper {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.dashboard-row-orientation {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.dashboard-row {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.dashboard-row-flex {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+.dashboard-column-orientation {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.dashboard-column {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.chart-wrapper-flex {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.chart-stage-flex {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  position: relative;
+}
+
+.chart-shim {
+  position: absolute;
+  left: 8px; top: 8px; right: 8px; bottom: 8px;
+}
+
+.no-padding .chart-shim {
+  left: 0; top: 0; right: 0; bottom: 0;
+}
+
+.flowing-content-shim {
+  overflow: auto;
+  left: 0; top: 0; right: 0; bottom: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.flowing-content-container {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.chart-stage .table-bordered {
+  border: none;
+}
+
+.chart-stage .table-bordered > tbody > tr > th,
+.chart-stage .table-bordered > tfoot > tr > th,
+.chart-stage .table-bordered > tbody > tr > td,
+.chart-stage .table-bordered > tfoot > tr > td {
+  border: none;
+}
+
+.chart-stage .table-bordered > tbody > tr > td {
+  border-top: 1px solid #dddddd;
+}
+
+.chart-stage .table-bordered > thead > tr > th {
+  border: none;
+  border-bottom: 2px solid #dddddd;
+}
+
+.bootstrap-table table>thead {
+  background-color: #fff;
+}
+
+.bootstrap-table table.data,
+.bootstrap-table table.shiny-table {
+  width: inherit !important;
+}
+
+.bootstrap-table table.data>tbody>tr>th,
+.bootstrap-table table.shiny-table>tbody>tr>th {
+  border-top: none;
+  border-bottom: 2px solid #dddddd;
+  padding: 5px;
+}
+
+.bootstrap-table .data td[align=right] {
+  font-family: inherit;
+}
+
+.chart-wrapper form {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.shiny-input-container label {
+  font-weight: normal;
+}
+
+.chart-stage .html-widget {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chart-stage .html-widget-static-bound {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chart-stage .shiny-bound-output {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Omit display of empty paragraphs */
+
+.chart-shim>p:empty {
+  display: none;
+}
+
+.chart-stage>p:empty {
+  display: none;
+}
+
+/* Omit display of special knitr options div*/
+
+.chart-stage .knitr-options {
+  display: none;
+}
+
+/* Automatically resizing images */
+
+.image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+}
+
+.image-container img {
+  opacity: 0;
+  overflow: hidden;
+}
+
+/* Value box */
+
+.value-box {
+  border-radius: 2px;
+  position: relative;
+  display: block;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.value-box > .inner {
+  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.value-box .value {
+  font-size: 38px;
+  font-weight: bold;
+  margin: 0 0 3px 0;
+  white-space: nowrap;
+  padding: 0;
+}
+
+.value-box .caption {
+  font-size: 15px;
+}
+.value-box .caption > small {
+  display: block;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.value-box .icon i {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 80px;
+  color: rgba(0, 0, 0, 0.15);
+}
+
+.linked-value:hover {
+  cursor: pointer;
+}
+
+.value-box.linked-value:hover {
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* STORYBOARD */
+
+.storyboard-nav button {
+  background: transparent;
+  border: 0;
+  opacity: .3;
+  outline: none;
+  padding: 0;
+}
+
+.storyboard-nav button:hover,
+.storyboard-nav button:hover {
+  opacity: .5;
+}
+
+.storyboard-nav button:disabled,
+.storyboard-nav button:disabled {
+  opacity: .1;
+}
+
+.storyboard-nav .sbnext,
+.storyboard-nav .sbprev {
+  float: left;
+  width: 2%;
+  height: 120px;
+  font-size: 50px;
+}
+
+.storyboard-nav .sbprev {
+  text-align: left;
+  width: 2%;
+}
+
+.storyboard-nav .sbnext {
+  float: right;
+  text-align: right;
+  margin-right: 8px;
+}
+
+.storyboard-nav .sbframelist {
+  margin: 0 auto;
+  width: 94%;
+  height: 120px;
+  overflow: hidden;
+  text-shadow: none;
+  margin-bottom: 8px;
+}
+
+.storyboard-nav .sbframelist ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.storyboard-nav .sbframelist ul li {
+  float: left;
+  width: 270px;
+  height: 100%;
+  padding: 10px 10px 10px 10px;
+  margin-right: 8px;
+  background: #fff;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  color: #3a3c47;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.storyboard-nav .sbframelist ul li:last-child {
+  margin-right: 0px;
+}
+
+.storyboard-nav .sbframelist ul li.active {
+  color: #fff;
+  background: #B8B8B8;
+}
+
+.sbframe-commentary {
+  width: 300px;
+  background: #fbfbfb;
+  font-size: 14px;
+}
+
+.sbframe-commentary ul {
+  padding-left: 22px;
+}
+
+.sbframe.active {
+  display: flex;
+}
+
+.sbframe:not(.active) {
+  display: none;
+}
+
+/* NAV TABS */
+
+.nav-tabs-custom > .nav-tabs {
+  margin: 0;
+  border-bottom: 1px solid #d7d7d7;
+  color: #666;
+  font-size: 14px;
+  font-weight: 300;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+}
+.nav-tabs-custom > .nav-tabs > li {
+  border-top: 3px solid transparent;
+  margin-bottom: -1px;
+  margin-right: 5px;
+}
+.nav-tabs-custom > .nav-tabs > li > a,
+.nav-tabs-custom > .nav-tabs > li > a:active {
+  color: #666;
+  font-weight: 300;
+  font-size: 14px;
+  border-radius: 0;
+  padding: 3px 10px 5px;
+  text-transform: none;
+}
+
+.nav-tabs-custom > .nav-tabs > li:not(.active) > a {
+  border-bottom-color: transparent;
+}
+
+.nav-tabs-custom > .nav-tabs > li > a.text-muted {
+  color: #999;
+}
+.nav-tabs-custom > .nav-tabs > li > a,
+.nav-tabs-custom > .nav-tabs > li > a:hover {
+  background: transparent;
+  margin: 0;
+}
+.nav-tabs-custom > .nav-tabs > li > a:hover {
+  color: #999;
+}
+.nav-tabs-custom > .nav-tabs > li:not(.active) > a:hover,
+.nav-tabs-custom > .nav-tabs > li:not(.active) > a:focus,
+.nav-tabs-custom > .nav-tabs > li:not(.active) > a:active {
+  border-color: transparent;
+}
+.nav-tabs-custom > .nav-tabs > li.active {
+  border-top-color: #3c8dbc;
+}
+.nav-tabs-custom > .nav-tabs > li.active > a,
+.nav-tabs-custom > .nav-tabs > li.active:hover > a {
+  background-color: #fff;
+  color: #666;
+}
+.nav-tabs-custom > .nav-tabs > li.active > a {
+  border-top-color: transparent;
+  border-left-color: #d7d7d7;
+  border-right-color: #d7d7d7;
+}
+.nav-tabs-custom > .nav-tabs > li:first-of-type {
+  margin-left: 0;
+}
+.nav-tabs-custom > .nav-tabs > li:first-of-type.active > a {
+  border-left-color: transparent;
+}
+.nav-tabs-custom > .nav-tabs.pull-right {
+  float: none !important;
+}
+.nav-tabs-custom > .nav-tabs.pull-right > li {
+  float: right;
+}
+.nav-tabs-custom > .nav-tabs.pull-right > li:first-of-type {
+  margin-right: 0;
+}
+.nav-tabs-custom > .nav-tabs.pull-right > li:first-of-type > a {
+  border-left-width: 1px;
+}
+.nav-tabs-custom > .nav-tabs.pull-right > li:first-of-type.active > a {
+  border-left-color: #d7d7d7;
+  border-right-color: transparent;
+}
+.nav-tabs-custom > .nav-tabs > li.header {
+  line-height: 35px;
+  padding: 0 10px;
+  font-size: 20px;
+  color: #666;
+}
+.nav-tabs-custom > .nav-tabs > li.header > .fa,
+.nav-tabs-custom > .nav-tabs > li.header > .glyphicon,
+.nav-tabs-custom > .nav-tabs > li.header > .ion {
+  margin-right: 5px;
+}
+.nav-tabs-custom > .tab-content {
+  background: #fff;
+  padding: 0;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.nav-tabs-custom > .tab-content > .chart-wrapper {
+  background: #fff;
+  border: none;
+  margin: 0;
+}
+
+
+.nav-tabs-custom > .tab-content > .active {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.nav-tabs-custom .dropdown.open > a:active,
+.nav-tabs-custom .dropdown.open > a:focus {
+  background: transparent;
+  color: #999;
+}
+
+
+@media (max-width: 767px) {
+  .value-box {
+    text-align: center;
+    margin-right: 8px;
+  }
+  .value-box .icon {
+    display: none;
+  }
+}
+
+/* Fixed position sidebar */
+
+.section.sidebar {
+  position: fixed;
+  top: 51px; /* overridden by theme */
+  left: 0;
+  bottom: 0;
+  border-right: 1px solid #e2e2e2;
+  background-color: white; /* overridden by theme */
+  padding-left: 10px;
+  padding-right: 10px;
+  visibility: hidden;
+  overflow: auto;
+}
+
+.section.sidebar form p:first-child {
+  margin-top: 10px;
+}
+
+/* Embedded source code */
+
+#flexdashboard-source-code {
+  display: none;
+}
+
+.featherlight-content #flexdashboard-source-code {
+  display: inline-block;
+}
+
+.featherlight-content {
+  width: 80%;
+  max-width: 800px;
+  padding: 0 !important;
+  border-bottom: none !important;
+}
+
+.featherlight:last-of-type {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.featherlight-inner {
+  width: 100%;
+}
+
+.featherlight-content pre {
+  margin: 0;
+  border: 0;
+  background: #fff;
+  font-size: 12px;
+}
+
+.unselectable {
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+#flexdashboard-source-code code {
+  -ms-user-select: text;
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -o-user-select: text;
+  user-select: text;
+}
+
+/* DataTables Tweaks */
+
+.dataTables_filter input[type="search"] {
+  -webkit-appearance: searchfield;
+  outline: none;
+}
+
+.dataTables_wrapper.no-footer
+.dataTables_info {
+  padding-top: 0;
+}
+
+
+table.dataTable thead th {
+  border-bottom: 1px solid #d7d7d7;
+}
+
+.dataTables_wrapper.no-footer .dataTables_scrollBody {
+  border-bottom: 1px solid #d7d7d7;
+}
+
+/* Mobile phone only CSS */
+
+.desktop-layout div.section.mobile {
+  display: none;
+}
+
+.mobile-layout div.section.no-mobile {
+  display: none;
+}
+
+.mobile-figure {
+  display: none;
+}
+
+
+
+body {
+  padding-top: 60px;
+}
+
+.section.sidebar {
+  top: 51px;
+  background-color: rgba(39, 128, 227, 0.1);
+}
+
+.value-box {
+  color: #f9f9f9;
+}
+
+.bg-primary {
+  background-color: rgba(39, 128, 227, 0.7);
+}
+
+.storyboard-nav .sbframelist ul li.active {
+  background-color: rgba(39, 128, 227, 0.7);
+}
+
+.nav-tabs-custom > .nav-tabs > li.active {
+  border-top-color: rgba(39, 128, 227, 0.7);
+}
+
+.bg-info {
+  background-color: rgba(153, 84, 187, 0.7);
+}
+
+.bg-warning {
+  background-color: rgba(255, 117, 24, 0.7);
+}
+
+.bg-danger {
+  background-color: rgba(255, 0, 57, 0.7);
+}
+
+.bg-success {
+  background-color: rgba(63, 182, 24, 0.7);
+}
+
+.chart-title {
+  font-weight: 500;
+}
+
+.nav-tabs-custom > .nav-tabs > li > a,
+.nav-tabs-custom > .nav-tabs > li > a:active {
+  font-weight: 500;
+}
+
+@media only screen and (min-width: 768px) {
+html, body {
+  height: 100%;
+}
+
+#dashboard-container {
+  height: 100%;
+}
+}
 </style>
-
-<!-- code folding -->
-
 
 
 
@@ -267,220 +812,2091 @@ $(document).ready(function () {
 
 <body>
 
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<div class="container-fluid">
+<div class="navbar-header">
 
-<div class="container-fluid main-container">
+<button id="navbar-button" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
 
-
-
-
-<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="index.html">Home</a>
-    </div>
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="resume.html">Resume</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Examples
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="covid_dash.html">Covid-19 Dashboard</a>
-    </li>
-    <li>
-      <a href="restaurant_dashboard.html">NYC Restaurants</a>
-    </li>
-    <li>
-      <a href="practicum.html">Depression in NYC</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="https://www.linkedin.com/in/alice-tivarovsky-56281131/">
-    <span class="fa fa-linkedin fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="mailto:&lt;ativarovsky@gmail.com&gt;">
-    <span class="fa fa-envelope fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="http://github.com/ativarovsky/">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
-    </div><!--/.nav-collapse -->
-  </div><!--/.container -->
-</div><!--/.navbar -->
-
-<div class="fluid-row" id="header">
-
-
-
-<h1 class="title toc-ignore">Covid-19</h1>
+<span class="navbar-logo pull-left">
+  
+</span>
+<span class="navbar-brand">
+  Covid-19
+  <span class="navbar-author">
+        </span>
+</span>
 
 </div>
+<div id="navbar" class="navbar-collapse collapse">
+<ul class="nav navbar-nav navbar-left">
+</ul>
+<ul class="nav navbar-nav navbar-right">
+</ul>
+</div><!--/.nav-collapse-->
+</div><!--/.container-->
+</div><!--/.navbar-->
 
+<script type="text/javascript">
+
+
+var FlexDashboard = (function () {
+
+  // initialize options
+  var _options = {};
+
+  var FlexDashboard = function() {
+
+    // default options
+    _options = $.extend(_options, {
+      theme: "cosmo",
+      fillPage: false,
+      orientation: 'columns',
+      storyboard: false,
+      defaultFigWidth: 576,
+      defaultFigHeight: 461,
+      defaultFigWidthMobile: 360,
+      defaultFigHeightMobile: 461,
+      isMobile: false,
+      isPortrait: false
+    });
+  };
+
+  function init(options) {
+
+    // extend default options
+    $.extend(true, _options, options);
+
+    // add ids to sections that don't have them (pandoc won't assign ids
+    // to e.g. sections with titles consisting of only chinese characters)
+    var nextId = 1;
+    $('.level1:not([id]),.level2:not([id]),.level3:not([id])').each(function() {
+      $(this).attr('id', 'dashboard-' + nextId++);
+    });
+
+    // find navbar items
+    var navbarItems = $('#flexdashboard-navbar');
+    if (navbarItems.length)
+      navbarItems = JSON.parse(navbarItems.html());
+    addNavbarItems(navbarItems);
+
+    // find the main dashboard container
+    var dashboardContainer = $('#dashboard-container');
+
+    // resolve mobile classes
+    resolveMobileClasses(dashboardContainer);
+
+    // one time global initialization for components
+    componentsInit(dashboardContainer);
+
+    // look for a global sidebar
+    var globalSidebar = dashboardContainer.find(".section.level1.sidebar");
+    if (globalSidebar.length > 0) {
+
+      // global layout for fullscreen displays
+      if (!isMobilePhone()) {
+
+         // hoist it up to the top level
+         globalSidebar.insertBefore(dashboardContainer);
+
+         // lay it out (set width/positions)
+         layoutSidebar(globalSidebar, dashboardContainer);
+
+      // tuck sidebar into first page for mobile phones
+      } else {
+
+        // convert it into a level3 section
+        globalSidebar.removeClass('sidebar');
+        globalSidebar.removeClass('level1');
+        globalSidebar.addClass('level3');
+        var h1 = globalSidebar.children('h1');
+        var h3 = $('<h3></h3>');
+        h3.html(h1.html());
+        h3.insertBefore(h1);
+        h1.remove();
+
+        // move it into the first page
+        var page = dashboardContainer.find('.section.level1').first();
+        if (page.length > 0)
+          page.prepend(globalSidebar);
+      }
+    }
+
+    // look for pages to layout
+    var pages = $('div.section.level1');
+    if (pages.length > 0) {
+
+        // find the navbar and collapse on clicked
+        var navbar = $('#navbar');
+        navbar.on("click", "a[data-toggle!=dropdown]", null, function () {
+           navbar.collapse('hide');
+        });
+
+        // envelop the dashboard container in a tab content div
+        dashboardContainer.wrapInner('<div class="tab-content"></div>');
+
+        pages.each(function(index) {
+
+          // lay it out
+          layoutDashboardPage($(this));
+
+          // add it to the navbar
+          addToNavbar($(this), index === 0);
+
+        });
+
+    } else {
+
+      // remove the navbar and navbar button if we don't
+      // have any navbuttons
+      if (navbarItems.length === 0) {
+        $('#navbar').remove();
+        $('#navbar-button').remove();
+      }
+
+      // add the storyboard class if requested
+      if (_options.storyboard)
+        dashboardContainer.addClass('storyboard');
+
+      // layout the entire page
+      layoutDashboardPage(dashboardContainer);
+    }
+
+    // if we are in shiny we need to trigger a window resize event to
+    // force correct layout of shiny-bound-output elements
+    if (isShinyDoc())
+      $(window).trigger('resize');
+
+    // make main components visible
+    $('.section.sidebar').css('visibility', 'visible');
+    dashboardContainer.css('visibility', 'visible');
+
+    // handle location hash
+    handleLocationHash();
+
+    // intialize prism highlighting
+    initPrismHighlighting();
+
+    // record mobile and orientation state then register a handler
+    // to refresh if it changes
+    _options.isMobile = isMobilePhone();
+    _options.isPortrait = isPortrait();
+    $(window).on('resize', function() {
+      if (_options.isMobile !== isMobilePhone() ||
+          _options.isPortrait !== isPortrait()) {
+        window.location.reload();
+      }
+    });
+
+    // trigger layoutcomplete event
+    dashboardContainer.trigger('flexdashboard:layoutcomplete');
+  }
+
+  function resolveMobileClasses(dashboardContainer) {
+     // add top level layout class
+    dashboardContainer.addClass(isMobilePhone() ? 'mobile-layout' :
+                                                  'desktop-layout');
+
+    // look for .mobile sections and add .no-mobile to their peers
+    var mobileSections = $('.section.mobile');
+    mobileSections.each(function() {
+       var id = $(this).attr('id');
+       var nomobileId = id.replace(/-\d+$/, '');
+       $('#' + nomobileId).addClass('no-mobile');
+    });
+  }
+
+  function addNavbarItems(navbarItems) {
+
+    var navbarLeft = $('ul.navbar-left');
+    var navbarRight = $('ul.navbar-right');
+
+    for (var i = 0; i<navbarItems.length; i++) {
+
+      // get the item
+      var item = navbarItems[i];
+
+      // determine the container
+      var container = null;
+      if (item.align === "left")
+        container = navbarLeft;
+      else
+        container = navbarRight;
+
+      // navbar menu if we have multiple items
+      if (item.items) {
+        var menu = navbarMenu(null, item.icon, item.title, container);
+        for (var j = 0; j<item.items.length; j++) {
+          var subItem = item.items[j];
+          var li = $('<li></li>');
+          li.append(navbarLink(subItem.icon, subItem.title, subItem.href, subItem.target));
+          menu.append(li);
+        }
+      } else {
+        var li = $('<li></li>');
+        li.append(navbarLink(item.icon, item.title, item.href, item.target));
+        container.append(li);
+      }
+    }
+  }
+
+  // create or get a reference to an existing dropdown menu
+  function navbarMenu(id, icon, title, container) {
+    var existingMenu = [];
+    if (id)
+      existingMenu = container.children('#' + id);
+    if (existingMenu.length > 0) {
+      return existingMenu.children('ul');
+    } else {
+      var li = $('<li></li>');
+      if (id)
+        li.attr('id', id);
+      li.addClass('dropdown');
+      // auto add "Share" title on mobile if necessary
+      if (!title && icon && (icon === "fa-share-alt") && isMobilePhone())
+        title = "Share";
+      if (title) {
+        title = title + ' <span class="caret"></span>';
+      }
+      var a = navbarLink(icon, title, "#");
+      a.addClass('dropdown-toggle');
+      a.attr('data-toggle', 'dropdown');
+      a.attr('role', 'button');
+      a.attr('aria-expanded', 'false');
+      li.append(a);
+      var ul = $('<ul class="dropdown-menu"></ul>');
+      ul.attr('role', 'menu');
+      li.append(ul);
+      container.append(li);
+      return ul;
+    }
+  }
+
+  function addToNavbar(page, active) {
+
+    // capture the id and data-icon attribute (if any)
+    var id = page.attr('id');
+    var icon = page.attr('data-icon');
+    var navmenu = page.attr('data-navmenu');
+
+    // get hidden state (transfer this to navbar)
+    var hidden = page.hasClass('hidden');
+    page.removeClass('hidden');
+
+    // sanitize the id for use with bootstrap tabs
+    id = id.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_');
+    page.attr('id', id);
+
+    // get the wrapper
+    var wrapper = page.closest('.dashboard-page-wrapper');
+
+    // move the id to the wrapper
+    page.removeAttr('id');
+    wrapper.attr('id', id);
+
+    // add the tab-pane class to the wrapper
+    wrapper.addClass('tab-pane');
+    if (active)
+      wrapper.addClass('active');
+
+    // get a reference to the h1, discover it's id and title, then remove it
+    var h1 = wrapper.find('h1').first();
+    var title = h1.html();
+    h1.remove();
+
+    // create a navbar item
+    var li = $('<li></li>');
+    var a = navbarLink(icon, title, '#' + id);
+    a.attr('data-toggle', 'tab');
+    li.append(a);
+
+    // add it to the navbar (or navbar menu if specified)
+    var container = $('ul.navbar-left');
+    if (navmenu) {
+      var menuId = navmenu.replace(/\s+/g, '');
+      var menu = navbarMenu(menuId, null, navmenu, container);
+      menu.append(li);
+    } else {
+      container.append(li);
+    }
+
+    // hide it if requested
+    if (hidden)
+      li.addClass('hidden');
+  }
+
+  function navbarLink(icon, title, href, target) {
+
+    var a = $('<a></a>');
+    if (icon) {
+
+      // get the name of the icon set and icon
+      var dashPos = icon.indexOf("-");
+      var iconSet = icon.substring(0, dashPos);
+      var iconName = icon.substring(dashPos + 1);
+
+      // create the icon
+      var iconElement = $('<span class="' + iconSet + ' ' + icon + '"></span>');
+      if (title)
+        iconElement.css('margin-right', '7px');
+      a.append(iconElement);
+      // if href is null see if we can auto-generate based on icon (e.g. social)
+      if (!href)
+        maybeGenerateLinkFromIcon(iconName, a);
+    }
+    if (title)
+      a.append(title);
+
+    // add the href.
+    if (href) {
+      if (href === "source_embed") {
+        a.attr('href', '#');
+        a.attr('data-featherlight', "#flexdashboard-source-code");
+        a.featherlight({
+            beforeOpen: function(event){
+              $('body').addClass('unselectable');
+            },
+            afterClose: function(event){
+              $('body').removeClass('unselectable');
+            }
+        });
+      } else {
+        a.attr('href', href);
+      }
+    }
+
+    // add the arget
+    if (target)
+      a.attr('target', target);
+
+    return a;
+  }
+
+  // auto generate a link from an icon name (e.g. twitter) when possible
+  function maybeGenerateLinkFromIcon(iconName, a) {
+
+     var serviceLinks = {
+      "twitter": "https://twitter.com/share?text=" + encodeURIComponent(document.title) + "&url="+encodeURIComponent(location.href),
+      "facebook": "https://www.facebook.com/sharer/sharer.php?s=100&p[url]="+encodeURIComponent(location.href),
+      "google-plus": "https://plus.google.com/share?url="+encodeURIComponent(location.href),
+      "linkedin": "https://www.linkedin.com/shareArticle?mini=true&url="+encodeURIComponent(location.href) + "&title=" + encodeURIComponent(document.title),
+      "pinterest": "https://pinterest.com/pin/create/link/?url="+encodeURIComponent(location.href) + "&description=" + encodeURIComponent(document.title)
+    };
+
+    var makeSocialLink = function(a, href) {
+      a.attr('href', '#');
+      a.on('click', function(e) {
+        e.preventDefault();
+        window.open(href);
+      });
+    };
+
+    $.each(serviceLinks, function(key, value) {
+      if (iconName.indexOf(key) !== -1)
+        makeSocialLink(a, value);
+    });
+  }
+
+  // layout a dashboard page
+  function layoutDashboardPage(page) {
+
+    // use a page wrapper so that free form content above the
+    // dashboard appears at the top rather than the side (as it
+    // would without the wrapper in a column orientation)
+    var wrapper = $('<div class="dashboard-page-wrapper"></div>');
+    page.wrap(wrapper);
+
+    // if there are no level2 or level3 headers synthesize a level3
+    // header to contain the (e.g. frame it, scroll container, etc.)
+    var headers = page.find('h2,h3');
+    if (headers.length === 0)
+      page.wrapInner('<div class="section level3"></div>');
+
+    // hoist up any content before level 2 or level 3 headers
+    var children = page.children();
+    children.each(function(index) {
+      if ($(this).hasClass('level2') || $(this).hasClass('level3'))
+        return false;
+      $(this).insertBefore(page);
+    });
+
+    // determine orientation and fillPage behavior for distinct media
+    var orientation, fillPage, storyboard;
+
+    // media: mobile phone
+    if (isMobilePhone()) {
+
+      // if there is a sidebar we need to ensure it's content
+      // is properly framed as an h3
+      var sidebar = page.find('.section.sidebar');
+      sidebar.removeClass('sidebar');
+      sidebar.wrapInner('<div class="section level3"></div>');
+      var h2 = sidebar.find('h2');
+      var h3 = $('<h3></h3>');
+      h3.html(h2.html());
+      h3.insertBefore(h2);
+      h2.remove();
+
+      // wipeout h2 elements then enclose them in a single h2
+      var level2 = page.find('div.section.level2');
+      level2.each(function() {
+        level2.children('h2').remove();
+        level2.children().unwrap();
+      });
+      page.wrapInner('<div class="section level2"></div>');
+
+      // substitute mobile images
+      if (isPortrait()) {
+        var mobileFigures = $('img.mobile-figure');
+        mobileFigures.each(function() {
+          // get the src (might be base64 encoded)
+          var src = $(this).attr('src');
+
+          // find it's peer
+          var id = $(this).attr('data-mobile-figure-id');
+          var img = $('img[data-figure-id=' + id + "]");
+          img.attr('src', src)
+             .attr('width', _options.defaultFigWidthMobile)
+             .attr('height', _options.defaultFigHeightMobile);
+        });
+      }
+
+      // hoist storyboard commentary into it's own section
+      if (page.hasClass('storyboard')) {
+        var commentaryHR = page.find('div.section.level3 hr');
+        commentaryHR.each(function() {
+          var commentary = $(this).nextAll().detach();
+          var commentarySection = $('<div class="section level3"></div>');
+          commentarySection.append(commentary);
+          commentarySection.insertAfter($(this).closest('div.section.level3'));
+          $(this).remove();
+        });
+      }
+
+      // force a non full screen layout by columns
+      orientation = _options.orientation = 'columns';
+      fillPage = _options.fillPage = false;
+      storyboard = _options.storyboard = false;
+
+    // media: desktop
+    } else {
+
+      // determine orientation
+      orientation = page.attr('data-orientation');
+      if (orientation !== 'rows' && orientation != 'columns')
+        orientation = _options.orientation;
+
+      // determine storyboard mode
+      storyboard = page.hasClass('storyboard');
+
+      // fillPage based on options (force for storyboard)
+      fillPage = _options.fillPage || storyboard;
+
+      // handle sidebar
+      var sidebar = page.find('.section.level2.sidebar');
+      if (sidebar.length > 0)
+        layoutSidebar(sidebar, page);
+    }
+
+    // give it and it's parent divs height: 100% if we are in fillPage mode
+    if (fillPage) {
+      page.addClass('vertical-layout-fill');
+      page.css('height', '100%');
+      page.parents('div').css('height', '100%');
+    } else {
+      page.addClass('vertical-layout-scroll');
+    }
+
+    // perform the layout
+    if (storyboard)
+      layoutPageAsStoryboard(page);
+    else if (orientation === 'rows')
+      layoutPageByRows(page, fillPage);
+    else if (orientation === 'columns')
+      layoutPageByColumns(page, fillPage);
+  }
+
+  function layoutSidebar(sidebar, content) {
+
+    // get it out of the header hierarchy
+    sidebar = sidebar.first();
+    if (sidebar.hasClass('level1')) {
+      sidebar.removeClass('level1');
+      sidebar.children('h1').remove();
+    } else if (sidebar.hasClass('level2')) {
+      sidebar.removeClass('level2');
+      sidebar.children('h2').remove();
+    }
+
+    // determine width
+    var sidebarWidth = isTablet() ? 220 : 250;
+    var dataWidth = parseInt(sidebar.attr('data-width'));
+    if (dataWidth)
+      sidebarWidth = dataWidth;
+
+    // set the width and shift the page right to accomodate the sidebar
+    sidebar.css('width', sidebarWidth + 'px');
+    content.css('padding-left', sidebarWidth + 'px');
+
+    // wrap it's contents in a form
+    sidebar.wrapInner($('<form></form>'));
+  }
+
+  function layoutPageAsStoryboard(page) {
+
+    // create storyboard navigation
+    var nav = $('<div class="storyboard-nav"></div>');
+
+    // add navigation buttons
+    var prev = $('<button class="sbprev"><i class="fa fa-angle-left"></i></button>');
+    nav.append(prev);
+    var next= $('<button class="sbnext"><i class="fa fa-angle-right"></i></button>');
+    nav.append(next);
+
+    // add navigation frame
+    var frameList = $('<div class="sbframelist"></div>');
+    nav.append(frameList);
+    var ul = $('<ul></ul>');
+    frameList.append(ul);
+
+     // find all the level3 sections (those are the storyboard frames)
+    var frames = page.find('div.section.level3');
+    frames.each(function() {
+
+      // mark it
+      $(this).addClass('sbframe');
+
+      // divide it into chart content and (optional) commentary
+      $(this).addClass('dashboard-column-orientation');
+
+      // stuff the chart into it's own div w/ flex
+      $(this).wrapInner('<div class="sbframe-component"></div>');
+      setFlex($(this), 1);
+      var frame = $(this).children('.sbframe-component');
+
+      // extract the title from the h3
+      var li = $('<li></li>');
+      var h3 = frame.children('h3');
+      li.html(h3.html());
+      h3.remove();
+      ul.append(li);
+
+      // extract commentary
+      var hr = frame.children('hr');
+      if (hr.length) {
+        var commentary = hr.nextAll().detach();
+        hr.remove();
+        var commentaryFrame = $('<div class="sbframe-commentary"></div>');
+        commentaryFrame.addClass('flowing-content-shim');
+        commentaryFrame.addClass('flowing-content-container');
+        commentaryFrame.append(commentary);
+        $(this).append(commentaryFrame);
+
+        // look for a data-commentary-width attribute
+        var commentaryWidth = $(this).attr('data-commentary-width');
+        if (commentaryWidth)
+          commentaryFrame.css('width', commentaryWidth + 'px');
+      }
+
+      // layout the chart (force flex)
+      var result = layoutChart(frame, true);
+
+      // ice the notes if there are none
+      if (!result.notes)
+        frame.find('.chart-notes').remove();
+
+      // set flex on chart
+      setFlex(frame, 1);
+    });
+
+    // create a div to hold all the frames
+    var frameContent = $('<div class="sbframe-content"></div>');
+    frameContent.addClass('dashboard-row-orientation');
+    frameContent.append(frames.detach());
+
+    // row orientation to stack nav and frame content
+    page.addClass('dashboard-row-orientation');
+    page.append(nav);
+    page.append(frameContent);
+    setFlex(frameContent, 1);
+
+    // initialize sly
+    var sly = new Sly(frameList, {
+    		horizontal: true,
+    		itemNav: 'basic',
+    		smart: true,
+    		activateOn: 'click',
+    		startAt: 0,
+    		scrollBy: 1,
+    		activatePageOn: 'click',
+    		speed: 200,
+    		moveBy: 600,
+    		dragHandle: true,
+    		dynamicHandle: true,
+    		clickBar: true,
+    		keyboardNavBy: 'items',
+    		next: next,
+    		prev: prev
+    	}).init();
+
+    // make first frame active
+    frames.removeClass('active');
+    frames.first().addClass('active');
+
+    // subscribe to frame changed events
+    sly.on('active', function (eventName, itemIndex) {
+      frames.removeClass('active');
+      frames.eq(itemIndex).addClass('active')
+                          .trigger('shown');
+    });
+  }
+
+  function layoutPageByRows(page, fillPage) {
+
+    // row orientation
+    page.addClass('dashboard-row-orientation');
+
+    // find all the level2 sections (those are the rows)
+    var rows = page.find('div.section.level2');
+
+    // if there are no level2 sections then treat the
+    // entire page as if it's a level 2 section
+    if (rows.length === 0) {
+      page.wrapInner('<div class="section level2"></div>');
+      rows = page.find('div.section.level2');
+    }
+
+    rows.each(function () {
+
+      // flags
+      var haveNotes = false;
+      var haveFlexHeight = true;
+
+      // remove the h2
+      $(this).children('h2').remove();
+
+      // check for a tabset
+      var isTabset = $(this).hasClass('tabset');
+      if (isTabset)
+        layoutTabset($(this));
+
+      // give it row layout semantics if it's not a tabset
+      if (!isTabset)
+        $(this).addClass('dashboard-row');
+
+      // find all of the level 3 subheads
+      var columns = $(this).find('div.section.level3');
+
+      // determine figureSizes sizes
+      var figureSizes = chartFigureSizes(columns);
+
+      // fixup the columns
+      columns.each(function(index) {
+
+        // layout the chart (force flex if we are in a tabset)
+        var result = layoutChart($(this), isTabset);
+
+        // update flexHeight state
+        if (!result.flex)
+          haveFlexHeight = false;
+
+        // update state
+        if (result.notes)
+          haveNotes = true;
+
+        // set the column flex based on the figure width
+        // (value boxes will just get the default figure width)
+        var chartWidth = figureSizes[index].width;
+        setFlex($(this), chartWidth + ' ' + chartWidth + ' 0px');
+
+      });
+
+      // remove empty chart note divs
+      if (isTabset)
+        $(this).find('.chart-notes').filter(function() {
+            return $(this).html() === "&nbsp;";
+        }).remove();
+      if (!haveNotes)
+        $(this).find('.chart-notes').remove();
+
+       // make it a flexbox row
+      if (haveFlexHeight)
+        $(this).addClass('dashboard-row-flex');
+
+      // now we can set the height on all the wrappers (based on maximum
+      // figure height + room for title and notes, or data-height on the
+      // container if specified). However, don't do this if there is
+      // no flex on any of the constituent columns
+      var flexHeight = null;
+      var dataHeight = parseInt($(this).attr('data-height'));
+      if (dataHeight)
+        flexHeight = adjustedHeight(dataHeight, columns.first());
+      else if (haveFlexHeight)
+        flexHeight = maxChartHeight(figureSizes, columns);
+      if (flexHeight) {
+        if (fillPage)
+          setFlex($(this), flexHeight + ' ' + flexHeight + ' 0px');
+        else {
+          $(this).css('height', flexHeight + 'px');
+          setFlex($(this), '0 0 ' + flexHeight + 'px');
+        }
+      }
+
+    });
+  }
+
+  function layoutPageByColumns(page, fillPage) {
+
+    // column orientation
+    page.addClass('dashboard-column-orientation');
+
+    // find all the level2 sections (those are the columns)
+    var columns = page.find('div.section.level2');
+
+    // if there are no level2 sections then treat the
+    // entire page as if it's a level 2 section
+    if (columns.length === 0) {
+      page.wrapInner('<div class="section level2"></div>');
+      columns = page.find('div.section.level2');
+    }
+
+    // layout each column
+    columns.each(function (index) {
+
+      // remove the h2
+      $(this).children('h2').remove();
+
+      // make it a flexbox column
+      $(this).addClass('dashboard-column');
+
+      // check for a tabset
+      var isTabset = $(this).hasClass('tabset');
+      if (isTabset)
+        layoutTabset($(this));
+
+      // find all the h3 elements
+      var rows = $(this).find('div.section.level3');
+
+      // get the figure sizes for the rows
+      var figureSizes = chartFigureSizes(rows);
+
+      // column flex is the max row width (or data-width if specified)
+      var flexWidth;
+      var dataWidth = parseInt($(this).attr('data-width'));
+      if (dataWidth)
+        flexWidth = dataWidth;
+      else
+        flexWidth = maxChartWidth(figureSizes);
+      setFlex($(this), flexWidth + ' ' + flexWidth + ' 0px');
+
+      // layout each chart
+      rows.each(function(index) {
+
+        // perform the layout
+        var result = layoutChart($(this), false);
+
+        // ice the notes if there are none
+        if (!result.notes)
+          $(this).find('.chart-notes').remove();
+
+        // set flex height based on figHeight, then adjust
+        if (result.flex) {
+          var chartHeight = figureSizes[index].height;
+          chartHeight = adjustedHeight(chartHeight, $(this));
+          if (fillPage)
+            setFlex($(this), chartHeight + ' ' + chartHeight + ' 0px');
+          else {
+            $(this).css('height', chartHeight + 'px');
+            setFlex($(this), chartHeight + ' ' + chartHeight + ' ' + chartHeight + 'px');
+          }
+        }
+      });
+    });
+  }
+
+  function chartFigureSizes(charts) {
+
+    // sizes
+    var figureSizes = new Array(charts.length);
+
+    // check each chart
+    charts.each(function(index) {
+
+      // start with default
+      figureSizes[index] = {
+        width: _options.defaultFigWidth,
+        height: _options.defaultFigHeight
+      };
+
+      // look for data-height or data-width then knit options
+      var dataWidth = parseInt($(this).attr('data-width'));
+      var dataHeight = parseInt($(this).attr('data-height'));
+      var knitrOptions = $(this).find('.knitr-options:first');
+      var knitrWidth, knitrHeight;
+      if (knitrOptions) {
+        knitrWidth = parseInt(knitrOptions.attr('data-fig-width'));
+        knitrHeight =  parseInt(knitrOptions.attr('data-fig-height'));
+      }
+
+      // width
+      if (dataWidth)
+        figureSizes[index].width = dataWidth;
+      else if (knitrWidth)
+        figureSizes[index].width = knitrWidth;
+
+      // height
+      if (dataHeight)
+        figureSizes[index].height = dataHeight;
+      else if (knitrHeight)
+        figureSizes[index].height = knitrHeight;
+    });
+
+    // return sizes
+    return figureSizes;
+  }
+
+  function maxChartHeight(figureSizes, charts) {
+
+    // first compute the maximum height
+    var maxHeight = _options.defaultFigHeight;
+    for (var i = 0; i<figureSizes.length; i++)
+      if (figureSizes[i].height > maxHeight)
+        maxHeight = figureSizes[i].height;
+
+    // now add offests for chart title and chart notes
+    if (charts.length)
+      maxHeight = adjustedHeight(maxHeight, charts.first());
+
+    return maxHeight;
+  }
+
+  function adjustedHeight(height, chart) {
+    if (chart.length > 0) {
+      var chartTitle = chart.find('.chart-title');
+      if (chartTitle.length)
+        height += chartTitle.first().outerHeight();
+      var chartNotes = chart.find('.chart-notes');
+      if (chartNotes.length)
+        height += chartNotes.first().outerHeight();
+    }
+    return height;
+  }
+
+  function maxChartWidth(figureSizes) {
+    var maxWidth = _options.defaultFigWidth;
+    for (var i = 0; i<figureSizes.length; i++)
+      if (figureSizes[i].width > maxWidth)
+        maxWidth = figureSizes[i].width;
+    return maxWidth;
+  }
+
+  // layout a chart
+  function layoutChart(chart, forceFlex) {
+
+    // state to return
+    var result = {
+      notes: false,
+      flex: false
+    };
+
+    // extract the title
+    var title = extractTitle(chart);
+
+    // find components that apply to this container
+    var components = componentsFind(chart);
+
+    // if it's a custom component then call it and return
+    var customComponents = componentsCustom(components);
+    if (customComponents.length) {
+      componentsLayout(customComponents, title, chart);
+      result.notes = false;
+      result.flex = forceFlex || componentsFlex(customComponents);
+      return result;
+    }
+
+    // put all the content in a chart wrapper div
+    chart.addClass('chart-wrapper');
+    chart.wrapInner('<div class="chart-stage"></div>');
+    var chartContent = chart.children('.chart-stage');
+
+    // flex the content if appropriate
+    result.flex = forceFlex || componentsFlex(components);
+    if (result.flex) {
+      // add flex classes
+      chart.addClass('chart-wrapper-flex');
+      chartContent.addClass('chart-stage-flex');
+
+      // additional shim to break out of flexbox sizing
+      chartContent.wrapInner('<div class="chart-shim"></div>');
+      chartContent = chartContent.children('.chart-shim');
+    }
+
+    // set custom data-padding attribute
+    var pad = chart.attr('data-padding');
+    if (pad) {
+      if (pad === "0")
+        chart.addClass('no-padding');
+      else {
+        pad = pad + 'px';
+        chartContent.css('left', pad)
+                    .css('top', pad)
+                    .css('right', pad)
+                    .css('bottom', pad)
+      }
+    }
+
+    // call compoents
+    componentsLayout(components, title, chartContent);
+
+    // also activate components on shiny output
+    findShinyOutput(chartContent).on('shiny:value',
+      function(event) {
+        var element = $(event.target);
+        setTimeout(function() {
+
+          // see if we opted out of flex based on our output (for shiny
+          // we can't tell what type of output we have until after the
+          // value is bound)
+          var components = componentsFind(element);
+          var flex = forceFlex || componentsFlex(components);
+          if (!flex) {
+            chart.css('height', "");
+            setFlex(chart, "");
+            chart.removeClass('chart-wrapper-flex');
+            chartContent.removeClass('chart-stage-flex');
+            chartContent.children().unwrap();
+          }
+
+          // perform layout
+          componentsLayout(components, title, element.parent());
+        }, 10);
+      });
+
+    // add the title
+    var chartTitle = $('<div class="chart-title"></div>');
+    chartTitle.html(title);
+    chart.prepend(chartTitle);
+
+    // add the notes section
+    var chartNotes = $('<div class="chart-notes"></div>');
+    chartNotes.html('&nbsp;');
+    chart.append(chartNotes);
+
+    // attempt to extract notes if we have a component
+    if (components.length)
+      result.notes = extractChartNotes(chartContent, chartNotes);
+
+    // return result
+    return result;
+  }
+
+  // build a tabset from a section div with the .tabset class
+  function layoutTabset(tabset) {
+
+    // check for fade option
+    var fade = tabset.hasClass("tabset-fade");
+    var navClass = "nav-tabs";
+
+    // determine the heading level of the tabset and tabs
+    var match = tabset.attr('class').match(/level(\d) /);
+    if (match === null)
+      return;
+    var tabsetLevel = Number(match[1]);
+    var tabLevel = tabsetLevel + 1;
+
+    // find all subheadings immediately below
+    var tabs = tabset.find("div.section.level" + tabLevel);
+    if (!tabs.length)
+      return;
+
+    // create tablist and tab-content elements
+    var tabList = $('<ul class="nav ' + navClass + '" role="tablist"></ul>');
+    $(tabs[0]).before(tabList);
+    var tabContent = $('<div class="tab-content"></div>');
+    $(tabs[0]).before(tabContent);
+
+    // build the tabset
+    tabs.each(function(i) {
+
+      // get the tab div
+      var tab = $(tabs[i]);
+
+      // get the id then sanitize it for use with bootstrap tabs
+      var id = tab.attr('id');
+
+      // sanitize the id for use with bootstrap tabs
+      id = id.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_');
+      tab.attr('id', id);
+
+      // get the heading element within it and grab it's text
+      var heading = tab.find('h' + tabLevel + ':first');
+      var headingText = heading.html();
+
+      // build and append the tab list item
+      var a = $('<a role="tab" data-toggle="tab">' + headingText + '</a>');
+      a.attr('href', '#' + id);
+      a.attr('aria-controls', id);
+      var li = $('<li role="presentation"></li>');
+      li.append(a);
+      if (i === 0)
+        li.attr('class', 'active');
+      tabList.append(li);
+
+      // set it's attributes
+      tab.attr('role', 'tabpanel');
+      tab.addClass('tab-pane');
+      tab.addClass('tabbed-pane');
+      tab.addClass('no-title');
+      if (fade)
+        tab.addClass('fade');
+      if (i === 0) {
+        tab.addClass('active');
+        if (fade)
+          tab.addClass('in');
+      }
+
+      // move it into the tab content div
+      tab.detach().appendTo(tabContent);
+    });
+
+    // add nav-tabs-custom
+    tabset.addClass('nav-tabs-custom');
+
+    // internal layout is dashboard-column with tab-content flexing
+    tabset.addClass('dashboard-column');
+    setFlex(tabContent, 1);
+  }
+
+  // one time global initialization for components
+  function componentsInit(dashboardContainer) {
+    for (var i=0; i<window.FlexDashboardComponents.length; i++) {
+      var component = window.FlexDashboardComponents[i];
+      if (component.init)
+        component.init(dashboardContainer);
+    }
+  }
+
+  // find components that apply within a container
+  function componentsFind(container) {
+
+    // look for components
+    var components = [];
+    for (var i=0; i<window.FlexDashboardComponents.length; i++) {
+      var component = window.FlexDashboardComponents[i];
+      if (component.find(container).length)
+        components.push(component);
+    }
+
+    // if there were none then use a special flowing content component
+    // that just adds a scrollbar in fillPage mode
+    if (components.length == 0) {
+      components.push({
+        find: function(container) {
+          return container;
+        },
+
+        flex: function(fillPage) {
+          return fillPage;
+        },
+
+        layout: function(title, container, element, fillPage) {
+          if (fillPage) {
+            container.addClass('flowing-content-shim');
+            container.addClass('flowing-content-container');
+          }
+        }
+      });
+    }
+
+    return components;
+  }
+
+  // if there is a custom component then pick it out
+  function componentsCustom(components) {
+    var customComponent = [];
+    for (var i=0; i<components.length; i++)
+      if (components[i].type === "custom") {
+        customComponent.push(components[i]);
+        break;
+      }
+    return customComponent;
+  }
+
+  // query all components for flex
+  function componentsFlex(components) {
+
+    // no components at all means no flex
+    if (components.length === 0)
+      return false;
+
+    // otherwise query components (assume true unless we see false)
+    var isMobile = isMobilePhone();
+    for (var i=0; i<components.length; i++)
+      if (components[i].flex && !components[i].flex(_options.fillPage))
+        return false;
+    return true;
+  }
+
+  // layout all components
+  function componentsLayout(components, title, container) {
+    var isMobile = isMobilePhone();
+    for (var i=0; i<components.length; i++) {
+      var element = components[i].find(container);
+      if (components[i].layout) {
+        // call layout (don't call other components if it returns false)
+        var result = components[i].layout(title, container, element, _options.fillPage);
+        if (result === false)
+          return;
+      }
+    }
+  }
+
+  // get a reference to the h3, discover it's inner html, and remove it
+  function extractTitle(container) {
+    var h3 = container.children('h3').first();
+    var title = '';
+    if (!container.hasClass('no-title'))
+      title = h3.html();
+    h3.remove();
+    return title;
+  }
+
+  // extract chart notes
+  function extractChartNotes(chartContent, chartNotes) {
+    // look for a terminating blockquote or image caption
+    var blockquote = chartContent.children('blockquote:last-child');
+    var caption = chartContent.children('div.image-container')
+                              .children('p.caption');
+    if (blockquote.length) {
+      chartNotes.html(blockquote.children('p:first-child').html());
+      blockquote.remove();
+      return true;
+    } else if (caption.length) {
+      chartNotes.html(caption.html());
+      caption.remove();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function findShinyOutput(chartContent) {
+    return chartContent.find('.shiny-text-output, .shiny-html-output');
+  }
+
+  // safely detect rendering on a mobile phone
+  function isMobilePhone() {
+    try
+    {
+      return ! window.matchMedia("only screen and (min-width: 768px)").matches;
+    }
+    catch(e) {
+      return false;
+    }
+  }
+
+  function isFillPage() {
+    return _options.fillPage;
+  }
+
+  // detect portrait mode
+  function isPortrait() {
+    return ($(window).width() < $(window).height());
+  }
+
+  // safely detect rendering on a tablet
+  function isTablet() {
+    try
+    {
+      return window.matchMedia("only screen and (min-width: 769px) and (max-width: 992px)").matches;
+    }
+    catch(e) {
+      return false;
+    }
+  }
+
+  // test whether this is a shiny doc
+  function isShinyDoc() {
+    return (typeof(window.Shiny) !== "undefined" && !!window.Shiny.outputBindings);
+  }
+
+  // set flex using vendor specific prefixes
+  function setFlex(el, flex) {
+    el.css('-webkit-box-flex', flex)
+      .css('-webkit-flex', flex)
+      .css('-ms-flex', flex)
+      .css('flex', flex);
+  }
+
+  // support bookmarking of pages
+  function handleLocationHash() {
+
+    // restore tab/page from bookmark
+    var hash = window.location.hash;
+    if (hash.length > 0)
+      $('ul.nav a[href="' + hash + '"]').tab('show');
+    FlexDashboardUtils.manageActiveNavbarMenu();
+
+    // navigate to a tab when the history changes
+    window.addEventListener("popstate", function(e) {
+      var hash = window.location.hash;
+      var activeTab = $('ul.nav a[href="' + hash + '"]');
+      if (activeTab.length) {
+        activeTab.tab('show');
+      } else {
+        $('ul.nav a:first').tab('show');
+      }
+      FlexDashboardUtils.manageActiveNavbarMenu();
+    });
+
+    // add a hash to the URL when the user clicks on a tab/page
+    $('.navbar-nav a[data-toggle="tab"]').on('click', function(e) {
+      var baseUrl = FlexDashboardUtils.urlWithoutHash(window.location.href);
+      var hash = FlexDashboardUtils.urlHash($(this).attr('href'));
+      var href = baseUrl + hash;
+      FlexDashboardUtils.setLocation(href);
+    });
+
+    // handle clicks of other links that should activate pages
+    var navPages = $('ul.navbar-nav li a[data-toggle=tab]');
+    navPages.each(function() {
+      var href =  $(this).attr('href');
+      var links = $('a[href="' + href + '"][data-toggle!=tab]');
+      links.each(function() {
+        $(this).on('click', function(e) {
+          window.FlexDashboardUtils.showPage(href);
+        });
+      });
+    });
+  }
+
+  // tweak Prism highlighting
+  function initPrismHighlighting() {
+
+    if (window.Prism) {
+      Prism.languages.insertBefore('r', 'comment', {
+        'heading': [
+          {
+            // title 1
+        	  // =======
+
+        	  // title 2
+        	  // -------
+        	  pattern: /\w+.*(?:\r?\n|\r)(?:====+|----+)/,
+            alias: 'operator'
+          },
+          {
+            // ### title 3
+            pattern: /(^\s*)###[^#].+/m,
+            lookbehind: true,
+            alias: 'operator'
+          }
+        ]
+      });
+
+      // prism highlight
+      Prism.highlightAll();
+    }
+  }
+
+
+  // get theme color
+  var themeColors = {
+    bootstrap: {
+      primary: "rgba(51, 122, 183, 0.4)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    cerulean: {
+      primary: "rgb(47, 164, 231)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    journal: {
+      primary: "rgba(235, 104, 100, 0.70)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    flatly: {
+      primary: "rgba(44, 62, 80, 0.70)",
+      info: "rgba(52, 152, 219, 0.70)",
+      success: "rgba(24, 188, 156, 0.70)",
+      warning: "rgba(243, 156, 18, 0.70)",
+      danger: "rgba(231, 76, 60, 0.70)"
+    },
+    readable: {
+      primary: "rgba(69, 130, 236, 0.4)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    spacelab: {
+      primary: "rgba(68, 110, 155, 0.25)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    united: {
+      primary: "rgba(221, 72, 20, 0.30)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    cosmo: {
+      primary: "rgba(39, 128, 227, 0.7)",
+      info: "rgba(153, 84, 187, 0.7)",
+      success: "rgba(63, 182, 24, 0.7)",
+      warning: "rgba(255, 117, 24, 0.7)",
+      danger: "rgba(255, 0, 57, 0.7)"
+    },
+    lumen: {
+      primary: "rgba(21, 140, 186, 0.70)",
+      info: "rgba(117, 202, 235, 0.90)",
+      success: "rgba(40, 182, 44, 0.70)",
+      warning: "rgba(255, 133, 27, 0.70)",
+      danger: "rgba(255, 65, 54, 0.70)"
+    },
+    paper: {
+      primary: "rgba(33, 150, 243, 0.35)",
+      info: "rgb(225, 190, 231)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(255, 224, 178)",
+      danger: "rgb(249, 189, 187)"
+    },
+    sandstone: {
+      primary: "rgba(50, 93, 136, 0.3)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    simplex: {
+      primary: "rgba(217, 35, 15, 0.25)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    yeti: {
+      primary: "rgba(0, 140, 186, 0.298039)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    }
+  }
+  function themeColor(color) {
+    return themeColors[_options.theme][color];
+  }
+
+  FlexDashboard.prototype = {
+    constructor: FlexDashboard,
+    init: init,
+    isMobilePhone: isMobilePhone,
+    isFillPage: isFillPage,
+    themeColor: themeColor
+  };
+
+  return FlexDashboard;
+
+})();
+
+// utils
+window.FlexDashboardUtils = {
+  resizableImage: function(img) {
+    var src = img.attr('src');
+    var url = 'url("' + src + '")';
+    img.parent().css('background', url)
+                .css('background-size', 'contain')
+                .css('background-repeat', 'no-repeat')
+                .css('background-position', 'center')
+                .addClass('image-container');
+  },
+  setLocation: function(href) {
+    if (history && history.pushState) {
+      history.pushState(null, null, href);
+    } else {
+      window.location.replace(href);
+    }
+    setTimeout(function() {
+        window.scrollTo(0, 0);
+    }, 10);
+    this.manageActiveNavbarMenu();
+  },
+  showPage: function(href) {
+    $('ul.navbar-nav li a[href="' + href + '"]').tab('show');
+    var baseUrl = this.urlWithoutHash(window.location.href);
+    var loc = baseUrl + href;
+    this.setLocation(loc);
+  },
+  showLinkedValue: function(href) {
+    // check for a page link
+    if ($('ul.navbar-nav li a[data-toggle=tab][href="' + href + '"]').length > 0)
+      this.showPage(href);
+    else
+      window.open(href);
+  },
+  urlWithoutHash: function(url) {
+    var hashLoc = url.indexOf('#');
+    if (hashLoc != -1)
+      return url.substring(0, hashLoc);
+    else
+      return url;
+  },
+  urlHash: function(url) {
+    var hashLoc = url.indexOf('#');
+    if (hashLoc != -1)
+      return url.substring(hashLoc);
+    else
+      return "";
+  },
+  manageActiveNavbarMenu: function () {
+    // remove active from anyone currently active
+    $('.navbar ul.nav').find('li').removeClass('active');
+    // find the active tab
+    var activeTab = $('.dashboard-page-wrapper.tab-pane.active');
+    if (activeTab.length > 0) {
+      var tabId = activeTab.attr('id');
+      if (tabId)
+        $(".navbar ul.nav a[href='#" + tabId + "']").parents('li').addClass('active');
+    }
+  }
+};
+
+window.FlexDashboard = new FlexDashboard();
+
+// empty content
+window.FlexDashboardComponents.push({
+  find: function(container) {
+    if (container.find('p').length == 0)
+      return container;
+    else
+      return $();
+  }
+})
+
+// plot image
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.children('p')
+                    .children('img:only-child');
+  },
+
+  layout: function(title, container, element, fillPage) {
+    FlexDashboardUtils.resizableImage(element);
+  }
+});
+
+// plot image (figure style)
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.children('div.figure').children('img');
+  },
+
+  layout: function(title, container, element, fillPage) {
+    FlexDashboardUtils.resizableImage(element);
+  }
+});
+
+// htmlwidget
+window.FlexDashboardComponents.push({
+
+  init: function(dashboardContainer) {
+    // trigger "shown" after initial layout to force static htmlwidgets
+    // in runtime: shiny to be resized after the dom has been transformed
+    dashboardContainer.on('flexdashboard:layoutcomplete', function(event) {
+      setTimeout(function() {
+        dashboardContainer.trigger('shown');
+      }, 200);
+    });
+  },
+
+  find: function(container) {
+    return container.children('div[id^="htmlwidget-"],div.html-widget');
+  }
+});
+
+// gauge
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.children('div.html-widget.gauge');
+  },
+
+  flex: function(fillPage) {
+    return false;
+  },
+
+  layout: function(title, container, element, fillPage) {
+
+
+  }
+
+});
+
+// shiny output
+window.FlexDashboardComponents.push({
+  find: function(container) {
+    return container.children('div[class^="shiny-"]');
+  }
+});
+
+// datatables
+window.FlexDashboardComponents.push({
+  find: function(container) {
+    return container.find('.datatables');
+  },
+  flex: function(fillPage) {
+    return fillPage;
+  }
+});
+
+// bootstrap table
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    var bsTable = container.find('table.table');
+    if (bsTable.length !== 0)
+      return bsTable;
+    else
+      return container.find('tr.header').parent('thead').parent('table');
+  },
+
+  flex: function(fillPage) {
+    return fillPage;
+  },
+
+  layout: function(title, container, element, fillPage) {
+
+    // alias variables
+    var bsTable = element;
+
+    // fixup xtable generated tables with a proper thead
+    var headerRow = bsTable.find('tbody > tr:first-child > th').parent();
+    if (headerRow.length > 0) {
+      var thead = $('<thead></thead>');
+      bsTable.prepend(thead);
+      headerRow.detach().appendTo(thead);
+    }
+
+    // improve appearance
+    container.addClass('bootstrap-table');
+
+    // for fill page provide scrolling w/ sticky headers
+    if (fillPage) {
+      // force scrollbar on overflow
+      container.addClass('flowing-content-shim');
+
+      // stable table headers when scrolling
+      bsTable.stickyTableHeaders({
+        scrollableArea: container
+      });
+    }
+  }
+});
+
+// embedded shiny app
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.find('iframe.shiny-frame');
+  },
+
+  flex: function(fillPage) {
+    return fillPage;
+  },
+
+  layout: function(title, container, element, fillPage) {
+    if (fillPage) {
+      element.attr('height', '100%');
+    } else {
+      // provide default height if necessary
+      var height = element.get(0).style.height;
+      if (!height)
+        height = element.attr('height');
+      if (!height)
+        element.attr('height', 500);
+    }
+  }
+});
+
+// shiny fillRow or fillCol
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.find('.flexfill-container');
+  },
+
+  flex: function(fillPage) {
+    return fillPage;
+  },
+
+  layout: function(title, container, element, fillPage) {
+    if (fillPage)
+      element.css('height', '100%');
+    else {
+      // provide default height if necessary
+      var height = element.get(0).style.height;
+      if (height === "100%" || height === "auto" || height === "initial" ||
+          height === "inherit" || !height) {
+        element.css('height', 500);
+      }
+    }
+  }
+});
+
+// valueBox
+window.FlexDashboardComponents.push({
+
+  type: "custom",
+
+  find: function(container) {
+    if (container.find('span.value-output, .shiny-valuebox-output').length)
+      return container;
+    else
+      return $();
+  },
+
+  flex: function(fillPage) {
+    return false;
+  },
+
+  layout: function(title, container, element, fillPage) {
+
+    // alias variables
+    var chartTitle = title;
+    var valueBox = element;
+
+    // add value-box class to container
+    container.addClass('value-box');
+
+    // value paragraph
+    var value = $('<p class="value"></p>');
+
+    // if we have shiny-text-output then just move it in
+    var valueOutputSpan = [];
+    var shinyOutput = valueBox.find('.shiny-valuebox-output').detach();
+    if (shinyOutput.length) {
+      valueBox.children().remove();
+      shinyOutput.html("&mdash;");
+      value.append(shinyOutput);
+    } else {
+      // extract the value (remove leading vector index)
+      var chartValue = valueBox.text().trim();
+      chartValue = chartValue.replace("[1] ", "");
+      valueOutputSpan = valueBox.find('span.value-output').detach();
+      valueBox.children().remove();
+      value.text(chartValue);
+    }
+
+    // caption
+    var caption = $('<p class="caption"></p>');
+    caption.html(chartTitle);
+
+    // build inner div for value box and add it
+    var inner = $('<div class="inner"></div>');
+    inner.append(value);
+    inner.append(caption);
+    valueBox.append(inner);
+
+    // add icon if specified
+    var icon = $('<div class="icon"><i></i></div>');
+    valueBox.append(icon);
+    function setIcon(chartIcon) {
+      var iconLib = "";
+      var components = chartIcon.split("-");
+      if (components.length > 1)
+        iconLib = components[0];
+      icon.children('i').attr('class', iconLib + ' ' + chartIcon);
+    }
+    var chartIcon = valueBox.attr('data-icon');
+    if (chartIcon)
+      setIcon(chartIcon);
+
+    // set color based on data-background if necessary
+    var dataBackground = valueBox.attr('data-background');
+    if (dataBackground)
+      valueBox.css('background-color', bgColor);
+    else {
+      // default to bg-primary if no other background is specified
+      if (!valueBox.hasClass('bg-primary') &&
+          !valueBox.hasClass('bg-info') &&
+          !valueBox.hasClass('bg-warning') &&
+          !valueBox.hasClass('bg-success') &&
+          !valueBox.hasClass('bg-danger')) {
+        valueBox.addClass('bg-primary');
+      }
+    }
+
+    // handle data attributes in valueOutputSpan
+    function handleValueOutput(valueOutput) {
+
+      // caption
+      var dataCaption = valueOutput.attr('data-caption');
+      if (dataCaption)
+        caption.html(dataCaption);
+
+      // icon
+      var dataIcon = valueOutput.attr('data-icon');
+      if (dataIcon)
+        setIcon(dataIcon);
+
+      // color
+      var dataColor = valueOutput.attr('data-color');
+      if (dataColor) {
+        if (dataColor.indexOf('bg-') === 0) {
+          valueBox.css('background-color', '');
+          if (!valueBox.hasClass(dataColor)) {
+             valueBox.removeClass('bg-primary bg-info bg-warning bg-danger bg-success');
+             valueBox.addClass(dataColor);
+          }
+        } else {
+          valueBox.removeClass('bg-primary bg-info bg-warning bg-danger bg-success');
+          valueBox.css('background-color', dataColor);
+        }
+      }
+
+      // url
+      var dataHref = valueOutput.attr('data-href');
+      if (dataHref) {
+        valueBox.addClass('linked-value');
+        valueBox.off('click.value-box');
+        valueBox.on('click.value-box', function(e) {
+          window.FlexDashboardUtils.showLinkedValue(dataHref);
+        });
+      }
+    }
+
+    // check for a valueOutputSpan
+    if (valueOutputSpan.length > 0) {
+      handleValueOutput(valueOutputSpan);
+    }
+
+    // if we have a shinyOutput then bind a listener to handle
+    // new valueOutputSpan values
+    shinyOutput.on('shiny:value',
+      function(event) {
+        var element = $(event.target);
+        setTimeout(function() {
+          var valueOutputSpan = element.find('span.value-output');
+          if (valueOutputSpan.length > 0)
+            handleValueOutput(valueOutputSpan);
+        }, 10);
+      }
+    );
+  }
+});
+
+
+</script>
+
+<div id="dashboard-container">
 
 <div id="row-data-height-100" class="section level2">
 <h2>Row {data-height = 100}</h2>
 <div id="total" class="section level3 value-box">
 <h3>total</h3>
-<pre class="r"><code>valueBox(value = format(world_total$n, big.mark = &quot;,&quot;), caption = &quot;Confirmed Cases&quot;, color = world_total_color, icon = &quot;fas fa-thermometer-half&quot;)</code></pre>
-<span class="value-output" data-caption="Confirmed Cases" data-icon="fas fa-thermometer-half" data-color="#38d6b7">2,317,758</span>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<span class="value-output" data-caption="Confirmed Cases" data-icon="fas fa-thermometer-half" data-color="#38d6b7">2,472,258</span>
 </div>
 <div id="new-cases" class="section level3 value-box">
 <h3>new cases</h3>
-<pre class="r"><code>valueBox(value = format(world_new_cases$n, big.mark = &quot;,&quot;), caption = &quot;New Cases&quot;, color = world_new_cases_color, icon = &quot;fas fa-thermometer-full&quot;)</code></pre>
-<span class="value-output" data-caption="New Cases" data-icon="fas fa-thermometer-full" data-color="#6f727a">77,568</span>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<span class="value-output" data-caption="New Cases" data-icon="fas fa-thermometer-full" data-color="#6f727a">70,880</span>
 </div>
 <div id="deaths" class="section level3 value-box">
 <h3>deaths</h3>
-<pre class="r"><code>valueBox(value = format(world_dead$n, big.mark = &quot;,&quot;), caption = &quot;Deaths&quot;, color = world_dead_color)</code></pre>
-<span class="value-output" data-caption="Deaths" data-color="#FF9754">159,509</span>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<span class="value-output" data-caption="Deaths" data-color="#FF9754">169,985</span>
 </div>
 <div id="new-deaths" class="section level3 value-box">
 <h3>new deaths</h3>
-<pre class="r"><code>valueBox(value = format(world_new_deaths$n, big.mark = &quot;,&quot;), caption = &quot;New Deaths&quot;, color = world_new_deaths_color)</code></pre>
-<span class="value-output" data-caption="New Deaths" data-color="#FE595E">5,688</span>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<span class="value-output" data-caption="New Deaths" data-color="#FE595E">4,942</span>
 </div>
 </div>
 <div id="row" class="section level2">
 <h2>Row</h2>
 <div id="worldwide-cases-by-day" class="section level3">
 <h3>Worldwide Cases by Day</h3>
-<pre class="r"><code>daily_df %&gt;% 
-  plot_ly(x = ~date, 
-          y = ~n, 
-          type = &quot;scatter&quot;, 
-          color = ~type, 
-          mode = &quot;markers&quot;, 
-          stackgroup = &quot;one&quot;) %&gt;% 
-  layout(title = &quot;&quot;,
-        yaxis = list(title = &quot;# Cases&quot;),
-        xaxis = list(title = &quot;Date&quot;),
-        legend = list(x = 0.1, y = 0.9),
-        hovermode = &quot;compare&quot;)</code></pre>
-<div id="htmlwidget-a36a1a84aabb226b7fb9" style="width:672px;height:720px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a36a1a84aabb226b7fb9">{"x":{"visdat":{"9217a28":["function () ","plotlyVisDat"]},"cur_data":"9217a28","attrs":{"9217a28":{"x":{},"y":{},"mode":"markers","stackgroup":"one","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"","yaxis":{"domain":[0,1],"automargin":true,"title":"# Cases"},"xaxis":{"domain":[0,1],"automargin":true,"title":"Date"},"legend":{"x":0.1,"y":0.9},"hovermode":"compare","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":["2020-01-22","2020-01-23","2020-01-24","2020-01-25","2020-01-26","2020-01-27","2020-01-28","2020-01-29","2020-01-30","2020-01-31","2020-02-01","2020-02-02","2020-02-03","2020-02-04","2020-02-05","2020-02-06","2020-02-07","2020-02-08","2020-02-09","2020-02-10","2020-02-11","2020-02-12","2020-02-13","2020-02-14","2020-02-15","2020-02-16","2020-02-17","2020-02-18","2020-02-19","2020-02-20","2020-02-21","2020-02-22","2020-02-23","2020-02-24","2020-02-25","2020-02-26","2020-02-27","2020-02-28","2020-02-29","2020-03-01","2020-03-02","2020-03-03","2020-03-04","2020-03-05","2020-03-06","2020-03-07","2020-03-08","2020-03-09","2020-03-10","2020-03-11","2020-03-12","2020-03-13","2020-03-14","2020-03-15","2020-03-16","2020-03-17","2020-03-18","2020-03-19","2020-03-20","2020-03-21","2020-03-22","2020-03-23","2020-03-24","2020-03-25","2020-03-26","2020-03-27","2020-03-28","2020-03-29","2020-03-30","2020-03-31","2020-04-01","2020-04-02","2020-04-03","2020-04-04","2020-04-05","2020-04-06","2020-04-07","2020-04-08","2020-04-09","2020-04-10","2020-04-11","2020-04-12","2020-04-13","2020-04-14","2020-04-15","2020-04-16","2020-04-17","2020-04-18"],"y":[555,99,287,493,684,809,2651,588,2068,1693,2111,4749,3094,4011,3743,3159,3597,2729,3030,2612,2040,419,15147,6517,2145,2194,2034,1878,503,558,622,1753,386,603,845,982,1358,1366,1899,2358,1937,2534,2280,2766,3915,4046,3974,3769,5030,7255,2477,16853,10896,11353,14120,15528,17719,27749,29638,32299,32446,41278,39810,49612,61938,63700,67402,59447,62249,75098,75118,80861,82451,80143,73694,71727,74995,83726,85076,92248,78124,99071,70117,71353,79863,96592,87544,77568],"mode":"markers","stackgroup":"one","type":"scatter","name":"confirmed","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"line":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2020-01-22","2020-01-23","2020-01-24","2020-01-25","2020-01-26","2020-01-27","2020-01-28","2020-01-29","2020-01-30","2020-01-31","2020-02-01","2020-02-02","2020-02-03","2020-02-04","2020-02-05","2020-02-06","2020-02-07","2020-02-08","2020-02-09","2020-02-10","2020-02-11","2020-02-12","2020-02-13","2020-02-14","2020-02-15","2020-02-16","2020-02-17","2020-02-18","2020-02-19","2020-02-20","2020-02-21","2020-02-22","2020-02-23","2020-02-24","2020-02-25","2020-02-26","2020-02-27","2020-02-28","2020-02-29","2020-03-01","2020-03-02","2020-03-03","2020-03-04","2020-03-05","2020-03-06","2020-03-07","2020-03-08","2020-03-09","2020-03-10","2020-03-11","2020-03-12","2020-03-13","2020-03-14","2020-03-15","2020-03-16","2020-03-17","2020-03-18","2020-03-19","2020-03-20","2020-03-21","2020-03-22","2020-03-23","2020-03-24","2020-03-25","2020-03-26","2020-03-27","2020-03-28","2020-03-29","2020-03-30","2020-03-31","2020-04-01","2020-04-02","2020-04-03","2020-04-04","2020-04-05","2020-04-06","2020-04-07","2020-04-08","2020-04-09","2020-04-10","2020-04-11","2020-04-12","2020-04-13","2020-04-14","2020-04-15","2020-04-16","2020-04-17","2020-04-18"],"y":[17,1,8,16,14,26,49,2,38,42,46,103,64,66,72,70,85,87,100,107,100,5,253,152,143,104,98,139,115,125,4,207,11,160,79,62,44,58,69,55,89,75,94,94,112,98,244,186,274,353,105,684,415,621,686,779,828,1134,1432,1674,1678,1854,2120,2556,2789,3228,3454,3273,3657,4525,5073,5803,5804,5819,4768,5191,7372,6401,7183,7004,5977,5588,5391,6502,8193,9624,10021,5688],"mode":"markers","stackgroup":"one","type":"scatter","name":"death","marker":{"color":"rgba(252,141,98,1)","line":{"color":"rgba(252,141,98,1)"}},"textfont":{"color":"rgba(252,141,98,1)"},"error_y":{"color":"rgba(252,141,98,1)"},"error_x":{"color":"rgba(252,141,98,1)"},"line":{"color":"rgba(252,141,98,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2020-01-22","2020-01-23","2020-01-24","2020-01-25","2020-01-26","2020-01-27","2020-01-28","2020-01-29","2020-01-30","2020-01-31","2020-02-01","2020-02-02","2020-02-03","2020-02-04","2020-02-05","2020-02-06","2020-02-07","2020-02-08","2020-02-09","2020-02-10","2020-02-11","2020-02-12","2020-02-13","2020-02-14","2020-02-15","2020-02-16","2020-02-17","2020-02-18","2020-02-19","2020-02-20","2020-02-21","2020-02-22","2020-02-23","2020-02-24","2020-02-25","2020-02-26","2020-02-27","2020-02-28","2020-02-29","2020-03-01","2020-03-02","2020-03-03","2020-03-04","2020-03-05","2020-03-06","2020-03-07","2020-03-08","2020-03-09","2020-03-10","2020-03-11","2020-03-12","2020-03-13","2020-03-14","2020-03-15","2020-03-16","2020-03-17","2020-03-18","2020-03-19","2020-03-20","2020-03-21","2020-03-22","2020-03-23","2020-03-24","2020-03-25","2020-03-26","2020-03-27","2020-03-28","2020-03-29","2020-03-30","2020-03-31","2020-04-01","2020-04-02","2020-04-03","2020-04-04","2020-04-05","2020-04-06","2020-04-07","2020-04-08","2020-04-09","2020-04-10","2020-04-11","2020-04-12","2020-04-13","2020-04-14","2020-04-15","2020-04-16","2020-04-17","2020-04-18"],"y":[28,2,6,3,13,9,46,19,17,79,62,188,151,229,272,363,524,605,628,702,737,467,1145,1763,1337,1470,1718,1769,1769,2056,713,3996,508,1833,2678,2479,2893,3434,3071,2934,2886,2626,2942,2626,2069,2493,2336,1800,1910,2599,1321,1927,2373,3410,2054,2752,2472,1663,2445,4272,6207,452,9649,5787,8363,8765,8500,9667,15484,13468,15143,17086,15533,20356,13860,16503,23539,28607,25314,22121,26014,19612,26933,25606,36758,31088,26236,23976],"mode":"markers","stackgroup":"one","type":"scatter","name":"recovered","marker":{"color":"rgba(141,160,203,1)","line":{"color":"rgba(141,160,203,1)"}},"textfont":{"color":"rgba(141,160,203,1)"},"error_y":{"color":"rgba(141,160,203,1)"},"error_x":{"color":"rgba(141,160,203,1)"},"line":{"color":"rgba(141,160,203,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="knitr-options" data-fig-width="576" data-fig-height="720">
+
+</div>
+<div id="htmlwidget-16016d8c9d4852c3fccc" style="width:576px;height:720px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-16016d8c9d4852c3fccc">{"x":{"visdat":{"e1d92f0b94ee":["function () ","plotlyVisDat"]},"cur_data":"e1d92f0b94ee","attrs":{"e1d92f0b94ee":{"x":{},"y":{},"mode":"markers","stackgroup":"one","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"","yaxis":{"domain":[0,1],"automargin":true,"title":"# Cases"},"xaxis":{"domain":[0,1],"automargin":true,"title":"Date"},"legend":{"x":0.1,"y":0.9},"hovermode":"compare","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":["2020-01-22","2020-01-23","2020-01-24","2020-01-25","2020-01-26","2020-01-27","2020-01-28","2020-01-29","2020-01-30","2020-01-31","2020-02-01","2020-02-02","2020-02-03","2020-02-04","2020-02-05","2020-02-06","2020-02-07","2020-02-08","2020-02-09","2020-02-10","2020-02-11","2020-02-12","2020-02-13","2020-02-14","2020-02-15","2020-02-16","2020-02-17","2020-02-18","2020-02-19","2020-02-20","2020-02-21","2020-02-22","2020-02-23","2020-02-24","2020-02-25","2020-02-26","2020-02-27","2020-02-28","2020-02-29","2020-03-01","2020-03-02","2020-03-03","2020-03-04","2020-03-05","2020-03-06","2020-03-07","2020-03-08","2020-03-09","2020-03-10","2020-03-11","2020-03-12","2020-03-13","2020-03-14","2020-03-15","2020-03-16","2020-03-17","2020-03-18","2020-03-19","2020-03-20","2020-03-21","2020-03-22","2020-03-23","2020-03-24","2020-03-25","2020-03-26","2020-03-27","2020-03-28","2020-03-29","2020-03-30","2020-03-31","2020-04-01","2020-04-02","2020-04-03","2020-04-04","2020-04-05","2020-04-06","2020-04-07","2020-04-08","2020-04-09","2020-04-10","2020-04-11","2020-04-12","2020-04-13","2020-04-14","2020-04-15","2020-04-16","2020-04-17","2020-04-18","2020-04-19","2020-04-20"],"y":[555,99,287,493,684,809,2651,588,2068,1693,2111,4749,3094,4011,3743,3159,3597,2729,3030,2612,2040,419,15147,6517,2145,2194,2034,1878,503,558,622,1753,386,603,845,982,1358,1366,1899,2358,1937,2534,2280,2766,3915,4046,3974,3769,5030,7255,2477,16853,10896,11353,14120,15528,17719,27749,29638,32299,32446,41278,39810,49612,61938,63700,67402,59447,62249,75098,75118,80861,82451,80143,73694,71727,74995,83726,85076,92248,78124,99071,70117,71353,79863,96383,87753,77568,83620,70880],"mode":"markers","stackgroup":"one","type":"scatter","name":"confirmed","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"line":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2020-01-22","2020-01-23","2020-01-24","2020-01-25","2020-01-26","2020-01-27","2020-01-28","2020-01-29","2020-01-30","2020-01-31","2020-02-01","2020-02-02","2020-02-03","2020-02-04","2020-02-05","2020-02-06","2020-02-07","2020-02-08","2020-02-09","2020-02-10","2020-02-11","2020-02-12","2020-02-13","2020-02-14","2020-02-15","2020-02-16","2020-02-17","2020-02-18","2020-02-19","2020-02-20","2020-02-21","2020-02-22","2020-02-23","2020-02-24","2020-02-25","2020-02-26","2020-02-27","2020-02-28","2020-02-29","2020-03-01","2020-03-02","2020-03-03","2020-03-04","2020-03-05","2020-03-06","2020-03-07","2020-03-08","2020-03-09","2020-03-10","2020-03-11","2020-03-12","2020-03-13","2020-03-14","2020-03-15","2020-03-16","2020-03-17","2020-03-18","2020-03-19","2020-03-20","2020-03-21","2020-03-22","2020-03-23","2020-03-24","2020-03-25","2020-03-26","2020-03-27","2020-03-28","2020-03-29","2020-03-30","2020-03-31","2020-04-01","2020-04-02","2020-04-03","2020-04-04","2020-04-05","2020-04-06","2020-04-07","2020-04-08","2020-04-09","2020-04-10","2020-04-11","2020-04-12","2020-04-13","2020-04-14","2020-04-15","2020-04-16","2020-04-17","2020-04-18","2020-04-19","2020-04-20"],"y":[17,1,8,16,14,26,49,2,38,42,46,103,64,66,72,70,85,87,100,107,100,5,253,152,143,104,98,139,115,125,4,207,11,160,79,62,44,58,69,55,89,75,94,94,112,98,244,186,274,353,105,684,415,621,686,779,828,1134,1432,1674,1678,1854,2120,2556,2789,3228,3454,3273,3657,4525,5073,5803,5804,5819,4768,5191,7372,6401,7183,7004,5977,5588,5391,6502,8193,9624,10021,5688,5534,4942],"mode":"markers","stackgroup":"one","type":"scatter","name":"death","marker":{"color":"rgba(252,141,98,1)","line":{"color":"rgba(252,141,98,1)"}},"textfont":{"color":"rgba(252,141,98,1)"},"error_y":{"color":"rgba(252,141,98,1)"},"error_x":{"color":"rgba(252,141,98,1)"},"line":{"color":"rgba(252,141,98,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2020-01-22","2020-01-23","2020-01-24","2020-01-25","2020-01-26","2020-01-27","2020-01-28","2020-01-29","2020-01-30","2020-01-31","2020-02-01","2020-02-02","2020-02-03","2020-02-04","2020-02-05","2020-02-06","2020-02-07","2020-02-08","2020-02-09","2020-02-10","2020-02-11","2020-02-12","2020-02-13","2020-02-14","2020-02-15","2020-02-16","2020-02-17","2020-02-18","2020-02-19","2020-02-20","2020-02-21","2020-02-22","2020-02-23","2020-02-24","2020-02-25","2020-02-26","2020-02-27","2020-02-28","2020-02-29","2020-03-01","2020-03-02","2020-03-03","2020-03-04","2020-03-05","2020-03-06","2020-03-07","2020-03-08","2020-03-09","2020-03-10","2020-03-11","2020-03-12","2020-03-13","2020-03-14","2020-03-15","2020-03-16","2020-03-17","2020-03-18","2020-03-19","2020-03-20","2020-03-21","2020-03-22","2020-03-23","2020-03-24","2020-03-25","2020-03-26","2020-03-27","2020-03-28","2020-03-29","2020-03-30","2020-03-31","2020-04-01","2020-04-02","2020-04-03","2020-04-04","2020-04-05","2020-04-06","2020-04-07","2020-04-08","2020-04-09","2020-04-10","2020-04-11","2020-04-12","2020-04-13","2020-04-14","2020-04-15","2020-04-16","2020-04-17","2020-04-18","2020-04-19","2020-04-20"],"y":[28,2,6,3,13,9,46,19,17,79,62,188,151,229,272,363,524,605,628,702,737,467,1145,1763,1337,1470,1718,1769,1769,2056,713,3996,508,1833,2678,2479,2893,3434,3071,2934,2886,2626,2942,2626,2069,2493,2336,1800,1910,2599,1321,1927,2373,3410,2054,2752,2472,1663,2445,4272,6207,452,9649,5787,8363,8765,8500,9667,15484,13468,15143,17086,15533,20356,13860,16503,23539,28607,25314,22121,26014,19612,26933,25606,36758,31088,26236,23976,31584,21835],"mode":"markers","stackgroup":"one","type":"scatter","name":"recovered","marker":{"color":"rgba(141,160,203,1)","line":{"color":"rgba(141,160,203,1)"}},"textfont":{"color":"rgba(141,160,203,1)"},"error_y":{"color":"rgba(141,160,203,1)"},"error_x":{"color":"rgba(141,160,203,1)"},"line":{"color":"rgba(141,160,203,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="row-1" class="section level2">
 <h2>Row</h2>
 <div id="cases-and-deaths-by-country" class="section level3">
 <h3>Cases and Deaths by Country</h3>
-<pre class="r"><code>rates %&gt;% 
+<div class="knitr-options" data-fig-width="576" data-fig-height="960">
+
+</div>
+<div id="htmlwidget-1f1ba96fe659817fd392" style="width:576px;height:960px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1f1ba96fe659817fd392">{"x":{"visdat":{"e1d94ec94fb2":["function () ","plotlyVisDat"]},"cur_data":"e1d94ec94fb2","attrs":{"e1d94ec94fb2":{"y":{},"x":{},"mode":"markers","marker":{"sizemode":"diameter","opacity":0.5},"hoverinfo":"text","text":{},"color":{},"size":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"yaxis":{"domain":[0,1],"automargin":true,"title":"Cases per Population","ticksuffix":"%"},"xaxis":{"domain":[0,1],"automargin":true,"title":"Death Rate","ticksuffix":"%","dtick":1,"tick0":0},"hovermode":"compare","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"y":[0.03],"x":[1.02],"mode":"markers","marker":{"color":"rgba(102,194,165,1)","size":[10.1296442038205],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(102,194,165,1)"}},"hoverinfo":"text","text":" Australia <br> Confirmed Cases:    6,547 <br> Case Rate:  0.03% <br> Death Rate:  1.02%","type":"scatter","name":"Australia","textfont":{"color":"rgba(102,194,165,1)","size":10.1296442038205},"error_y":{"color":"rgba(102,194,165,1)","width":10.1296442038205},"error_x":{"color":"rgba(102,194,165,1)","width":10.1296442038205},"line":{"color":"rgba(102,194,165,1)","width":10.1296442038205},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.17],"x":[3.18],"mode":"markers","marker":{"color":"rgba(140,187,154,1)","size":[11.0826793135456],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(140,187,154,1)"}},"hoverinfo":"text","text":" Austria <br> Confirmed Cases:   14,795 <br> Case Rate:  0.17% <br> Death Rate:  3.18%","type":"scatter","name":"Austria","textfont":{"color":"rgba(140,187,154,1)","size":11.0826793135456},"error_y":{"color":"rgba(140,187,154,1)","width":11.0826793135456},"error_x":{"color":"rgba(140,187,154,1)","width":11.0826793135456},"line":{"color":"rgba(140,187,154,1)","width":11.0826793135456},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.07],"x":[0.81],"mode":"markers","marker":{"color":"rgba(168,180,143,1)","size":[10.0969442843185],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(168,180,143,1)"}},"hoverinfo":"text","text":" Belarus <br> Confirmed Cases:    6,264 <br> Case Rate:  0.07% <br> Death Rate:  0.81%","type":"scatter","name":"Belarus","textfont":{"color":"rgba(168,180,143,1)","size":10.0969442843185},"error_y":{"color":"rgba(168,180,143,1)","width":10.0969442843185},"error_x":{"color":"rgba(168,180,143,1)","width":10.0969442843185},"line":{"color":"rgba(168,180,143,1)","width":10.0969442843185},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.35],"x":[14.58],"mode":"markers","marker":{"color":"rgba(192,172,132,1)","size":[13.9930876966392],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(192,172,132,1)"}},"hoverinfo":"text","text":" Belgium <br> Confirmed Cases:   39,983 <br> Case Rate:  0.35% <br> Death Rate:  14.58%","type":"scatter","name":"Belgium","textfont":{"color":"rgba(192,172,132,1)","size":13.9930876966392},"error_y":{"color":"rgba(192,172,132,1)","width":13.9930876966392},"error_x":{"color":"rgba(192,172,132,1)","width":13.9930876966392},"line":{"color":"rgba(192,172,132,1)","width":13.9930876966392},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.02],"x":[6.35],"mode":"markers","marker":{"color":"rgba(213,163,121,1)","size":[14.0809037348777],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(213,163,121,1)"}},"hoverinfo":"text","text":" Brazil <br> Confirmed Cases:   40,743 <br> Case Rate:  0.02% <br> Death Rate:  6.35%","type":"scatter","name":"Brazil","textfont":{"color":"rgba(213,163,121,1)","size":14.0809037348777},"error_y":{"color":"rgba(213,163,121,1)","width":14.0809037348777},"error_x":{"color":"rgba(213,163,121,1)","width":14.0809037348777},"line":{"color":"rgba(213,163,121,1)","width":14.0809037348777},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.1],"x":[4.58],"mode":"markers","marker":{"color":"rgba(232,154,110,1)","size":[13.724324400662],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(232,154,110,1)"}},"hoverinfo":"text","text":" Canada <br> Confirmed Cases:   37,657 <br> Case Rate:  0.1% <br> Death Rate:  4.58%","type":"scatter","name":"Canada","textfont":{"color":"rgba(232,154,110,1)","size":13.724324400662},"error_y":{"color":"rgba(232,154,110,1)","width":13.724324400662},"error_x":{"color":"rgba(232,154,110,1)","width":13.724324400662},"line":{"color":"rgba(232,154,110,1)","width":13.724324400662},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.06],"x":[1.32],"mode":"markers","marker":{"color":"rgba(250,143,100,1)","size":[10.5872119820106],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(250,143,100,1)"}},"hoverinfo":"text","text":" Chile <br> Confirmed Cases:   10,507 <br> Case Rate:  0.06% <br> Death Rate:  1.32%","type":"scatter","name":"Chile","textfont":{"color":"rgba(250,143,100,1)","size":10.5872119820106},"error_y":{"color":"rgba(250,143,100,1)","width":10.5872119820106},"error_x":{"color":"rgba(250,143,100,1)","width":10.5872119820106},"line":{"color":"rgba(250,143,100,1)","width":10.5872119820106},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.01],"x":[5.53],"mode":"markers","marker":{"color":"rgba(241,144,113,1)","size":[19.057993249463],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(241,144,113,1)"}},"hoverinfo":"text","text":" China <br> Confirmed Cases:   83,817 <br> Case Rate:  0.01% <br> Death Rate:  5.53%","type":"scatter","name":"China","textfont":{"color":"rgba(241,144,113,1)","size":19.057993249463},"error_y":{"color":"rgba(241,144,113,1)","width":19.057993249463},"error_x":{"color":"rgba(241,144,113,1)","width":19.057993249463},"line":{"color":"rgba(241,144,113,1)","width":19.057993249463},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.06],"x":[2.81],"mode":"markers","marker":{"color":"rgba(226,148,130,1)","size":[10.1704324426339],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(226,148,130,1)"}},"hoverinfo":"text","text":" Czechia <br> Confirmed Cases:    6,900 <br> Case Rate:  0.06% <br> Death Rate:  2.81%","type":"scatter","name":"Czechia","textfont":{"color":"rgba(226,148,130,1)","size":10.1704324426339},"error_y":{"color":"rgba(226,148,130,1)","width":10.1704324426339},"error_x":{"color":"rgba(226,148,130,1)","width":10.1704324426339},"line":{"color":"rgba(226,148,130,1)","width":10.1704324426339},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.13],"x":[4.72],"mode":"markers","marker":{"color":"rgba(211,151,147,1)","size":[10.2641413992279],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(211,151,147,1)"}},"hoverinfo":"text","text":" Denmark <br> Confirmed Cases:    7,711 <br> Case Rate:  0.13% <br> Death Rate:  4.72%","type":"scatter","name":"Denmark","textfont":{"color":"rgba(211,151,147,1)","size":10.2641413992279},"error_y":{"color":"rgba(211,151,147,1)","width":10.2641413992279},"error_x":{"color":"rgba(211,151,147,1)","width":10.2641413992279},"line":{"color":"rgba(211,151,147,1)","width":10.2641413992279},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.06],"x":[5.01],"mode":"markers","marker":{"color":"rgba(193,154,164,1)","size":[10.54341951031],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(193,154,164,1)"}},"hoverinfo":"text","text":" Ecuador <br> Confirmed Cases:   10,128 <br> Case Rate:  0.06% <br> Death Rate:  5.01%","type":"scatter","name":"Ecuador","textfont":{"color":"rgba(193,154,164,1)","size":10.54341951031},"error_y":{"color":"rgba(193,154,164,1)","width":10.54341951031},"error_x":{"color":"rgba(193,154,164,1)","width":10.54341951031},"line":{"color":"rgba(193,154,164,1)","width":10.54341951031},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.23],"x":[12.97],"mode":"markers","marker":{"color":"rgba(173,157,181,1)","size":[27.454015336994],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(173,157,181,1)"}},"hoverinfo":"text","text":" France <br> Confirmed Cases:  156,480 <br> Case Rate:  0.23% <br> Death Rate:  12.97%","type":"scatter","name":"France","textfont":{"color":"rgba(173,157,181,1)","size":27.454015336994},"error_y":{"color":"rgba(173,157,181,1)","width":27.454015336994},"error_x":{"color":"rgba(173,157,181,1)","width":27.454015336994},"line":{"color":"rgba(173,157,181,1)","width":27.454015336994},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.18],"x":[3.31],"mode":"markers","marker":{"color":"rgba(149,159,198,1)","size":[26.3661363896054],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(149,159,198,1)"}},"hoverinfo":"text","text":" Germany <br> Confirmed Cases:  147,065 <br> Case Rate:  0.18% <br> Death Rate:  3.31%","type":"scatter","name":"Germany","textfont":{"color":"rgba(149,159,198,1)","size":26.3661363896054},"error_y":{"color":"rgba(149,159,198,1)","width":26.3661363896054},"error_x":{"color":"rgba(149,159,198,1)","width":26.3661363896054},"line":{"color":"rgba(149,159,198,1)","width":26.3661363896054},"xaxis":"x","yaxis":"y","frame":null},{"y":[0],"x":[3.19],"mode":"markers","marker":{"color":"rgba(153,158,202,1)","size":[11.5152888492889],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(153,158,202,1)"}},"hoverinfo":"text","text":" India <br> Confirmed Cases:   18,539 <br> Case Rate:  0% <br> Death Rate:  3.19%","type":"scatter","name":"India","textfont":{"color":"rgba(153,158,202,1)","size":11.5152888492889},"error_y":{"color":"rgba(153,158,202,1)","width":11.5152888492889},"error_x":{"color":"rgba(153,158,202,1)","width":11.5152888492889},"line":{"color":"rgba(153,158,202,1)","width":11.5152888492889},"xaxis":"x","yaxis":"y","frame":null},{"y":[0],"x":[8.73],"mode":"markers","marker":{"color":"rgba(170,155,201,1)","size":[10.154255804011],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(170,155,201,1)"}},"hoverinfo":"text","text":" Indonesia <br> Confirmed Cases:    6,760 <br> Case Rate:  0% <br> Death Rate:  8.73%","type":"scatter","name":"Indonesia","textfont":{"color":"rgba(170,155,201,1)","size":10.154255804011},"error_y":{"color":"rgba(170,155,201,1)","width":10.154255804011},"error_x":{"color":"rgba(170,155,201,1)","width":10.154255804011},"line":{"color":"rgba(170,155,201,1)","width":10.154255804011},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.1],"x":[6.24],"mode":"markers","marker":{"color":"rgba(185,152,199,1)","size":[19.0219424548177],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(185,152,199,1)"}},"hoverinfo":"text","text":" Iran <br> Confirmed Cases:   83,505 <br> Case Rate:  0.1% <br> Death Rate:  6.24%","type":"scatter","name":"Iran","textfont":{"color":"rgba(185,152,199,1)","size":19.0219424548177},"error_y":{"color":"rgba(185,152,199,1)","width":19.0219424548177},"error_x":{"color":"rgba(185,152,199,1)","width":19.0219424548177},"line":{"color":"rgba(185,152,199,1)","width":19.0219424548177},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.32],"x":[4.39],"mode":"markers","marker":{"color":"rgba(199,148,198,1)","size":[11.1817034514014],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(199,148,198,1)"}},"hoverinfo":"text","text":" Ireland <br> Confirmed Cases:   15,652 <br> Case Rate:  0.32% <br> Death Rate:  4.39%","type":"scatter","name":"Ireland","textfont":{"color":"rgba(199,148,198,1)","size":11.1817034514014},"error_y":{"color":"rgba(199,148,198,1)","width":11.1817034514014},"error_x":{"color":"rgba(199,148,198,1)","width":11.1817034514014},"line":{"color":"rgba(199,148,198,1)","width":11.1817034514014},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.15],"x":[1.29],"mode":"markers","marker":{"color":"rgba(212,144,197,1)","size":[10.9576570064745],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(212,144,197,1)"}},"hoverinfo":"text","text":" Israel <br> Confirmed Cases:   13,713 <br> Case Rate:  0.15% <br> Death Rate:  1.29%","type":"scatter","name":"Israel","textfont":{"color":"rgba(212,144,197,1)","size":10.9576570064745},"error_y":{"color":"rgba(212,144,197,1)","width":10.9576570064745},"error_x":{"color":"rgba(212,144,197,1)","width":10.9576570064745},"line":{"color":"rgba(212,144,197,1)","width":10.9576570064745},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.3],"x":[13.31],"mode":"markers","marker":{"color":"rgba(226,140,196,1)","size":[30.3135828558443],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(226,140,196,1)"}},"hoverinfo":"text","text":" Italy <br> Confirmed Cases:  181,228 <br> Case Rate:  0.3% <br> Death Rate:  13.31%","type":"scatter","name":"Italy","textfont":{"color":"rgba(226,140,196,1)","size":30.3135828558443},"error_y":{"color":"rgba(226,140,196,1)","width":30.3135828558443},"error_x":{"color":"rgba(226,140,196,1)","width":30.3135828558443},"line":{"color":"rgba(226,140,196,1)","width":30.3135828558443},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.01],"x":[2.19],"mode":"markers","marker":{"color":"rgba(227,147,186,1)","size":[10.6207207334437],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(227,147,186,1)"}},"hoverinfo":"text","text":" Japan <br> Confirmed Cases:   10,797 <br> Case Rate:  0.01% <br> Death Rate:  2.19%","type":"scatter","name":"Japan","textfont":{"color":"rgba(227,147,186,1)","size":10.6207207334437},"error_y":{"color":"rgba(227,147,186,1)","width":10.6207207334437},"error_x":{"color":"rgba(227,147,186,1)","width":10.6207207334437},"line":{"color":"rgba(227,147,186,1)","width":10.6207207334437},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.02],"x":[2.21],"mode":"markers","marker":{"color":"rgba(219,161,169,1)","size":[10.6065084009393],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(219,161,169,1)"}},"hoverinfo":"text","text":" Korea, South <br> Confirmed Cases:   10,674 <br> Case Rate:  0.02% <br> Death Rate:  2.21%","type":"scatter","name":"Korea, South","textfont":{"color":"rgba(219,161,169,1)","size":10.6065084009393},"error_y":{"color":"rgba(219,161,169,1)","width":10.6065084009393},"error_x":{"color":"rgba(219,161,169,1)","width":10.6065084009393},"line":{"color":"rgba(219,161,169,1)","width":10.6065084009393},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.02],"x":[1.64],"mode":"markers","marker":{"color":"rgba(210,174,153,1)","size":[10],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(210,174,153,1)"}},"hoverinfo":"text","text":" Malaysia <br> Confirmed Cases:    5,425 <br> Case Rate:  0.02% <br> Death Rate:  1.64%","type":"scatter","name":"Malaysia","textfont":{"color":"rgba(210,174,153,1)","size":10},"error_y":{"color":"rgba(210,174,153,1)","width":10},"error_x":{"color":"rgba(210,174,153,1)","width":10},"line":{"color":"rgba(210,174,153,1)","width":10},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.01],"x":[8.3],"mode":"markers","marker":{"color":"rgba(200,187,135,1)","size":[10.3276924795321],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(200,187,135,1)"}},"hoverinfo":"text","text":" Mexico <br> Confirmed Cases:    8,261 <br> Case Rate:  0.01% <br> Death Rate:  8.3%","type":"scatter","name":"Mexico","textfont":{"color":"rgba(200,187,135,1)","size":10.3276924795321},"error_y":{"color":"rgba(200,187,135,1)","width":10.3276924795321},"error_x":{"color":"rgba(200,187,135,1)","width":10.3276924795321},"line":{"color":"rgba(200,187,135,1)","width":10.3276924795321},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.19],"x":[11.21],"mode":"markers","marker":{"color":"rgba(188,198,117,1)","size":[13.2541619538298],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(188,198,117,1)"}},"hoverinfo":"text","text":" Netherlands <br> Confirmed Cases:   33,588 <br> Case Rate:  0.19% <br> Death Rate:  11.21%","type":"scatter","name":"Netherlands","textfont":{"color":"rgba(188,198,117,1)","size":13.2541619538298},"error_y":{"color":"rgba(188,198,117,1)","width":13.2541619538298},"error_x":{"color":"rgba(188,198,117,1)","width":13.2541619538298},"line":{"color":"rgba(188,198,117,1)","width":13.2541619538298},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.13],"x":[2.53],"mode":"markers","marker":{"color":"rgba(175,210,97,1)","size":[10.20001258183],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(175,210,97,1)"}},"hoverinfo":"text","text":" Norway <br> Confirmed Cases:    7,156 <br> Case Rate:  0.13% <br> Death Rate:  2.53%","type":"scatter","name":"Norway","textfont":{"color":"rgba(175,210,97,1)","size":10.20001258183},"error_y":{"color":"rgba(175,210,97,1)","width":10.20001258183},"error_x":{"color":"rgba(175,210,97,1)","width":10.20001258183},"line":{"color":"rgba(175,210,97,1)","width":10.20001258183},"xaxis":"x","yaxis":"y","frame":null},{"y":[0],"x":[2.09],"mode":"markers","marker":{"color":"rgba(173,216,82,1)","size":[10.3458334242734],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(173,216,82,1)"}},"hoverinfo":"text","text":" Pakistan <br> Confirmed Cases:    8,418 <br> Case Rate:  0% <br> Death Rate:  2.09%","type":"scatter","name":"Pakistan","textfont":{"color":"rgba(173,216,82,1)","size":10.3458334242734},"error_y":{"color":"rgba(173,216,82,1)","width":10.3458334242734},"error_x":{"color":"rgba(173,216,82,1)","width":10.3458334242734},"line":{"color":"rgba(173,216,82,1)","width":10.3458334242734},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.05],"x":[2.73],"mode":"markers","marker":{"color":"rgba(189,217,77,1)","size":[11.25946686421],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(189,217,77,1)"}},"hoverinfo":"text","text":" Peru <br> Confirmed Cases:   16,325 <br> Case Rate:  0.05% <br> Death Rate:  2.73%","type":"scatter","name":"Peru","textfont":{"color":"rgba(189,217,77,1)","size":11.25946686421},"error_y":{"color":"rgba(189,217,77,1)","width":11.25946686421},"error_x":{"color":"rgba(189,217,77,1)","width":11.25946686421},"line":{"color":"rgba(189,217,77,1)","width":11.25946686421},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.01],"x":[6.63],"mode":"markers","marker":{"color":"rgba(203,217,71,1)","size":[10.1194760309718],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(203,217,71,1)"}},"hoverinfo":"text","text":" Philippines <br> Confirmed Cases:    6,459 <br> Case Rate:  0.01% <br> Death Rate:  6.63%","type":"scatter","name":"Philippines","textfont":{"color":"rgba(203,217,71,1)","size":10.1194760309718},"error_y":{"color":"rgba(203,217,71,1)","width":10.1194760309718},"error_x":{"color":"rgba(203,217,71,1)","width":10.1194760309718},"line":{"color":"rgba(203,217,71,1)","width":10.1194760309718},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.03],"x":[3.96],"mode":"markers","marker":{"color":"rgba(218,217,66,1)","size":[10.4816016412869],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(218,217,66,1)"}},"hoverinfo":"text","text":" Poland <br> Confirmed Cases:    9,593 <br> Case Rate:  0.03% <br> Death Rate:  3.96%","type":"scatter","name":"Poland","textfont":{"color":"rgba(218,217,66,1)","size":10.4816016412869},"error_y":{"color":"rgba(218,217,66,1)","width":10.4816016412869},"error_x":{"color":"rgba(218,217,66,1)","width":10.4816016412869},"line":{"color":"rgba(218,217,66,1)","width":10.4816016412869},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.2],"x":[3.52],"mode":"markers","marker":{"color":"rgba(232,217,59,1)","size":[11.7838210504287],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(232,217,59,1)"}},"hoverinfo":"text","text":" Portugal <br> Confirmed Cases:   20,863 <br> Case Rate:  0.2% <br> Death Rate:  3.52%","type":"scatter","name":"Portugal","textfont":{"color":"rgba(232,217,59,1)","size":11.7838210504287},"error_y":{"color":"rgba(232,217,59,1)","width":11.7838210504287},"error_x":{"color":"rgba(232,217,59,1)","width":11.7838210504287},"line":{"color":"rgba(232,217,59,1)","width":11.7838210504287},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.22],"x":[0.15],"mode":"markers","marker":{"color":"rgba(245,217,52,1)","size":[10.0681729770536],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(245,217,52,1)"}},"hoverinfo":"text","text":" Qatar <br> Confirmed Cases:    6,015 <br> Case Rate:  0.22% <br> Death Rate:  0.15%","type":"scatter","name":"Qatar","textfont":{"color":"rgba(245,217,52,1)","size":10.0681729770536},"error_y":{"color":"rgba(245,217,52,1)","width":10.0681729770536},"error_x":{"color":"rgba(245,217,52,1)","width":10.0681729770536},"line":{"color":"rgba(245,217,52,1)","width":10.0681729770536},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.05],"x":[5.35],"mode":"markers","marker":{"color":"rgba(254,216,54,1)","size":[10.4056869871781],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(254,216,54,1)"}},"hoverinfo":"text","text":" Romania <br> Confirmed Cases:    8,936 <br> Case Rate:  0.05% <br> Death Rate:  5.35%","type":"scatter","name":"Romania","textfont":{"color":"rgba(254,216,54,1)","size":10.4056869871781},"error_y":{"color":"rgba(254,216,54,1)","width":10.4056869871781},"error_x":{"color":"rgba(254,216,54,1)","width":10.4056869871781},"line":{"color":"rgba(254,216,54,1)","width":10.4056869871781},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.03],"x":[0.86],"mode":"markers","marker":{"color":"rgba(251,212,76,1)","size":[14.8178651715687],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(251,212,76,1)"}},"hoverinfo":"text","text":" Russia <br> Confirmed Cases:   47,121 <br> Case Rate:  0.03% <br> Death Rate:  0.86%","type":"scatter","name":"Russia","textfont":{"color":"rgba(251,212,76,1)","size":14.8178651715687},"error_y":{"color":"rgba(251,212,76,1)","width":14.8178651715687},"error_x":{"color":"rgba(251,212,76,1)","width":14.8178651715687},"line":{"color":"rgba(251,212,76,1)","width":14.8178651715687},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.03],"x":[0.98],"mode":"markers","marker":{"color":"rgba(247,209,93,1)","size":[10.5845543913796],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(247,209,93,1)"}},"hoverinfo":"text","text":" Saudi Arabia <br> Confirmed Cases:   10,484 <br> Case Rate:  0.03% <br> Death Rate:  0.98%","type":"scatter","name":"Saudi Arabia","textfont":{"color":"rgba(247,209,93,1)","size":10.5845543913796},"error_y":{"color":"rgba(247,209,93,1)","width":10.5845543913796},"error_x":{"color":"rgba(247,209,93,1)","width":10.5845543913796},"line":{"color":"rgba(247,209,93,1)","width":10.5845543913796},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.09],"x":[1.89],"mode":"markers","marker":{"color":"rgba(243,206,108,1)","size":[10.1392346395755],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(243,206,108,1)"}},"hoverinfo":"text","text":" Serbia <br> Confirmed Cases:    6,630 <br> Case Rate:  0.09% <br> Death Rate:  1.89%","type":"scatter","name":"Serbia","textfont":{"color":"rgba(243,206,108,1)","size":10.1392346395755},"error_y":{"color":"rgba(243,206,108,1)","width":10.1392346395755},"error_x":{"color":"rgba(243,206,108,1)","width":10.1392346395755},"line":{"color":"rgba(243,206,108,1)","width":10.1392346395755},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.14],"x":[0.14],"mode":"markers","marker":{"color":"rgba(238,202,123,1)","size":[10.2991522671045],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(238,202,123,1)"}},"hoverinfo":"text","text":" Singapore <br> Confirmed Cases:    8,014 <br> Case Rate:  0.14% <br> Death Rate:  0.14%","type":"scatter","name":"Singapore","textfont":{"color":"rgba(238,202,123,1)","size":10.2991522671045},"error_y":{"color":"rgba(238,202,123,1)","width":10.2991522671045},"error_x":{"color":"rgba(238,202,123,1)","width":10.2991522671045},"line":{"color":"rgba(238,202,123,1)","width":10.2991522671045},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.43],"x":[10.42],"mode":"markers","marker":{"color":"rgba(233,199,137,1)","size":[32.5069039582694],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(233,199,137,1)"}},"hoverinfo":"text","text":" Spain <br> Confirmed Cases:  200,210 <br> Case Rate:  0.43% <br> Death Rate:  10.42%","type":"scatter","name":"Spain","textfont":{"color":"rgba(233,199,137,1)","size":32.5069039582694},"error_y":{"color":"rgba(233,199,137,1)","width":32.5069039582694},"error_x":{"color":"rgba(233,199,137,1)","width":32.5069039582694},"line":{"color":"rgba(233,199,137,1)","width":32.5069039582694},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.15],"x":[10.69],"mode":"markers","marker":{"color":"rgba(228,196,149,1)","size":[11.0805994600084],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(228,196,149,1)"}},"hoverinfo":"text","text":" Sweden <br> Confirmed Cases:   14,777 <br> Case Rate:  0.15% <br> Death Rate:  10.69%","type":"scatter","name":"Sweden","textfont":{"color":"rgba(228,196,149,1)","size":11.0805994600084},"error_y":{"color":"rgba(228,196,149,1)","width":11.0805994600084},"error_x":{"color":"rgba(228,196,149,1)","width":11.0805994600084},"line":{"color":"rgba(228,196,149,1)","width":11.0805994600084},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.33],"x":[5.11],"mode":"markers","marker":{"color":"rgba(220,193,154,1)","size":[12.6020123224903],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(220,193,154,1)"}},"hoverinfo":"text","text":" Switzerland <br> Confirmed Cases:   27,944 <br> Case Rate:  0.33% <br> Death Rate:  5.11%","type":"scatter","name":"Switzerland","textfont":{"color":"rgba(220,193,154,1)","size":12.6020123224903},"error_y":{"color":"rgba(220,193,154,1)","width":12.6020123224903},"error_x":{"color":"rgba(220,193,154,1)","width":12.6020123224903},"line":{"color":"rgba(220,193,154,1)","width":12.6020123224903},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.11],"x":[2.35],"mode":"markers","marker":{"color":"rgba(213,190,159,1)","size":[19.8856594098608],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(213,190,159,1)"}},"hoverinfo":"text","text":" Turkey <br> Confirmed Cases:   90,980 <br> Case Rate:  0.11% <br> Death Rate:  2.35%","type":"scatter","name":"Turkey","textfont":{"color":"rgba(213,190,159,1)","size":19.8856594098608},"error_y":{"color":"rgba(213,190,159,1)","width":19.8856594098608},"error_x":{"color":"rgba(213,190,159,1)","width":19.8856594098608},"line":{"color":"rgba(213,190,159,1)","width":19.8856594098608},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.01],"x":[2.64],"mode":"markers","marker":{"color":"rgba(205,187,164,1)","size":[10.0329310143394],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(205,187,164,1)"}},"hoverinfo":"text","text":" Ukraine <br> Confirmed Cases:    5,710 <br> Case Rate:  0.01% <br> Death Rate:  2.64%","type":"scatter","name":"Ukraine","textfont":{"color":"rgba(205,187,164,1)","size":10.0329310143394},"error_y":{"color":"rgba(205,187,164,1)","width":10.0329310143394},"error_x":{"color":"rgba(205,187,164,1)","width":10.0329310143394},"line":{"color":"rgba(205,187,164,1)","width":10.0329310143394},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.08],"x":[0.59],"mode":"markers","marker":{"color":"rgba(196,184,169,1)","size":[10.2126072504721],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(196,184,169,1)"}},"hoverinfo":"text","text":" United Arab Emirates <br> Confirmed Cases:    7,265 <br> Case Rate:  0.08% <br> Death Rate:  0.59%","type":"scatter","name":"United Arab Emirates","textfont":{"color":"rgba(196,184,169,1)","size":10.2126072504721},"error_y":{"color":"rgba(196,184,169,1)","width":10.2126072504721},"error_x":{"color":"rgba(196,184,169,1)","width":10.2126072504721},"line":{"color":"rgba(196,184,169,1)","width":10.2126072504721},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.19],"x":[13.15],"mode":"markers","marker":{"color":"rgba(188,182,174,1)","size":[23.9154911856577],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(188,182,174,1)"}},"hoverinfo":"text","text":" United Kingdom <br> Confirmed Cases:  125,856 <br> Case Rate:  0.19% <br> Death Rate:  13.15%","type":"scatter","name":"United Kingdom","textfont":{"color":"rgba(188,182,174,1)","size":23.9154911856577},"error_y":{"color":"rgba(188,182,174,1)","width":23.9154911856577},"error_x":{"color":"rgba(188,182,174,1)","width":23.9154911856577},"line":{"color":"rgba(188,182,174,1)","width":23.9154911856577},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.24],"x":[5.37],"mode":"markers","marker":{"color":"rgba(179,179,179,1)","size":[100],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(179,179,179,1)"}},"hoverinfo":"text","text":" US <br> Confirmed Cases:  784,326 <br> Case Rate:  0.24% <br> Death Rate:  5.37%","type":"scatter","name":"US","textfont":{"color":"rgba(179,179,179,1)","size":100},"error_y":{"color":"rgba(179,179,179,1)","width":100},"error_x":{"color":"rgba(179,179,179,1)","width":100},"line":{"color":"rgba(179,179,179,1)","width":100},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="status-update-for-2020-04-20" class="section level3">
+<h3>Status Update for 2020-04-20</h3>
+<div class="knitr-options" data-fig-width="576" data-fig-height="960">
+
+</div>
+<div id="htmlwidget-7456640226a2b6147b7b" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7456640226a2b6147b7b">{"x":{"filter":"none","fillContainer":true,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44"],["US","Spain","Italy","France","Germany","United Kingdom","Turkey","China","Iran","Russia","Brazil","Belgium","Canada","Netherlands","Switzerland","Portugal","India","Peru","Ireland","Austria","Sweden","Israel","Japan","Korea, South","Chile","Saudi Arabia","Ecuador","Poland","Romania","Pakistan","Mexico","Singapore","Denmark","United Arab Emirates","Norway","Czechia","Indonesia","Serbia","Australia","Philippines","Belarus","Qatar","Ukraine","Malaysia"],[784326,200210,181228,156480,147065,125856,90980,83817,83505,47121,40743,39983,37657,33588,27944,20863,18539,16325,15652,14795,14777,13713,10797,10674,10507,10484,10128,9593,8936,8418,8261,8014,7711,7265,7156,6900,6760,6630,6547,6459,6264,6015,5710,5425],[72329,80587,48877,38036,91500,446,13430,77745,59273,3446,22130,8895,12543,322,18600,610,3273,6968,77,10631,550,4049,1159,8114,4676,1490,1150,1133,2017,1970,2627,801,4499,1360,32,1559,747,870,4124,613,514,555,359,3295],[42094,20852,24114,20292,4862,16550,2140,4636,5209,405,2587,5828,1725,3764,1429,735,592,445,687,470,1580,177,236,236,139,103,507,380,478,176,686,11,364,43,181,194,590,125,67,428,51,9,151,89],[0.00240084483672976,0.00427830775523148,0.00299938300373905,0.00233632067745177,0.00177388110276796,0.00189370070067648,0.00110520292803703,6.0181801210572e-05,0.00102084016374078,0.000326146428471315,0.000194505799089932,0.00349707904729851,0.00101617029521343,0.00194920687684457,0.00328242157762268,0.00202872045043176,1.37060198891671e-05,0.000510327592489178,0.00321573994993948,0.00167354390086286,0.00145225446855467,0.00154376998243797,8.53321488890698e-05,0.00020683387734286,0.000560996862646269,0.00031109841211323,0.000592823013473671,0.000252615224590024,0.000459053397578206,3.96673129136989e-05,6.54643665431426e-05,0.00142125562809425,0.00133094312449039,0.000754338171307759,0.00134715985719654,0.000649110699526845,2.52555975753655e-05,0.000949502506514762,0.000262061472328358,6.05614964913619e-05,0.000660515702063131,0.00216236464549982,0.000127962304949367,0.000172066079083473],[0.0536690100799922,0.104150641826083,0.133058909219326,0.129677914110429,0.0330602114711182,0.131499491482329,0.0235216531105738,0.0553109751005166,0.0623794982336387,0.00859489399630738,0.0634955697911298,0.145761948828252,0.0458082162678918,0.112063832321067,0.0511379902662468,0.0352298327182093,0.0319326824532068,0.0272588055130168,0.0438921543572706,0.0317674890165596,0.106922920755228,0.012907460074382,0.0218579234972678,0.0221097995128349,0.0132292757209479,0.0098244944677604,0.0500592417061611,0.0396122172417388,0.0534914950760967,0.0209075789973866,0.0830407940927249,0.00137259795358123,0.0472052911425237,0.00591878871300757,0.0252934600335383,0.0281159420289855,0.0872781065088757,0.0188536953242836,0.0102336948220559,0.0662641275739279,0.00814176245210728,0.00149625935162095,0.0264448336252189,0.0164055299539171]],"container":"<table class=\"display fill-container\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Country<\/th>\n      <th>Confirmed<\/th>\n      <th>Recovered<\/th>\n      <th>Deaths<\/th>\n      <th>Case Rate<\/th>\n      <th>Death Rate<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"targets":6,"render":"function(data, type, row, meta) { return DTWidget.formatPercentage(data, 3, 3, \",\", \".\"); }"},{"targets":5,"render":"function(data, type, row, meta) { return DTWidget.formatPercentage(data, 3, 3, \",\", \".\"); }"},{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render"],"jsHooks":[]}</script>
+</div>
+</div>
+
+</div>
+
+<script>
+
+$(document).ready(function () {
+
+  // add bootstrap table styles to pandoc tables
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+
+  // initialize mathjax
+  var script = document.createElement("script");
+  script.type = "text/javascript";
+  script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+  document.getElementsByTagName("head")[0].appendChild(script);
+
+});
+</script>
+
+<div id="flexdashboard-source-code">
+<pre class="line-numbers"><code class="language-r">---
+title: "Covid-19"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    source_code: embed
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(coronavirus)
+library(plotly)
+library(viridis)
+library(wbstats)
+library(DT)
+
+coronavirus::update_datasets(silence = TRUE)
+
+data("coronavirus")
+
+daily_df = 
+  coronavirus %>% 
+  group_by(date, type) %>% 
+  summarize(n = sum(cases)) 
+
+max_date = max(coronavirus$date) 
+
+# pull in population
+pop = wb(indicator = "SP.POP.TOTL", startdate = 2018, enddate = 2019) %>% 
+  select(date, country, value) %>% 
+  filter(date == "2018") %>% 
+  mutate(country = recode(country, "United States" = "US", "Czech Republic" = "Czechia", "Korea, Rep." = "Korea, South", "Iran, Islamic Rep." = "Iran", "Russian Federation" = "Russia")) %>% 
+  rename("Country.Region" = "country")
+
+rates = left_join(coronavirus, pop, by = "Country.Region") %>% 
+  group_by(Country.Region, type) %>% 
+  summarize(total = sum(cases), population = mean(value)) %>% 
+  pivot_wider(names_from = type, values_from = total) %>% 
+  filter(confirmed > 5000) %>% 
+  mutate(case_rate = confirmed/population, 
+         death_rate = death/confirmed) 
+
+# US boxes
+us_total = coronavirus %>% 
+  select(Country.Region, type, cases) %>% 
+  filter(type == "confirmed", Country.Region == "US") %>% 
+  group_by(type) %>% 
+  summarize(n = sum(cases))
+us_total_color = "#1f77b4"
+
+us_dead = coronavirus %>% 
+  filter(type == "death",  Country.Region == "US") %>% 
+  select(Country.Region, type, cases)  %>% 
+  group_by(type) %>% 
+  summarize(n = sum(cases))
+
+us_new_cases = coronavirus %>% 
+    filter(type == "confirmed",  Country.Region == "US", date == max_date) %>% 
+    select(Country.Region, type, cases)  %>% 
+    group_by(type) %>% 
+    summarize(n = sum(cases))
+
+us_new_deaths = coronavirus %>% 
+    filter(type == "death",  Country.Region == "US", date == max_date) %>% 
+    select(Country.Region, type, cases)  %>% 
+    group_by(type) %>% 
+    summarize(n = sum(cases))
+
+# World boxes
+world_total = coronavirus %>% 
+  select(type, cases) %>% 
+  filter(type == "confirmed") %>% 
+  group_by(type) %>% 
+  summarize(n = sum(cases))
+
+world_total_color = "#38d6b7"
+
+world_dead = coronavirus %>% 
+  filter(type == "death") %>% 
+  select(Country.Region, type, cases)  %>% 
+  group_by(type) %>% 
+  summarize(n = sum(cases))
+
+world_dead_color = "#FF9754"
+
+world_new_cases = coronavirus %>% 
+    filter(type == "confirmed", date == max_date) %>% 
+    select(Country.Region, type, cases)  %>% 
+    group_by(type) %>% 
+    summarize(n = sum(cases))
+
+world_new_cases_color = "#6f727a"
+
+world_new_deaths = coronavirus %>% 
+    filter(type == "death", date == max_date) %>% 
+    select(Country.Region, type, cases)  %>% 
+    group_by(type) %>% 
+    summarize(n = sum(cases))
+
+world_new_deaths_color = "#FE595E"
+
+```
+
+Row {data-height = 100}
+-----------------------------------------------------------------------
+### total {.value-box}
+```{r}
+valueBox(value = format(world_total$n, big.mark = ","), caption = "Confirmed Cases", color = world_total_color, icon = "fas fa-thermometer-half")
+```
+
+### new cases {.value-box}
+```{r}
+valueBox(value = format(world_new_cases$n, big.mark = ","), caption = "New Cases", color = world_new_cases_color, icon = "fas fa-thermometer-full")
+```
+
+### deaths {.value-box}
+```{r}
+valueBox(value = format(world_dead$n, big.mark = ","), caption = "Deaths", color = world_dead_color)
+```
+
+
+### new deaths {.value-box}
+```{r}
+valueBox(value = format(world_new_deaths$n, big.mark = ","), caption = "New Deaths", color = world_new_deaths_color)
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Worldwide Cases by Day
+
+```{r fig.height = 7.5}
+daily_df %>% 
+  plot_ly(x = ~date, 
+          y = ~n, 
+          type = "scatter", 
+          color = ~type, 
+          mode = "markers", 
+          stackgroup = "one") %>% 
+  layout(title = "",
+        yaxis = list(title = "# Cases"),
+        xaxis = list(title = "Date"),
+        legend = list(x = 0.1, y = 0.9),
+        hovermode = "compare")
+
+```
+
+
+Row
+-----------------------------------------------------------------------
+
+### Cases and Deaths by Country
+
+```{r fig.height = 10}
+
+rates %>% 
   plot_ly(y = ~ round(100*case_rate, 2), 
           x = ~ round(100*death_rate, 2), 
           size = ~ (confirmed), 
           color = ~ Country.Region, 
-          type = &quot;scatter&quot;, 
-          mode = &quot;markers&quot;, 
-          marker = list(sizemode = &quot;diameter&quot;, opacity = 0.5), 
-          hoverinfo = &quot;text&quot;, 
-          text = ~paste(&quot;&quot;, Country.Region, &quot;&lt;br&gt; Confirmed Cases: &quot;, paste(format(confirmed, big.mark = &quot;,&quot; )),
-                                            &quot;&lt;br&gt; Case Rate: &quot;, paste(round(100 * case_rate, 2), &quot;%&quot;, sep = &quot;&quot;),
-                                            &quot;&lt;br&gt; Death Rate: &quot;, paste(round(100 * death_rate, 2), &quot;%&quot;, sep = &quot;&quot;))
-        ) %&gt;% 
-  layout(yaxis = list(title = &quot;Cases per Population&quot;, ticksuffix = &quot;%&quot;),
-                xaxis = list(title = &quot;Death Rate&quot;, ticksuffix = &quot;%&quot;, 
+          type = "scatter", 
+          mode = "markers", 
+          marker = list(sizemode = "diameter", opacity = 0.5), 
+          hoverinfo = "text", 
+          text = ~paste("", Country.Region, "<br> Confirmed Cases: ", paste(format(confirmed, big.mark = "," )),
+                                            "<br> Case Rate: ", paste(round(100 * case_rate, 2), "%", sep = ""),
+                                            "<br> Death Rate: ", paste(round(100 * death_rate, 2), "%", sep = ""))
+        ) %>% 
+  layout(yaxis = list(title = "Cases per Population", ticksuffix = "%"),
+                xaxis = list(title = "Death Rate", ticksuffix = "%", 
                              dtick = 1, 
                              tick0 = 0),
-                hovermode = &quot;compare&quot;)</code></pre>
-<pre><code>## Warning in RColorBrewer::brewer.pal(N, &quot;Set2&quot;): n too large, allowed maximum for palette Set2 is 8
-## Returning the palette you asked for with that many colors
+                hovermode = "compare")
+  
 
-## Warning in RColorBrewer::brewer.pal(N, &quot;Set2&quot;): n too large, allowed maximum for palette Set2 is 8
-## Returning the palette you asked for with that many colors</code></pre>
-<div id="htmlwidget-19ada3213a2e4c507a6b" style="width:672px;height:960px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-19ada3213a2e4c507a6b">{"x":{"visdat":{"92177fc6a0fd":["function () ","plotlyVisDat"]},"cur_data":"92177fc6a0fd","attrs":{"92177fc6a0fd":{"y":{},"x":{},"mode":"markers","marker":{"sizemode":"diameter","opacity":0.5},"hoverinfo":"text","text":{},"color":{},"size":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"yaxis":{"domain":[0,1],"automargin":true,"title":"Cases per Population","ticksuffix":"%"},"xaxis":{"domain":[0,1],"automargin":true,"title":"Death Rate","ticksuffix":"%","dtick":1,"tick0":0},"hovermode":"compare","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"y":[0.03],"x":[1.02],"mode":"markers","marker":{"color":"rgba(102,194,165,1)","size":[10.1904731782246],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(102,194,165,1)"}},"hoverinfo":"text","text":" Australia <br> Confirmed Cases:    6,547 <br> Case Rate:  0.03% <br> Death Rate:  1.02%","type":"scatter","name":"Australia","textfont":{"color":"rgba(102,194,165,1)","size":10.1904731782246},"error_y":{"color":"rgba(102,194,165,1)","width":10.1904731782246},"error_x":{"color":"rgba(102,194,165,1)","width":10.1904731782246},"line":{"color":"rgba(102,194,165,1)","width":10.1904731782246},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.17],"x":[3.02],"mode":"markers","marker":{"color":"rgba(140,187,154,1)","size":[11.1959339318939],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(140,187,154,1)"}},"hoverinfo":"text","text":" Austria <br> Confirmed Cases:   14,671 <br> Case Rate:  0.17% <br> Death Rate:  3.02%","type":"scatter","name":"Austria","textfont":{"color":"rgba(140,187,154,1)","size":11.1959339318939},"error_y":{"color":"rgba(140,187,154,1)","width":11.1959339318939},"error_x":{"color":"rgba(140,187,154,1)","width":11.1959339318939},"line":{"color":"rgba(140,187,154,1)","width":11.1959339318939},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.33],"x":[14.67],"mode":"markers","marker":{"color":"rgba(169,180,142,1)","size":[13.9821146909538],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(169,180,142,1)"}},"hoverinfo":"text","text":" Belgium <br> Confirmed Cases:   37,183 <br> Case Rate:  0.33% <br> Death Rate:  14.67%","type":"scatter","name":"Belgium","textfont":{"color":"rgba(169,180,142,1)","size":13.9821146909538},"error_y":{"color":"rgba(169,180,142,1)","width":13.9821146909538},"error_x":{"color":"rgba(169,180,142,1)","width":13.9821146909538},"line":{"color":"rgba(169,180,142,1)","width":13.9821146909538},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.02],"x":[6.42],"mode":"markers","marker":{"color":"rgba(193,172,131,1)","size":[13.9171384605653],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(193,172,131,1)"}},"hoverinfo":"text","text":" Brazil <br> Confirmed Cases:   36,658 <br> Case Rate:  0.02% <br> Death Rate:  6.42%","type":"scatter","name":"Brazil","textfont":{"color":"rgba(193,172,131,1)","size":13.9171384605653},"error_y":{"color":"rgba(193,172,131,1)","width":13.9171384605653},"error_x":{"color":"rgba(193,172,131,1)","width":13.9171384605653},"line":{"color":"rgba(193,172,131,1)","width":13.9171384605653},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.09],"x":[4.07],"mode":"markers","marker":{"color":"rgba(215,163,120,1)","size":[13.6321093965943],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(215,163,120,1)"}},"hoverinfo":"text","text":" Canada <br> Confirmed Cases:   34,355 <br> Case Rate:  0.09% <br> Death Rate:  4.07%","type":"scatter","name":"Canada","textfont":{"color":"rgba(215,163,120,1)","size":13.6321093965943},"error_y":{"color":"rgba(215,163,120,1)","width":13.6321093965943},"error_x":{"color":"rgba(215,163,120,1)","width":13.6321093965943},"line":{"color":"rgba(215,163,120,1)","width":13.6321093965943},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.05],"x":[1.29],"mode":"markers","marker":{"color":"rgba(234,152,109,1)","size":[10.5844147807516],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(234,152,109,1)"}},"hoverinfo":"text","text":" Chile <br> Confirmed Cases:    9,730 <br> Case Rate:  0.05% <br> Death Rate:  1.29%","type":"scatter","name":"Chile","textfont":{"color":"rgba(234,152,109,1)","size":10.5844147807516},"error_y":{"color":"rgba(234,152,109,1)","width":10.5844147807516},"error_x":{"color":"rgba(234,152,109,1)","width":10.5844147807516},"line":{"color":"rgba(234,152,109,1)","width":10.5844147807516},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.01],"x":[5.53],"mode":"markers","marker":{"color":"rgba(252,141,98,1)","size":[19.7500237214809],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(252,141,98,1)"}},"hoverinfo":"text","text":" China <br> Confirmed Cases:   83,787 <br> Case Rate:  0.01% <br> Death Rate:  5.53%","type":"scatter","name":"China","textfont":{"color":"rgba(252,141,98,1)","size":19.7500237214809},"error_y":{"color":"rgba(252,141,98,1)","width":19.7500237214809},"error_x":{"color":"rgba(252,141,98,1)","width":19.7500237214809},"line":{"color":"rgba(252,141,98,1)","width":19.7500237214809},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.06],"x":[2.74],"mode":"markers","marker":{"color":"rgba(238,145,116,1)","size":[10.1977752688778],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(238,145,116,1)"}},"hoverinfo":"text","text":" Czechia <br> Confirmed Cases:    6,606 <br> Case Rate:  0.06% <br> Death Rate:  2.74%","type":"scatter","name":"Czechia","textfont":{"color":"rgba(238,145,116,1)","size":10.1977752688778},"error_y":{"color":"rgba(238,145,116,1)","width":10.1977752688778},"error_x":{"color":"rgba(238,145,116,1)","width":10.1977752688778},"line":{"color":"rgba(238,145,116,1)","width":10.1977752688778},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.13],"x":[4.65],"mode":"markers","marker":{"color":"rgba(223,148,134,1)","size":[10.3006233592642],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(223,148,134,1)"}},"hoverinfo":"text","text":" Denmark <br> Confirmed Cases:    7,437 <br> Case Rate:  0.13% <br> Death Rate:  4.65%","type":"scatter","name":"Denmark","textfont":{"color":"rgba(223,148,134,1)","size":10.3006233592642},"error_y":{"color":"rgba(223,148,134,1)","width":10.3006233592642},"error_x":{"color":"rgba(223,148,134,1)","width":10.3006233592642},"line":{"color":"rgba(223,148,134,1)","width":10.3006233592642},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.05],"x":[5.05],"mode":"markers","marker":{"color":"rgba(207,151,151,1)","size":[10.4967896929134],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(207,151,151,1)"}},"hoverinfo":"text","text":" Ecuador <br> Confirmed Cases:    9,022 <br> Case Rate:  0.05% <br> Death Rate:  5.05%","type":"scatter","name":"Ecuador","textfont":{"color":"rgba(207,151,151,1)","size":10.4967896929134},"error_y":{"color":"rgba(207,151,151,1)","width":10.4967896929134},"error_x":{"color":"rgba(207,151,151,1)","width":10.4967896929134},"line":{"color":"rgba(207,151,151,1)","width":10.4967896929134},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.22],"x":[12.97],"mode":"markers","marker":{"color":"rgba(189,155,168,1)","size":[27.8395025227279],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(189,155,168,1)"}},"hoverinfo":"text","text":" France <br> Confirmed Cases:  149,149 <br> Case Rate:  0.22% <br> Death Rate:  12.97%","type":"scatter","name":"France","textfont":{"color":"rgba(189,155,168,1)","size":27.8395025227279},"error_y":{"color":"rgba(189,155,168,1)","width":27.8395025227279},"error_x":{"color":"rgba(189,155,168,1)","width":27.8395025227279},"line":{"color":"rgba(189,155,168,1)","width":27.8395025227279},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.17],"x":[3.11],"mode":"markers","marker":{"color":"rgba(167,157,186,1)","size":[27.1208035325067],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(167,157,186,1)"}},"hoverinfo":"text","text":" Germany <br> Confirmed Cases:  143,342 <br> Case Rate:  0.17% <br> Death Rate:  3.11%","type":"scatter","name":"Germany","textfont":{"color":"rgba(167,157,186,1)","size":27.1208035325067},"error_y":{"color":"rgba(167,157,186,1)","width":27.1208035325067},"error_x":{"color":"rgba(167,157,186,1)","width":27.1208035325067},"line":{"color":"rgba(167,157,186,1)","width":27.1208035325067},"xaxis":"x","yaxis":"y","frame":null},{"y":[0],"x":[3.31],"mode":"markers","marker":{"color":"rgba(141,160,203,1)","size":[11.3260101569193],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(141,160,203,1)"}},"hoverinfo":"text","text":" India <br> Confirmed Cases:   15,722 <br> Case Rate:  0% <br> Death Rate:  3.31%","type":"scatter","name":"India","textfont":{"color":"rgba(141,160,203,1)","size":11.3260101569193},"error_y":{"color":"rgba(141,160,203,1)","width":11.3260101569193},"error_x":{"color":"rgba(141,160,203,1)","width":11.3260101569193},"line":{"color":"rgba(141,160,203,1)","width":11.3260101569193},"xaxis":"x","yaxis":"y","frame":null},{"y":[0],"x":[8.56],"mode":"markers","marker":{"color":"rgba(159,157,202,1)","size":[10.1534676679653],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(159,157,202,1)"}},"hoverinfo":"text","text":" Indonesia <br> Confirmed Cases:    6,248 <br> Case Rate:  0% <br> Death Rate:  8.56%","type":"scatter","name":"Indonesia","textfont":{"color":"rgba(159,157,202,1)","size":10.1534676679653},"error_y":{"color":"rgba(159,157,202,1)","width":10.1534676679653},"error_x":{"color":"rgba(159,157,202,1)","width":10.1534676679653},"line":{"color":"rgba(159,157,202,1)","width":10.1534676679653},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.1],"x":[6.22],"mode":"markers","marker":{"color":"rgba(175,154,200,1)","size":[19.3887558805207],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(175,154,200,1)"}},"hoverinfo":"text","text":" Iran <br> Confirmed Cases:   80,868 <br> Case Rate:  0.1% <br> Death Rate:  6.22%","type":"scatter","name":"Iran","textfont":{"color":"rgba(175,154,200,1)","size":19.3887558805207},"error_y":{"color":"rgba(175,154,200,1)","width":19.3887558805207},"error_x":{"color":"rgba(175,154,200,1)","width":19.3887558805207},"line":{"color":"rgba(175,154,200,1)","width":19.3887558805207},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.3],"x":[3.87],"mode":"markers","marker":{"color":"rgba(190,151,199,1)","size":[11.2067014215012],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(190,151,199,1)"}},"hoverinfo":"text","text":" Ireland <br> Confirmed Cases:   14,758 <br> Case Rate:  0.3% <br> Death Rate:  3.87%","type":"scatter","name":"Ireland","textfont":{"color":"rgba(190,151,199,1)","size":11.2067014215012},"error_y":{"color":"rgba(190,151,199,1)","width":11.2067014215012},"error_x":{"color":"rgba(190,151,199,1)","width":11.2067014215012},"line":{"color":"rgba(190,151,199,1)","width":11.2067014215012},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.15],"x":[1.24],"mode":"markers","marker":{"color":"rgba(204,147,198,1)","size":[11.021921398701],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(204,147,198,1)"}},"hoverinfo":"text","text":" Israel <br> Confirmed Cases:   13,265 <br> Case Rate:  0.15% <br> Death Rate:  1.24%","type":"scatter","name":"Israel","textfont":{"color":"rgba(204,147,198,1)","size":11.021921398701},"error_y":{"color":"rgba(204,147,198,1)","width":11.021921398701},"error_x":{"color":"rgba(204,147,198,1)","width":11.021921398701},"line":{"color":"rgba(204,147,198,1)","width":11.021921398701},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.29],"x":[13.2],"mode":"markers","marker":{"color":"rgba(218,143,196,1)","size":[31.153414036791],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(218,143,196,1)"}},"hoverinfo":"text","text":" Italy <br> Confirmed Cases:  175,925 <br> Case Rate:  0.29% <br> Death Rate:  13.2%","type":"scatter","name":"Italy","textfont":{"color":"rgba(218,143,196,1)","size":31.153414036791},"error_y":{"color":"rgba(218,143,196,1)","width":31.153414036791},"error_x":{"color":"rgba(218,143,196,1)","width":31.153414036791},"line":{"color":"rgba(218,143,196,1)","width":31.153414036791},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.01],"x":[2.16],"mode":"markers","marker":{"color":"rgba(231,138,195,1)","size":[10.6544653453229],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(231,138,195,1)"}},"hoverinfo":"text","text":" Japan <br> Confirmed Cases:   10,296 <br> Case Rate:  0.01% <br> Death Rate:  2.16%","type":"scatter","name":"Japan","textfont":{"color":"rgba(231,138,195,1)","size":10.6544653453229},"error_y":{"color":"rgba(231,138,195,1)","width":10.6544653453229},"error_x":{"color":"rgba(231,138,195,1)","width":10.6544653453229},"line":{"color":"rgba(231,138,195,1)","width":10.6544653453229},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.02],"x":[2.18],"mode":"markers","marker":{"color":"rgba(224,153,178,1)","size":[10.6986491819871],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(224,153,178,1)"}},"hoverinfo":"text","text":" Korea, South <br> Confirmed Cases:   10,653 <br> Case Rate:  0.02% <br> Death Rate:  2.18%","type":"scatter","name":"Korea, South","textfont":{"color":"rgba(224,153,178,1)","size":10.6986491819871},"error_y":{"color":"rgba(224,153,178,1)","width":10.6986491819871},"error_x":{"color":"rgba(224,153,178,1)","width":10.6986491819871},"line":{"color":"rgba(224,153,178,1)","width":10.6986491819871},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.02],"x":[1.66],"mode":"markers","marker":{"color":"rgba(215,167,161,1)","size":[10.0367579817626],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(215,167,161,1)"}},"hoverinfo":"text","text":" Malaysia <br> Confirmed Cases:    5,305 <br> Case Rate:  0.02% <br> Death Rate:  1.66%","type":"scatter","name":"Malaysia","textfont":{"color":"rgba(215,167,161,1)","size":10.0367579817626},"error_y":{"color":"rgba(215,167,161,1)","width":10.0367579817626},"error_x":{"color":"rgba(215,167,161,1)","width":10.0367579817626},"line":{"color":"rgba(215,167,161,1)","width":10.0367579817626},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.01],"x":[7.94],"mode":"markers","marker":{"color":"rgba(205,181,144,1)","size":[10.2310678516864],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(205,181,144,1)"}},"hoverinfo":"text","text":" Mexico <br> Confirmed Cases:    6,875 <br> Case Rate:  0.01% <br> Death Rate:  7.94%","type":"scatter","name":"Mexico","textfont":{"color":"rgba(205,181,144,1)","size":10.2310678516864},"error_y":{"color":"rgba(205,181,144,1)","width":10.2310678516864},"error_x":{"color":"rgba(205,181,144,1)","width":10.2310678516864},"line":{"color":"rgba(205,181,144,1)","width":10.2310678516864},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.18],"x":[11.37],"mode":"markers","marker":{"color":"rgba(194,193,126,1)","size":[13.3116837575926],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(194,193,126,1)"}},"hoverinfo":"text","text":" Netherlands <br> Confirmed Cases:   31,766 <br> Case Rate:  0.18% <br> Death Rate:  11.37%","type":"scatter","name":"Netherlands","textfont":{"color":"rgba(194,193,126,1)","size":13.3116837575926},"error_y":{"color":"rgba(194,193,126,1)","width":13.3116837575926},"error_x":{"color":"rgba(194,193,126,1)","width":13.3116837575926},"line":{"color":"rgba(194,193,126,1)","width":13.3116837575926},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.13],"x":[2.33],"mode":"markers","marker":{"color":"rgba(181,205,106,1)","size":[10.2509938956722],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(181,205,106,1)"}},"hoverinfo":"text","text":" Norway <br> Confirmed Cases:    7,036 <br> Case Rate:  0.13% <br> Death Rate:  2.33%","type":"scatter","name":"Norway","textfont":{"color":"rgba(181,205,106,1)","size":10.2509938956722},"error_y":{"color":"rgba(181,205,106,1)","width":10.2509938956722},"error_x":{"color":"rgba(181,205,106,1)","width":10.2509938956722},"line":{"color":"rgba(181,205,106,1)","width":10.2509938956722},"xaxis":"x","yaxis":"y","frame":null},{"y":[0],"x":[1.87],"mode":"markers","marker":{"color":"rgba(166,216,84,1)","size":[10.3254999731844],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(166,216,84,1)"}},"hoverinfo":"text","text":" Pakistan <br> Confirmed Cases:    7,638 <br> Case Rate:  0% <br> Death Rate:  1.87%","type":"scatter","name":"Pakistan","textfont":{"color":"rgba(166,216,84,1)","size":10.3254999731844},"error_y":{"color":"rgba(166,216,84,1)","width":10.3254999731844},"error_x":{"color":"rgba(166,216,84,1)","width":10.3254999731844},"line":{"color":"rgba(166,216,84,1)","width":10.3254999731844},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.05],"x":[2.41],"mode":"markers","marker":{"color":"rgba(182,217,79,1)","size":[11.1648691055558],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(182,217,79,1)"}},"hoverinfo":"text","text":" Peru <br> Confirmed Cases:   14,420 <br> Case Rate:  0.05% <br> Death Rate:  2.41%","type":"scatter","name":"Peru","textfont":{"color":"rgba(182,217,79,1)","size":11.1648691055558},"error_y":{"color":"rgba(182,217,79,1)","width":11.1648691055558},"error_x":{"color":"rgba(182,217,79,1)","width":11.1648691055558},"line":{"color":"rgba(182,217,79,1)","width":11.1648691055558},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.01],"x":[6.52],"mode":"markers","marker":{"color":"rgba(198,217,73,1)","size":[10.1335416239795],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(198,217,73,1)"}},"hoverinfo":"text","text":" Philippines <br> Confirmed Cases:    6,087 <br> Case Rate:  0.01% <br> Death Rate:  6.52%","type":"scatter","name":"Philippines","textfont":{"color":"rgba(198,217,73,1)","size":10.1335416239795},"error_y":{"color":"rgba(198,217,73,1)","width":10.1335416239795},"error_x":{"color":"rgba(198,217,73,1)","width":10.1335416239795},"line":{"color":"rgba(198,217,73,1)","width":10.1335416239795},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.02],"x":[3.97],"mode":"markers","marker":{"color":"rgba(213,217,68,1)","size":[10.4621357033729],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(213,217,68,1)"}},"hoverinfo":"text","text":" Poland <br> Confirmed Cases:    8,742 <br> Case Rate:  0.02% <br> Death Rate:  3.97%","type":"scatter","name":"Poland","textfont":{"color":"rgba(213,217,68,1)","size":10.4621357033729},"error_y":{"color":"rgba(213,217,68,1)","width":10.4621357033729},"error_x":{"color":"rgba(213,217,68,1)","width":10.4621357033729},"line":{"color":"rgba(213,217,68,1)","width":10.4621357033729},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.19],"x":[3.49],"mode":"markers","marker":{"color":"rgba(227,217,62,1)","size":[11.8164878731664],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(227,217,62,1)"}},"hoverinfo":"text","text":" Portugal <br> Confirmed Cases:   19,685 <br> Case Rate:  0.19% <br> Death Rate:  3.49%","type":"scatter","name":"Portugal","textfont":{"color":"rgba(227,217,62,1)","size":11.8164878731664},"error_y":{"color":"rgba(227,217,62,1)","width":11.8164878731664},"error_x":{"color":"rgba(227,217,62,1)","width":11.8164878731664},"line":{"color":"rgba(227,217,62,1)","width":11.8164878731664},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.18],"x":[0.16],"mode":"markers","marker":{"color":"rgba(241,217,55,1)","size":[10],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(241,217,55,1)"}},"hoverinfo":"text","text":" Qatar <br> Confirmed Cases:    5,008 <br> Case Rate:  0.18% <br> Death Rate:  0.16%","type":"scatter","name":"Qatar","textfont":{"color":"rgba(241,217,55,1)","size":10},"error_y":{"color":"rgba(241,217,55,1)","width":10},"error_x":{"color":"rgba(241,217,55,1)","width":10},"line":{"color":"rgba(241,217,55,1)","width":10},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.04],"x":[5],"mode":"markers","marker":{"color":"rgba(255,217,47,1)","size":[10.4220360869045],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(255,217,47,1)"}},"hoverinfo":"text","text":" Romania <br> Confirmed Cases:    8,418 <br> Case Rate:  0.04% <br> Death Rate:  5%","type":"scatter","name":"Romania","textfont":{"color":"rgba(255,217,47,1)","size":10.4220360869045},"error_y":{"color":"rgba(255,217,47,1)","width":10.4220360869045},"error_x":{"color":"rgba(255,217,47,1)","width":10.4220360869045},"line":{"color":"rgba(255,217,47,1)","width":10.4220360869045},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.03],"x":[0.85],"mode":"markers","marker":{"color":"rgba(251,213,71,1)","size":[13.9338466340938],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(251,213,71,1)"}},"hoverinfo":"text","text":" Russia <br> Confirmed Cases:   36,793 <br> Case Rate:  0.03% <br> Death Rate:  0.85%","type":"scatter","name":"Russia","textfont":{"color":"rgba(251,213,71,1)","size":13.9338466340938},"error_y":{"color":"rgba(251,213,71,1)","width":13.9338466340938},"error_x":{"color":"rgba(251,213,71,1)","width":13.9338466340938},"line":{"color":"rgba(251,213,71,1)","width":13.9338466340938},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.02],"x":[1.11],"mode":"markers","marker":{"color":"rgba(248,210,89,1)","size":[10.4042140351408],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(248,210,89,1)"}},"hoverinfo":"text","text":" Saudi Arabia <br> Confirmed Cases:    8,274 <br> Case Rate:  0.02% <br> Death Rate:  1.11%","type":"scatter","name":"Saudi Arabia","textfont":{"color":"rgba(248,210,89,1)","size":10.4042140351408},"error_y":{"color":"rgba(248,210,89,1)","width":10.4042140351408},"error_x":{"color":"rgba(248,210,89,1)","width":10.4042140351408},"line":{"color":"rgba(248,210,89,1)","width":10.4042140351408},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.09],"x":[1.95],"mode":"markers","marker":{"color":"rgba(244,206,105,1)","size":[10.1220315488821],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(244,206,105,1)"}},"hoverinfo":"text","text":" Serbia <br> Confirmed Cases:    5,994 <br> Case Rate:  0.09% <br> Death Rate:  1.95%","type":"scatter","name":"Serbia","textfont":{"color":"rgba(244,206,105,1)","size":10.1220315488821},"error_y":{"color":"rgba(244,206,105,1)","width":10.1220315488821},"error_x":{"color":"rgba(244,206,105,1)","width":10.1220315488821},"line":{"color":"rgba(244,206,105,1)","width":10.1220315488821},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.11],"x":[0.18],"mode":"markers","marker":{"color":"rgba(239,203,120,1)","size":[10.1217840203853],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(239,203,120,1)"}},"hoverinfo":"text","text":" Singapore <br> Confirmed Cases:    5,992 <br> Case Rate:  0.11% <br> Death Rate:  0.18%","type":"scatter","name":"Singapore","textfont":{"color":"rgba(239,203,120,1)","size":10.1217840203853},"error_y":{"color":"rgba(239,203,120,1)","width":10.1217840203853},"error_x":{"color":"rgba(239,203,120,1)","width":10.1217840203853},"line":{"color":"rgba(239,203,120,1)","width":10.1217840203853},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.41],"x":[10.45],"mode":"markers","marker":{"color":"rgba(234,199,134,1)","size":[33.109012925113],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(234,199,134,1)"}},"hoverinfo":"text","text":" Spain <br> Confirmed Cases:  191,726 <br> Case Rate:  0.41% <br> Death Rate:  10.45%","type":"scatter","name":"Spain","textfont":{"color":"rgba(234,199,134,1)","size":33.109012925113},"error_y":{"color":"rgba(234,199,134,1)","width":33.109012925113},"error_x":{"color":"rgba(234,199,134,1)","width":33.109012925113},"line":{"color":"rgba(234,199,134,1)","width":33.109012925113},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.14],"x":[10.93],"mode":"markers","marker":{"color":"rgba(229,196,148,1)","size":[11.090858085037],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(229,196,148,1)"}},"hoverinfo":"text","text":" Sweden <br> Confirmed Cases:   13,822 <br> Case Rate:  0.14% <br> Death Rate:  10.93%","type":"scatter","name":"Sweden","textfont":{"color":"rgba(229,196,148,1)","size":11.090858085037},"error_y":{"color":"rgba(229,196,148,1)","width":11.090858085037},"error_x":{"color":"rgba(229,196,148,1)","width":11.090858085037},"line":{"color":"rgba(229,196,148,1)","width":11.090858085037},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.32],"x":[4.99],"mode":"markers","marker":{"color":"rgba(221,193,153,1)","size":[12.7718241062502],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(221,193,153,1)"}},"hoverinfo":"text","text":" Switzerland <br> Confirmed Cases:   27,404 <br> Case Rate:  0.32% <br> Death Rate:  4.99%","type":"scatter","name":"Switzerland","textfont":{"color":"rgba(221,193,153,1)","size":12.7718241062502},"error_y":{"color":"rgba(221,193,153,1)","width":12.7718241062502},"error_x":{"color":"rgba(221,193,153,1)","width":12.7718241062502},"line":{"color":"rgba(221,193,153,1)","width":12.7718241062502},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.1],"x":[2.3],"mode":"markers","marker":{"color":"rgba(213,190,159,1)","size":[19.5695754473734],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(213,190,159,1)"}},"hoverinfo":"text","text":" Turkey <br> Confirmed Cases:   82,329 <br> Case Rate:  0.1% <br> Death Rate:  2.3%","type":"scatter","name":"Turkey","textfont":{"color":"rgba(213,190,159,1)","size":19.5695754473734},"error_y":{"color":"rgba(213,190,159,1)","width":19.5695754473734},"error_x":{"color":"rgba(213,190,159,1)","width":19.5695754473734},"line":{"color":"rgba(213,190,159,1)","width":19.5695754473734},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.01],"x":[2.6],"mode":"markers","marker":{"color":"rgba(205,187,164,1)","size":[10.0121288963392],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(205,187,164,1)"}},"hoverinfo":"text","text":" Ukraine <br> Confirmed Cases:    5,106 <br> Case Rate:  0.01% <br> Death Rate:  2.6%","type":"scatter","name":"Ukraine","textfont":{"color":"rgba(205,187,164,1)","size":10.0121288963392},"error_y":{"color":"rgba(205,187,164,1)","width":10.0121288963392},"error_x":{"color":"rgba(205,187,164,1)","width":10.0121288963392},"line":{"color":"rgba(205,187,164,1)","width":10.0121288963392},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.07],"x":[0.59],"mode":"markers","marker":{"color":"rgba(197,185,169,1)","size":[10.1601509373767],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(197,185,169,1)"}},"hoverinfo":"text","text":" United Arab Emirates <br> Confirmed Cases:    6,302 <br> Case Rate:  0.07% <br> Death Rate:  0.59%","type":"scatter","name":"United Arab Emirates","textfont":{"color":"rgba(197,185,169,1)","size":10.1601509373767},"error_y":{"color":"rgba(197,185,169,1)","width":10.1601509373767},"error_x":{"color":"rgba(197,185,169,1)","width":10.1601509373767},"line":{"color":"rgba(197,185,169,1)","width":10.1601509373767},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.17],"x":[13.44],"mode":"markers","marker":{"color":"rgba(188,182,174,1)","size":[23.651939179498],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(188,182,174,1)"}},"hoverinfo":"text","text":" United Kingdom <br> Confirmed Cases:  115,314 <br> Case Rate:  0.17% <br> Death Rate:  13.44%","type":"scatter","name":"United Kingdom","textfont":{"color":"rgba(188,182,174,1)","size":23.651939179498},"error_y":{"color":"rgba(188,182,174,1)","width":23.651939179498},"error_x":{"color":"rgba(188,182,174,1)","width":23.651939179498},"line":{"color":"rgba(188,182,174,1)","width":23.651939179498},"xaxis":"x","yaxis":"y","frame":null},{"y":[0.22],"x":[5.28],"mode":"markers","marker":{"color":"rgba(179,179,179,1)","size":[100],"sizemode":"diameter","opacity":0.5,"line":{"color":"rgba(179,179,179,1)"}},"hoverinfo":"text","text":" US <br> Confirmed Cases:  732,197 <br> Case Rate:  0.22% <br> Death Rate:  5.28%","type":"scatter","name":"US","textfont":{"color":"rgba(179,179,179,1)","size":100},"error_y":{"color":"rgba(179,179,179,1)","width":100},"error_x":{"color":"rgba(179,179,179,1)","width":100},"line":{"color":"rgba(179,179,179,1)","width":100},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+```
+
+### Status Update for `r max_date`
+
+```{r fig.height = 10}
+
+rates %>% 
+  select(-population) %>% 
+  arrange(-confirmed) %>% 
+  rename("Country" = "Country.Region", "Confirmed" = "confirmed", "Deaths" = "death", "Case Rate" = "case_rate", "Death Rate" = "death_rate", "Recovered" = "recovered") %>% 
+  select(Country, Confirmed, Recovered, Deaths, everything()) %>% 
+  datatable(options = list(dom = 't')) %>% 
+    formatPercentage("Case Rate", 3) %>% 
+    formatPercentage("Death Rate", 3)
+  
+```
+
+</code></pre>
 </div>
-<div id="status-update-for-2020-04-18" class="section level3">
-<h3>Status Update for 2020-04-18</h3>
-<pre class="r"><code>rates %&gt;% 
-  select(-population) %&gt;% 
-  arrange(-confirmed) %&gt;% 
-  rename(&quot;Country&quot; = &quot;Country.Region&quot;, &quot;Confirmed&quot; = &quot;confirmed&quot;, &quot;Deaths&quot; = &quot;death&quot;, &quot;Case Rate&quot; = &quot;case_rate&quot;, &quot;Death Rate&quot; = &quot;death_rate&quot;, &quot;Recovered&quot; = &quot;recovered&quot;) %&gt;% 
-  select(Country, Confirmed, Recovered, Deaths, everything()) %&gt;% 
-  datatable(options = list(dom = &#39;t&#39;)) %&gt;% 
-    formatPercentage(&quot;Case Rate&quot;, 3) %&gt;% 
-    formatPercentage(&quot;Death Rate&quot;, 3)</code></pre>
-<div id="htmlwidget-ddf65d8c022a58fa568b" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ddf65d8c022a58fa568b">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43"],["US","Spain","Italy","France","Germany","United Kingdom","China","Turkey","Iran","Belgium","Russia","Brazil","Canada","Netherlands","Switzerland","Portugal","India","Ireland","Austria","Peru","Sweden","Israel","Korea, South","Japan","Chile","Ecuador","Poland","Romania","Saudi Arabia","Pakistan","Denmark","Norway","Mexico","Czechia","Australia","United Arab Emirates","Indonesia","Philippines","Serbia","Singapore","Malaysia","Ukraine","Qatar"],[732197,191726,175925,149149,143342,115314,83787,82329,80868,37183,36793,36658,34355,31766,27404,19685,15722,14758,14671,14420,13822,13265,10653,10296,9730,9022,8742,8418,8274,7638,7437,7036,6875,6606,6547,6302,6248,6087,5994,5992,5305,5106,5008],[64840,74797,44927,36587,85400,414,77614,10453,55987,8348,3057,14026,10964,317,17100,610,2463,77,10214,6684,550,3456,7937,1069,4035,1008,981,1730,1329,1832,4031,32,2125,1227,4124,1188,631,516,637,740,3102,275,510],[38664,20043,23227,19345,4459,15498,4636,1890,5031,5453,313,2354,1399,3613,1368,687,521,571,443,348,1511,164,232,222,126,456,347,421,92,143,346,164,546,181,67,37,535,397,117,11,88,133,8],[0.00224127644234543,0.00409701230048204,0.00291161660964527,0.00222686536759493,0.00172897470528654,0.00173507979435075,6.01602607827791e-05,0.00100011268259354,0.000988603105938441,0.00325217943165097,0.000254661521248383,0.000175004137717859,0.000927066162786666,0.00184347105066824,0.00321899087149914,0.0019141715988472,1.16233909432809e-05,0.00303206556230558,0.00165951757820608,0.000450776348158894,0.00135839894866093,0.00149333543477282,0.000206426952907391,8.13725854368679e-05,0.000519510752217398,0.0005280854292614,0.000230205597140205,0.000432443095435691,0.000245519673962692,3.59917956800703e-05,0.00128364985304565,0.001324569138518,5.44809974560108e-05,0.000621452939286136,0.000262061472328358,0.000654348128779284,2.33427475814917e-05,5.70735143432296e-05,0.000858419008152259,0.0010626608090268,0.000168260009131396,0.000114426537490625,0.00180035280875529],[0.0528054608254336,0.104539812023408,0.132027852778173,0.129702512252848,0.0311074214117286,0.134398251730059,0.0553307792378293,0.0229566738330357,0.0622124944353762,0.14665304036791,0.00850705297203272,0.0642151781330133,0.0407218745451899,0.1137379588239,0.0499197197489418,0.0348996697993396,0.0331382775728279,0.0386908795229706,0.0301956240201759,0.0241331484049931,0.109318477789032,0.0123633622314361,0.0217779029381395,0.0215617715617716,0.0129496402877698,0.0505431168255376,0.0396934339967971,0.0500118793062485,0.0111191684795746,0.0187221785807803,0.0465241360763749,0.0233086981239341,0.0794181818181818,0.0273993339388435,0.0102336948220559,0.00587115201523326,0.0856274007682458,0.0652209627074092,0.0195195195195195,0.00183578104138852,0.0165881244109331,0.0260477869173521,0.00159744408945687]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Country<\/th>\n      <th>Confirmed<\/th>\n      <th>Recovered<\/th>\n      <th>Deaths<\/th>\n      <th>Case Rate<\/th>\n      <th>Death Rate<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"targets":6,"render":"function(data, type, row, meta) { return DTWidget.formatPercentage(data, 3, 3, \",\", \".\"); }"},{"targets":5,"render":"function(data, type, row, meta) { return DTWidget.formatPercentage(data, 3, 3, \",\", \".\"); }"},{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render"],"jsHooks":[]}</script>
-</div>
-</div>
-
-
-<br><br>
-<footer>
-
-<p style="text-align: left;">
-This website was created using <a href="https://www.r-project.org/about.html">R</a> and <a href="https://rstudio.com">RStudio</a> using <a href="https://shiny.rstudio.com/">Shiny</a> and <a href="https://plot.ly/">plotly</a>. 
-
-<br>
-</footer>
-
-
-
-</div>
-
-<script>
-
-// add bootstrap table styles to pandoc tables
-function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
-}
+<script type="text/javascript">
 $(document).ready(function () {
-  bootstrapStylePandocTables();
-});
-
-
-</script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+  FlexDashboard.init({
+    theme: "cosmo",
+    fillPage: true,
+    orientation: "rows",
+    storyboard: false,
+    defaultFigWidth: 576,
+    defaultFigHeight: 460,
+    defaultFigWidthMobile: 360,
+    defaultFigHeightMobile: 460
   });
 });
-</script>
-
-<!-- code folding -->
-
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
 </script>
 
 </body>
