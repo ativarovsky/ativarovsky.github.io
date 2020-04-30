@@ -16,7 +16,7 @@ library(viridis)
 library(wbstats)
 library(DT)
 
-coronavirus::update_datasets(silence = TRUE)
+#coronavirus::update_datasets(silence = TRUE)
 
 data("coronavirus")
 
