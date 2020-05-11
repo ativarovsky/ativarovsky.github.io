@@ -16,7 +16,7 @@ library(viridis)
 library(wbstats)
 library(DT)
 
-#coronavirus::update_datasets(silence = TRUE)
+#devtools::install_github("RamiKrispin/coronavirus", force = TRUE)
 
 data("coronavirus")
 
