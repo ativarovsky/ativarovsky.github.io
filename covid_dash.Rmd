@@ -15,6 +15,7 @@ library(plotly)
 library(viridis)
 library(wbstats)
 library(DT)
+library(leaflet)
 
 #devtools::install_github("RamiKrispin/coronavirus", force = TRUE)
 
@@ -103,6 +104,8 @@ world_new_deaths_color = "#FE595E"
 
 ```
 
+Home
+======================================================================
 Row {data-height = 100}
 -----------------------------------------------------------------------
 ### total {.value-box}
@@ -189,6 +192,34 @@ rates %>%
   datatable(options = list(dom = 't')) %>% 
     formatPercentage("Case Rate", 3) %>% 
     formatPercentage("Death Rate", 3)
+  
+```
+
+Map
+======================================================================
+
+```{r map}
+
+map_data = 
+coronavirus %>% 
+  filter(cases > 0, type == "confirmed") %>%
+  group_by(Province.State, Country.Region, Lat, Long, type) %>% 
+  summarize(cases = sum(cases)) %>% 
+  mutate(log_cases = log(cases))
+  
+map_data_split = split(map_data, map_data$type)
+
+map = 
+  map_data %>% 
+  mutate()
+  leaflet(options = leafletOptions(minZoom = 1, maxZoom = 1)) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
+   addCircleMarkers(
+    radius = ~log_cases,
+    stroke = FALSE, fillOpacity = 0.5
+  ) 
+  #%>% addPolygons(stroke = TRUE,weight = 2, opacity = 1, fillOpacity = 0.8, smoothFactor = 0.2, highlight = highlightOptions(weight = 3, color = "white", bringToFront = TRUE),label = ~log_cases)
+
   
 ```
 
