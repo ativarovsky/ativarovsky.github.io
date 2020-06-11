@@ -1,0 +1,69 @@
+---
+title: "Restaurant Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+
+library(tidyverse)
+library(plotly)
+library(viridis)
+library(p8105.datasets)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+data("rest_inspec")
+
+rest_inspec %>% 
+  drop_na(boro) %>% 
+  filter(cuisine_description == "CafÃ©/Coffee/Tea") %>% 
+  count(boro) %>% 
+  rename("Borough" = "boro", "Qty" = "n")  %>% 
+  plot_ly(x = ~Qty, y = ~Borough, color = ~Borough, type = "scatter", mode = 'markers', marker = list(size = ~Qty/30, opacity = 0.5)) %>% 
+  layout(title = "Coffee Shops in NYC")
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+rest_inspec %>% 
+  distinct() %>% 
+  select(boro, cuisine_description) %>% 
+  filter(!boro %in% "Missing", cuisine_description %in% c("Japanese","Thai", "CafÃ©/Coffee/Tea", "Bagels/Pretzels", "Pizza")) %>% 
+  mutate(cuisine_description = fct_recode(cuisine_description, "Coffee" = "CafÃ©/Coffee/Tea")) %>% 
+  group_by(boro, cuisine_description) %>% 
+  summarize(n = n()) %>% 
+  drop_na() %>% 
+  rename("Borough" = "boro", "Qty" = "n")  %>% 
+  plot_ly(x = ~Borough, y = ~Qty, color = ~cuisine_description, type = "bar") %>% 
+  layout(barmode = 'stack', title = "Favorite Foods")
+
+```
+
+### Chart C
+
+```{r}
+rest_inspec %>% 
+  select(boro, score, cuisine_description) %>% 
+  filter(cuisine_description %in% c("Japanese", "Thai", "CafÃ©/Coffee/Tea", "Bagels/Pretzels", "Pizza")) %>% 
+  drop_na() %>% 
+  mutate(cuisine_description = fct_recode(cuisine_description, "Coffee" = "CafÃ©/Coffee/Tea")) %>% 
+  rename("Score" = "score", "Cuisine" = "cuisine_description")  %>% 
+  plot_ly(y = ~Score, x = ~Cuisine, color = ~Cuisine, type = "box") %>% 
+  layout(title = "Inspection Ratings by Borough")
+
+```
+

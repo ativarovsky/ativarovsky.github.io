@@ -1,0 +1,8 @@
+---
+title: "Resume"
+output: html_document
+---
+
+
+
+<embed src="Alice Tivarovsky Resume APR 20.pdf" width="800px" height="1100px" />

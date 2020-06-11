@@ -1,0 +1,38 @@
+---
+title: "Alice Tivarovsky"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+
+B.S. Chemical Engineering (UCLA) 
+Master of Public Health (Columbia, c/o 2020)
+<br><br>
+
+## About
+
+Hi there. I'm Alice and I'm a recent graduate from [Columbia Mailman School of Public Health](https://www.mailman.columbia.edu), MPH (Epidemiology/Applied Biostatistics). I'm passionate about using data to improve health outcomes. If you're an employer, please make your way over to my [résumé](resume.html) and/or [LinkedIn page](https://www.linkedin.com/in/alice-tivarovsky-56281131/). 
+<br><br>
+
+<img src="IMG_4479.jpg" style="width:65%"><br>
+<br><br>
+
+## Work
+* In the Spring of 2020, I completed my master's thesis on phthalate exposure in the US using data from the CDC's NHANES project. You can check it out here. 
+* For those following the Covid-19 trajectories, this [dashboard](covid_dash.html) is definitely not a novel concept (pun not intended). Nevertheless, I enjoyed putting my own spin on IT and giving my friends and family a tool to track the pandemic. 
+* If data science is my favorite pastime, eating is close second. Check out some [NYC restaurant analyses](restaurant_dashboard.html) I put together. 
+* I completed the Health Research Training Program (HRTP) with the [New York City Department of Health and Mental Hygiene](https://www1.nyc.gov/site/doh/index.page) in summer 2019. I analyzed depression rates across NYC. Check out my final poster [here](practicum.html).
+* In Fall 2019, I worked on an [analysis](https://prisrinivasan.github.io/p8105_final/index.html) of associations between childhood asthma prevalence and cockraoch presence in NYC households. 
+* In Spring 2020, I was honored to publish a [piece](https://www.mailman.columbia.edu/public-health-now/news/can-we-talk-about-climate-change) about climate change in Columbia's Public Health Now magazine. 
+<br><br>
+
+
+
+## Contact Info
+
+Alice Tivarovsky <br>
+Email: [ativarovsky@gmail.com](mailto:ativarovsky@gmail.com)
+
+
