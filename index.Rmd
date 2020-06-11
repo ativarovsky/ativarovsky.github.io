@@ -20,7 +20,7 @@ Hi there. I'm Alice and I'm a recent graduate from [Columbia Mailman School of P
 <br><br>
 
 ## Work
-* In the Spring of 2020, I completed my master's thesis on phthalate exposure in the US using data from the CDC's NHANES project. You can check it out here. 
+* In the Spring of 2020, I completed my master's thesis on phthalate exposure in the US using data from the CDC's NHANES project. You can check it out [here](for_site.html). 
 * For those following the Covid-19 trajectories, this [dashboard](covid_dash.html) is definitely not a novel concept (pun not intended). Nevertheless, I enjoyed putting my own spin on IT and giving my friends and family a tool to track the pandemic. 
 * If data science is my favorite pastime, eating is close second. Check out some [NYC restaurant analyses](restaurant_dashboard.html) I put together. 
 * I completed the Health Research Training Program (HRTP) with the [New York City Department of Health and Mental Hygiene](https://www1.nyc.gov/site/doh/index.page) in summer 2019. I analyzed depression rates across NYC. Check out my final poster [here](practicum.html).

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -237,6 +236,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -265,6 +265,12 @@ $(document).ready(function () {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -402,12 +408,13 @@ div.tocify {
 <p>B.S. Chemical Engineering (UCLA) Master of Public Health (Columbia, c/o 2020) <br><br></p>
 <div id="about" class="section level2">
 <h2>About</h2>
-<p>Hi there. I’m Alice and I’m a second-year MPH student at <a href="https://www.mailman.columbia.edu">Columbia Mailman School of Public Health</a>, studying Epidemiology and Biostatistics. I’m passionate about using data to improve health outcomes. If you’re an employer, please make your way over to my <a href="resume.html">résumé</a> and/or <a href="https://www.linkedin.com/in/alice-tivarovsky-56281131/">LinkedIn page</a>. <br><br></p>
+<p>Hi there. I’m Alice and I’m a recent graduate from <a href="https://www.mailman.columbia.edu">Columbia Mailman School of Public Health</a>, MPH (Epidemiology/Applied Biostatistics). I’m passionate about using data to improve health outcomes. If you’re an employer, please make your way over to my <a href="resume.html">résumé</a> and/or <a href="https://www.linkedin.com/in/alice-tivarovsky-56281131/">LinkedIn page</a>. <br><br></p>
 <p><img src="IMG_4479.jpg" style="width:65%"><br> <br><br></p>
 </div>
 <div id="work" class="section level2">
 <h2>Work</h2>
 <ul>
+<li>In the Spring of 2020, I completed my master’s thesis on phthalate exposure in the US using data from the CDC’s NHANES project. You can check it out <a href="for_site.html">here</a>.</li>
 <li>For those following the Covid-19 trajectories, this <a href="covid_dash.html">dashboard</a> is definitely not a novel concept (pun not intended). Nevertheless, I enjoyed putting my own spin on IT and giving my friends and family a tool to track the pandemic.</li>
 <li>If data science is my favorite pastime, eating is close second. Check out some <a href="restaurant_dashboard.html">NYC restaurant analyses</a> I put together.</li>
 <li>I completed the Health Research Training Program (HRTP) with the <a href="https://www1.nyc.gov/site/doh/index.page">New York City Department of Health and Mental Hygiene</a> in summer 2019. I analyzed depression rates across NYC. Check out my final poster <a href="practicum.html">here</a>.</li>
@@ -479,7 +486,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
