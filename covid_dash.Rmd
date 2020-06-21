@@ -32,11 +32,11 @@ max_date = max(coronavirus$date)
 pop = wb(indicator = "SP.POP.TOTL", startdate = 2018, enddate = 2019) %>% 
   select(date, country, value) %>% 
   filter(date == "2018") %>% 
-  mutate(country = recode(country, "United States" = "US", "Czech Republic" = "Czechia", "Korea, Rep." = "Korea, South", "Iran, Islamic Rep." = "Iran", "Russian Federation" = "Russia")) %>% 
-  rename("Country.Region" = "country")
+  mutate(country = recode(country, "United States" = "US", "Czech Republic" = "Czechia", "Korea, Rep." = "Korea, South", "Iran, Islamic Rep." = "Iran", "Russian Federation" = "Russia")) 
+ #%>% rename("Country.Region" = "country")
 
-rates = left_join(coronavirus, pop, by = "Country.Region") %>% 
-  group_by(Country.Region, type) %>% 
+rates = left_join(coronavirus, pop, by = "country") %>% 
+  group_by(country, type) %>% 
   summarize(total = sum(cases), population = mean(value)) %>% 
   pivot_wider(names_from = type, values_from = total) %>% 
   filter(confirmed > 5000) %>% 
@@ -45,27 +45,27 @@ rates = left_join(coronavirus, pop, by = "Country.Region") %>%
 
 # US boxes
 us_total = coronavirus %>% 
-  select(Country.Region, type, cases) %>% 
-  filter(type == "confirmed", Country.Region == "US") %>% 
+  select(country, type, cases) %>% 
+  filter(type == "confirmed", country == "US") %>% 
   group_by(type) %>% 
   summarize(n = sum(cases))
 us_total_color = "#1f77b4"
 
 us_dead = coronavirus %>% 
-  filter(type == "death",  Country.Region == "US") %>% 
-  select(Country.Region, type, cases)  %>% 
+  filter(type == "death",  country == "US") %>% 
+  select(country, type, cases)  %>% 
   group_by(type) %>% 
   summarize(n = sum(cases))
 
 us_new_cases = coronavirus %>% 
-    filter(type == "confirmed",  Country.Region == "US", date == max_date) %>% 
-    select(Country.Region, type, cases)  %>% 
+    filter(type == "confirmed",  country == "US", date == max_date) %>% 
+    select(country, type, cases)  %>% 
     group_by(type) %>% 
     summarize(n = sum(cases))
 
 us_new_deaths = coronavirus %>% 
-    filter(type == "death",  Country.Region == "US", date == max_date) %>% 
-    select(Country.Region, type, cases)  %>% 
+    filter(type == "death",  country == "US", date == max_date) %>% 
+    select(country, type, cases)  %>% 
     group_by(type) %>% 
     summarize(n = sum(cases))
 
@@ -80,7 +80,7 @@ world_total_color = "#38d6b7"
 
 world_dead = coronavirus %>% 
   filter(type == "death") %>% 
-  select(Country.Region, type, cases)  %>% 
+  select(country, type, cases)  %>% 
   group_by(type) %>% 
   summarize(n = sum(cases))
 
@@ -88,7 +88,7 @@ world_dead_color = "#FF9754"
 
 world_new_cases = coronavirus %>% 
     filter(type == "confirmed", date == max_date) %>% 
-    select(Country.Region, type, cases)  %>% 
+    select(country, type, cases)  %>% 
     group_by(type) %>% 
     summarize(n = sum(cases))
 
@@ -96,7 +96,7 @@ world_new_cases_color = "#6f727a"
 
 world_new_deaths = coronavirus %>% 
     filter(type == "death", date == max_date) %>% 
-    select(Country.Region, type, cases)  %>% 
+    select(country, type, cases)  %>% 
     group_by(type) %>% 
     summarize(n = sum(cases))
 
@@ -162,12 +162,12 @@ rates %>%
   plot_ly(y = ~ round(100*case_rate, 2), 
           x = ~ round(100*death_rate, 2), 
           size = ~ (confirmed), 
-          color = ~ Country.Region, 
+          color = ~ country, 
           type = "scatter", 
           mode = "markers", 
           marker = list(sizemode = "diameter", opacity = 0.5), 
           hoverinfo = "text", 
-          text = ~paste("", Country.Region, "<br> Confirmed Cases: ", paste(format(confirmed, big.mark = "," )),
+          text = ~paste("", country, "<br> Confirmed Cases: ", paste(format(confirmed, big.mark = "," )),
                                             "<br> Case Rate: ", paste(round(100 * case_rate, 2), "%", sep = ""),
                                             "<br> Death Rate: ", paste(round(100 * death_rate, 2), "%", sep = ""))
         ) %>% 
@@ -187,39 +187,11 @@ rates %>%
 rates %>% 
   select(-population) %>% 
   arrange(-confirmed) %>% 
-  rename("Country" = "Country.Region", "Confirmed" = "confirmed", "Deaths" = "death", "Case Rate" = "case_rate", "Death Rate" = "death_rate", "Recovered" = "recovered") %>% 
+  rename("Country" = "country", "Confirmed" = "confirmed", "Deaths" = "death", "Case Rate" = "case_rate", "Death Rate" = "death_rate", "Recovered" = "recovered") %>% 
   select(Country, Confirmed, Recovered, Deaths, everything()) %>% 
   datatable(options = list(dom = 't')) %>% 
     formatPercentage("Case Rate", 3) %>% 
     formatPercentage("Death Rate", 3)
-  
-```
-
-Map
-======================================================================
-
-```{r map}
-
-map_data = 
-coronavirus %>% 
-  filter(cases > 0, type == "confirmed") %>%
-  group_by(Province.State, Country.Region, Lat, Long, type) %>% 
-  summarize(cases = sum(cases)) %>% 
-  mutate(log_cases = log(cases))
-  
-map_data_split = split(map_data, map_data$type)
-
-map = 
-  map_data %>% 
-  mutate()
-  leaflet(options = leafletOptions(minZoom = 1, maxZoom = 1)) %>% 
-  addProviderTiles(providers$CartoDB.Positron) %>% 
-   addCircleMarkers(
-    radius = ~log_cases,
-    stroke = FALSE, fillOpacity = 0.5
-  ) 
-  #%>% addPolygons(stroke = TRUE,weight = 2, opacity = 1, fillOpacity = 0.8, smoothFactor = 0.2, highlight = highlightOptions(weight = 3, color = "white", bringToFront = TRUE),label = ~log_cases)
-
   
 ```
 
