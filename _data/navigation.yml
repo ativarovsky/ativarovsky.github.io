@@ -1,0 +1,13 @@
+# main links
+main:
+  - title: "Blog"
+    url: _pages/posts
+  - title: "Resum&eacute;"
+    url: _pages/resume
+  - title: "About"
+    url: _pages/about
+  - title: "Contact"
+    url: _pages/contact
+  - title: "Github"
+    url: "https://github.com/ativarovsky"
+
