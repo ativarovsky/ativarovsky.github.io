@@ -1,8 +1,0 @@
----
-title: "2019 Practicum Poster"
-output: html_document
----
-
-
-
-<embed src="Practicum_Poster_Alice_Tivarovsky ES Checked.pdf" width="800px" height="1000px"/>
