@@ -313,7 +313,7 @@ library(wbstats)
 library(DT)
 library(leaflet)
 
-#devtools::install_github("RamiKr3ispin/coronavirus", force = TRUE)
+#devtools::install_github("RamiKrispin/coronavirus", force = TRUE)
 
 data("coronavirus")
 
