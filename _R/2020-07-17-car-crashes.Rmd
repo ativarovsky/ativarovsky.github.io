@@ -1,0 +1,87 @@
+---
+title: Visualizing Motor Vehicle Fatalities with ggplot2
+author: "alice"
+date: '2020-07-17'
+excerpt: ""
+layout: single
+htmlwidgets: true
+toc: true
+categories:
+  - data visualization
+  - ggplot2
+  - injuries
+---
+
+# Motivation
+
+The last two posts were a bit dense so we'll try to simplify a bit here. 
+
+Let's start with a morbid stat: if you're younger than 30 and live in the United States, your most probable cause of death is a car crash. You may have already known that. But here's a kicker - your risk of dying in a car crash is heavily influenced by the city you live in. And although metropolitan density is an obvious factor, other variables including weather, state policy, type of car involved, and emergency response capabilities play a [huge role](https://www.iihs.org/topics/fatality-statistics/detail/state-by-state#fn1ref1).
+
+In this post, we'll be using `ggplot2` - R's de-facto plotting package - to explore the relationship between city and motor vehicle fatalities in the US between 2010 and 2016.
+
+We'll be using data compiled from the [Big Cities Health Coalition](https://www.bigcitieshealth.org), a partnership organization comprised of public health leaders and thinkers from America's largest cities. I'd never heard of BCHC prior to this and I was genuinely impressed with the wealth of data and analyses published on their site. 
+
+# Background
+
+In the 1950's, the United States mortality rate due to motor vehicle crashes was about [22 per 100,000](https://web.archive.org/web/20110921222129/http://www.saferoads.org/federal/2004/TrafficFatalities1899-2003.pdf) population. That proportion peaked at about 26 in the early 1970's and has since been steadily falling. Despite a somewhat alarming uptick in 2015, the proportion today hovers at [11 per 100,000](https://web.archive.org/web/20110921222129/http://www.saferoads.org/federal/2004/TrafficFatalities1899-2003.pdf). 
+
+While that's undoubtedly huge progress, it still means that more than [35,000](https://www.cdc.gov/winnablebattles/report/motor.html) people die as a result of a motor vehicle crash every year. According to the [CDC](https://www.cdc.gov/vitalsigns/motor-vehicle-safety/index.html), about 1/3 of fatalities involve drunk drivers, another 1/3 involve drivers or passengers where proper restraints were not used (meaning seat belts, car seats, etc.), and another 1/3 involve drivers that were speeding. 
+
+Another somewhat sad statistic is that the reduction in motor vehicle fatalities in the U.S. has not kept pace with that of other high income countries. On average, high income countries reduced crash deaths by 56% between 2000 and 2013, compared with 31% in the U.S [CDC](https://www.cdc.gov/vitalsigns/motor-vehicle-safety/index.html). Today, the mortality rate in the U.S. (the 11 per 100,000 mentioned above) is by far the highest among high-income countries. 
+
+Interestingly, states that are predominantly rural tend to have higher vehicle mortality rates. Mississippi (22.5 deaths/100,000 population), South Carolina (20.4 deaths/100,000 population), and Alabama (19.5 deaths/100,000 population), represent the highest rates, while New York (4.8 deaths/100,000 population), Massachusetts (5.2 deaths/100,000 population), and New Jersey (6.3 deaths/100,000 population) represent three of the lowest [IIHS](https://www.iihs.org/topics/fatality-statistics/detail/state-by-state). However, this divide is much less clear when we drill down to individual cities. Cary, NC, for instance, is one of the safest cities for drivers (1.3 fatal accidents per 100,000 population), while Detroit is one of the most dangerous (16.2 fatal accidents per 100,000 population) [Nerdwallet](https://www.nerdwallet.com/blog/insurance/dangerous-cities-car-drivers-2016/). 
+
+Ok, no more sad statistics. Let's look at some data. 
+
+# Analysis
+
+## Data Preparation
+```{r global_options, include = FALSE}
+
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+```
+
+### Data Source
+
+These data were taken from the data platform [page](https://bchi.bigcitieshealth.org/indicators/1872/searches/34543) on the Big Cities Health Coalition [website](https://www.bigcitieshealth.org).
+
+### Libraries
+
+```{r libraries}
+library(tidyverse)
+
+```
+
+
+### Data Import
+
+
+### Data Tidy
+
+### Variables Used
+
+## Motor Vehicle Fatalities
+
+
+- just ggplot
+- add geoms iteratively
+  - box plot of year vs rate
+  - violin plot? 
+  - stacked bars
+- add colors and themes
+  - virdis
+- cherry on top = ggplotly interactivity
+
+# Further Reading 
+- cheat sheet: https://rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
+
+
+
+# References
+
+
+
+
+
