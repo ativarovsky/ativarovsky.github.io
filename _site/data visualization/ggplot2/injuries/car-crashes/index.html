@@ -1376,8 +1376,9 @@ Yikes. Too many similar colors. Too much legend.</p>
 </span><span class="n">spaghetti_plot_1</span><span class="w">
 </span></code></pre></div></div>
 
-<p><img src="/figs/2020-07-17-car-crashes/unnamed-chunk-271-1.png" alt="plot of chunk unnamed-chunk-271" />
-That’s a lot better, but there’s still no way anyone would be able to distinguish Houston from Indianapolis, or even be able to infer which city has the highest crash fatality burden versus lowest. And this is where interactivity comes in handy. A word of warning, it’s easy to over-do interactivity and go nuts with things like <code class="highlighter-rouge">plotly</code> because it’s fun and flashy. Don’t do it. If it doesn’t add value to visualizing patterns in the data, it doesn’t have any place on your plot.</p>
+<p><img src="/figs/2020-07-17-car-crashes/unnamed-chunk-271-1.png" alt="plot of chunk unnamed-chunk-271" class="full" /></p>
+
+<p>That’s a lot better, but there’s still no way anyone would be able to distinguish Houston from Indianapolis, or even be able to infer which city has the highest crash fatality burden versus lowest. And this is where interactivity comes in handy. A word of warning, it’s easy to over-do interactivity and go nuts with things like <code class="highlighter-rouge">plotly</code> because it’s fun and flashy. Don’t do it. If it doesn’t add value to visualizing patterns in the data, it doesn’t have any place on your plot.</p>
 
 <p>In this case, we definitely want some interactivity to help us understand the data. We’re going to use <a href="https://www.rdocumentation.org/packages/plotly/versions/4.9.2.1/topics/ggplotly"><code class="highlighter-rouge">ggplotly</code></a>, a convenient marriage of <code class="highlighter-rouge">plotly</code> and <code class="highlighter-rouge">ggplot2</code>. You can hover on a line to see which city it represents, or double any city in the legend to isolate it on the plot.</p>
 

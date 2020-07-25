@@ -12,9 +12,9 @@ categories:
   - injuries
 ---
 
-_This is my favorite part about analytics: Taking boring flat data and bringing it to life through visualization. -- John Tukey_
+_"This is my favorite part about analytics: Taking boring flat data and bringing it to life through visualization." -- John Tukey_
 
-# Motivation
+## Motivation
 
 The last two posts were a bit dense so we'll try to keep it simple here. 
 
@@ -26,7 +26,7 @@ In this post, we'll be using `ggplot2` - R's de-facto plotting package - to expl
 
 We'll be using data compiled from the [Big Cities Health Coalition](https://www.bigcitieshealth.org), a partnership organization comprised of public health leaders and thinkers from America's largest cities. I'd never heard of BCHC prior to this and I was genuinely impressed with the wealth of data and analyses published on their site. 
 
-# Background
+## Background
 
 In the 1950's, the United States mortality rate due to motor vehicle crashes was about [22 per 100,000](https://web.archive.org/web/20110921222129/http://www.saferoads.org/federal/2004/TrafficFatalities1899-2003.pdf) population. That proportion peaked at about 26 in the early 1970's and has since been steadily falling. Despite a somewhat alarming uptick in 2015, the proportion today hovers at [11 per 100,000](https://web.archive.org/web/20110921222129/http://www.saferoads.org/federal/2004/TrafficFatalities1899-2003.pdf). 
 
@@ -38,19 +38,18 @@ Interestingly, states that are predominantly rural tend to have higher vehicle m
 
 Ok, enough sad statistics. Let's look at some data. 
 
-# Analysis
+## Analysis
 
-## Data Preparation
+### Data Preparation
 ```{r global_options, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
-
 ```
 
-### Data Source
+#### Data Source
 
 These data were taken from the [data platform page](https://bchi.bigcitieshealth.org/indicators/1872/searches/34543) on the Big Cities Health Coalition [website](https://www.bigcitieshealth.org).
 
-### Libraries
+#### Libraries
 
 ```{r libraries}
 library(tidyverse)
@@ -60,21 +59,20 @@ library(plotly)
 ```
 
 
-### Data Import
+#### Data Import
 
 According to the website, this dataset was updated in March 2019. As loaded, the dataset contains 34,492 rows and 15 variables. We filter for only the motor vehicle fatality portion, which leaves us with 880 observations. 
 
 ```{r import}
-
 drive_df = read.csv(file = "../data/BCHI_dataset.csv") %>% 
   janitor::clean_names() %>% 
   filter(indicator == "Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people)")
 
 ```
 
-### Data Tidy
+#### Data Tidy
 
-We want to make sure that the variable types R gives us are correct, variables are appropriately named, and that everything we expected in the dataframe is indeed there. We also want the data to be in [wide format... WRITE MORE HERE]
+We want to make sure that the variable types R gives us are correct, variables are appropriately named, and that everything we expected in the dataframe is indeed there. We also do a quick check to make sure the data are in wide format, wherein each observation is represented by a row and each variable measured for that observation is given in a column. 
 
 ```{r structure}
 str(drive_df)
@@ -94,7 +92,7 @@ drive_df =
 ```
 
 
-### Variables Used
+#### Variables Used
 
 The variables we care about here are: 
 - `year`: 2010 through 2016
@@ -106,15 +104,6 @@ The variables we care about here are:
 
 ## Visualizing Motor Vehicle Fatalities
 
-- just ggplot
-- add geoms iteratively
-  - box plot of year vs rate
-  - violin plot? 
-  - stacked bars
-- add colors and themes
-  - virdis
-- cherry on top = ggplotly interactivity
-
 `ggplot2` works by layering graphical elements on top of one another. These layers are referred to as "geoms" and they include things like axes, grid lines, color schemes points representing your data, trend-lines connecting your data, shaded regions representing confidence intervals, and plot labels, titles, and legends. Creating a final graph requires you to define each element individually and "add" it to the `ggplot` function. 
 
 The best way to explain `ggplot2` is, of course, to demonstrate it. Let's first just apply the function to our dataframe `drive_df` to see what happens. 
@@ -122,6 +111,7 @@ The best way to explain `ggplot2` is, of course, to demonstrate it. Let's first 
 ```{r}
 drive_df %>% 
   ggplot()
+
 ```
 
 We get this lovely gray square. Who doesn't love gray squares? 
@@ -157,11 +147,12 @@ drive_df %>%
 
 ```
 
-Clearly this is a pretty bad plot and if you ever see something like this published, please assume that the author doesn't know much about plots. For one thing, using a scatterplot doesn't make sense because the year variable was measured categorically rather than continuously. BUT... this does show us something important in the data: outliers. On the left, we have points hovering at 70-75 deaths per 100,000. Recall that in the 1970s, when motor vehicle deaths peaked, the average values reached into the mid-20s. So clearly, 75 is astronomical. Let's take a detour and investigate this a bit more. I'm going to go back to the dataframe and sort in order of decreasing `value`: 
+Clearly this is a pretty bad plot and if you ever see something like this published, please assume that the author doesn't know much about plots. For one thing, using a scatterplot doesn't make sense because the year variable was measured categorically rather than continuously. BUT... this does show us something important in the data: __outliers__. On the left, we have points hovering at 70-75 deaths per 100,000. Recall that in the 1970s, when motor vehicle deaths peaked, the average values reached into the mid-20s. So clearly, 75 is astronomical. Let's take a detour and investigate this a bit more. I'm going to go back to the dataframe and sort in order of decreasing `value`: 
 
 ```{r}
 drive_df %>% 
-  arrange(desc(value))
+  arrange(desc(value)) %>% 
+  head()
 
 ```
 
@@ -179,9 +170,11 @@ drive_df %>%
 
 Ok, that's a little better, but it still doesn't tell us anything interesting. Each year has many data points representing an individual city and on this plot, it's impossible to tell which city corresponds to which point. We'll come back to this question in a moment, but for now, let's try to extract something useful from the plot. Let's try to answer the question: __on average, did motor vehicle fatalities in the US increase, decrease, or remain stable between 2010 and 2016?__ To visualize the answer, we'll need a plot that can show us the center value of each year, and maybe some indication of the distribution within that year. Enter the boxplot. 
 
-#### Boxplot
+### Boxplots
 
-I confess, I love a good boxplot (perhaps even more than I love a good gray square). Here's a wonderful TDS [post](https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51) on boxplots. Let's quickly toss in a boxplot geom: 
+I confess, I love a good boxplot (perhaps even more than I love a good gray square). Here's a wonderful TDS [post](https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51) on boxplots. 
+
+Let's quickly toss in a boxplot geom: 
 
 ```{r}
 drive_df %>% 
@@ -203,9 +196,9 @@ drive_df %>%
 
 ```
 
-NICE. These are meaty results. There's an obvious disparity in mortality between males and females. Most years, male fatality averages are more than double that of females, and some years (2015, for instance) it's more like triple. 
+NICE. These are meaty results. There's an obvious disparity in mortality between males and females. Most years, male fatality averages are more than double that of females, and some years (2015, for instance) it's more like triple. The female boxplot for 2016 also looks suspiciously narrow. It's worth investigating but for now let's move on. 
 
-I'm not a huge fan of that color scheme, so let's use some nicer colors. For two-tone plots, I like to just manually choose the colors (there are a million color tools online, but [this one](https://coolors.co) is my favorite). For three or more colors, I normally use a package like `RColorBrewer` (built-in) or the extra-fancy [`viridis` package](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html), which you'd need to install. I'm also going to get rid of the gray background using a theme and change the opacity of the fill color using an `alpha` statement (the latter is just personal preference). Finally, I'll capitalize the axis labels, and add a title and caption. 
+I'm not a huge fan of that color scheme, so let's use some nicer colors. For two-tone plots, I like to just manually choose the colors (there are a million color tools online, but [this one](https://coolors.co) is my favorite). For three or more colors, I normally use a package like [`RColorBrewer`](https://cran.r-project.org/web/packages/RColorBrewer/RColorBrewer.pdf) (built-in) or the extra-fancy [`viridis`](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html) package, which you'd need to install. I'm also going to get rid of the gray background using a theme and change the opacity of the fill color using an `alpha` statement (the latter is just personal preference). Finally, I'll capitalize the axis labels, and add a title and caption. 
 
 ```{r}
 drive_df %>% 
@@ -224,14 +217,15 @@ drive_df %>%
   
 
 ```
+
 Great, we wound up with a nice-looking boxplot with some useful information. 
 
-#### Violin Plot
+### Violin Plots
 
 Now let's take a look at a cousin of the boxplot: the violin plot. All you really need to know to understand how it works is shown in this figure, taken from another [TDS post](https://towardsdatascience.com/violin-plots-explained-fb1d115e023d).
 
 <figure>
-    <a href="../assets/images/violin.png"><img src="../assets/images/violin.png"></a>
+    <img src="/assets/images/violin.png">
     <figcaption>Violin Plot</figcaption>
 </figure>
 
@@ -294,13 +288,16 @@ violin_1
 
 All right, let's get extra fancy. We're going to use a function within `ggplot2` called `stat_summary` to give us some extra detail. 
 
-EXPLAIN STAT_SUMMARY
+`stat_summary` does just what it sounds like - it summarizes stats. We've been using stats within our geoms this whole time, we just didn't know about it because `ggplot2` does it in the background. For instance, the boxplot geom calculates the median, 25th, and 75th percentile stats. 
+
+Here, we'll add dots to indicate the median in each violin. The `position_dodge` function moves the dots inside the violins as opposed to positioning them on the gridline. 
 
 ```{r}
 violin_1 +
   stat_summary(fun = median, geom="point", position = position_dodge(width = 0.9))
     
 ```
+
 ```{r}
 violin_1 +
   stat_summary(fun.data = mean_sdl, geom = "pointrange", position = position_dodge(width = 0.9))
@@ -309,7 +306,7 @@ violin_1 +
 
 There's lots of other stats you can layer on. You can even embed little boxplots within the violin plots. [This page](http://www.sthda.com/english/wiki/ggplot2-violin-plot-quick-start-guide-r-software-and-data-visualization) gives a great summary, but for our purposes we're going to end our mini-tour of violin plots here and move on. 
 
-### Scatterplots by city
+### Points and Lines 
 
 Now let's come back to our initial question of how motor vehicle fatalities differ across cities in the US. Recall that we started with the scatterplot below: 
 
@@ -321,7 +318,9 @@ drive_df %>%
 
 ```
 
-Each dot represents a city and every city has a value for every year of measurement, so of course we want to know which dot belongs to which city. Let's start with some basic color-coding. 
+Every dot represents a city and every city has a value for every year of measurement, so of course we want to know which dot belongs to which city.
+
+Let's start with some basic color-coding. 
 
 ```{r}
 drive_df %>% 
@@ -330,7 +329,8 @@ drive_df %>%
   geom_point(aes(color = place))
   
 ```
-Yikes. It's basically impossible to distinguish any of these colors from one another, or to follow the trajectory of any city year to year. We need lines rather than dots. We also need ggplot2` to know that each city should be treated as a grouping (this latter point is not super intuitive to me, but just know that it doesn't work otherwise).
+
+Yikes. It's basically impossible to distinguish any of these colors from one another, or to follow the trajectory of any city year to year. We need lines rather than dots. We also need `ggplot2` to know that each city should be treated as a grouping (this latter point is not super intuitive to me, but just know that it doesn't work otherwise).
 
 ```{r}
 drive_df %>% 
@@ -339,6 +339,7 @@ drive_df %>%
   geom_line()  
   
 ```
+
 Does this bring back fond [Etch A Sketch](https://etchasketch.com) memories? 
 
 What we've created here is called a __spaghetti plot__ for reasons that should be obvious. Clearly we need colors though. Let's drop a color aesthetic into our line geom. 
@@ -353,7 +354,7 @@ drive_df %>%
 spaghetti_plot
 
 ```
-Yikes. Too many similar colors. Too much legend. 
+Yikes. Too many similar colors. Also, too much legend. 
 
 ```{r}
 spaghetti_plot_1 = 
@@ -375,6 +376,8 @@ spaghetti_plot_1
 ```
 That's a lot better, but there's still no way anyone would be able to distinguish Houston from Indianapolis, or even be able to infer which city has the highest crash fatality burden versus lowest. And this is where interactivity comes in handy. A word of warning, it's easy to over-do interactivity and go nuts with things like `plotly` because it's fun and flashy. Don't do it. If it doesn't add value to visualizing patterns in the data, it doesn't have any place on your plot. 
 
+### `ggplotly`
+
 In this case, we definitely want some interactivity to help us understand the data. We're going to use [`ggplotly`](https://www.rdocumentation.org/packages/plotly/versions/4.9.2.1/topics/ggplotly), a convenient marriage of `plotly` and `ggplot2`. You can hover on a line to see which city it represents, or double any city in the legend to isolate it on the plot.
 
 ```{r}
@@ -383,7 +386,7 @@ spaghetti_plot_1 %>%
 
 ```
 
-Isn't this amazing? I'm blown away by the power of one line of code. 
+Isn't this amazing? I'm blown away that one additional line of code did all that. 
 
 ### Faceting
 
@@ -401,6 +404,7 @@ drive_df %>%
   facet_wrap(vars(place))
 
 ```
+
 Aside from the fact that the x-axis labels are a bit messed up, this is actually pretty nice. 
 
 Now let's try a grid for combinations of place and sex.
@@ -413,6 +417,7 @@ drive_df %>%
   facet_grid(sex ~ place)
 
 ```
+
 Oh boy. Let's go back to `facet_wrap` and just do some color-coding for sex rather than trying to make sense of this crazy grid. 
 
 ```{r}
@@ -423,7 +428,8 @@ drive_df %>%
   facet_wrap(vars(place))
 
 ```
-NICE. If we fix up the formatting, this will actually be an ok plot. First off, we should minimize the number of plots displayed horizontally using `ncol`. 
+
+NIIIIICE. If we fix up the formatting, this will actually be an ok plot. First off, we should minimize the number of plots displayed horizontally using `ncol`. 
 
 ```{r}
 drive_df %>% 
@@ -433,7 +439,7 @@ drive_df %>%
   facet_wrap(vars(place), ncol = 3)
 
 ```
-Now we're cooking. Let's fix up the colors, axes, legend, etc. 
+Next, let's fix up the colors, axes, legend, etc. 
 
 ```{r}
 drive_df %>% 
@@ -452,20 +458,22 @@ drive_df %>%
 
 ```
 
+I'm pretty happy with that. It's clear we have an issue with Indianapolis (perhaps they only provide the combined male/female figure but not the individual values). It's also clear that Boston had only 2 years of data and other cities have some missing data as well. But a more interesting finding is comparing Denver to Detroit, which are conveniently side-by-side. Detroit saw a leveling off, whereas Denver saw a sharp increase in male fatalities. San Jose sticks out, too, as the only city where female fatalities surpassed male fatalities (and sharply so...) If I were an analyst looking at traffic safety, I'd put some focus on Denver and San Jose and figure out what's going on there. 
 
-# Conclusions
+## Conclusions
 
-# Further Reading 
-- cheat sheet: https://rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
+I hope you agree that we did some fun stuff and learned a bit about car crash fatalities. This is absolutely just a surface-scratch of all the things `ggplot2` can do, so please take a look at the links below for more complete package exploration. 
+
+## Further Reading 
+
+- A handy [cheat sheet](https://rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
 - A beautiful [collection](https://www.r-graph-gallery.com/index.html) of R data viz inspiration
 
-
-# References
+## References
 
 - Michonneau F, Teal T, Fournier A, Seok B, Obeng A, Pawlik AN, Conrado AC, Woo K, Lijnzaad P, Hart T, White EP, Marwick B, Bolker B, Jordan KL, Ashander J, Dashnow H, Hertweck K, Cuesta SM, Becker EA, Guillou S, Shiklomanov A, Klinges D, Odom GJ, Jean M, Mislan KAS, Johnson K, Jahn N, Mannheimer S, Pederson S, Pletzer A, Fouilloux A, Switzer C, Bahlai C, Li D, Kerchner D, Rodriguez-Sanchez F, Rajeg GPW, Ye H, Tavares H, Leinweber K, Peck K, Lepore ML, Hancock S, Sandmann T, Hodges T, Tirok K, Jean M, Bailey A, von Hardenberg A, Theobold A, Wright A, Basu A, Johnson C, Voter C, Hulshof C, Bouquin D, Quinn D, Vanichkina D, Wilson E, Strauss E, Bledsoe E, Gan E, Fishman D, Boehm F, Daskalova G, Tavares H, Kaupp J, Dunic J, Keane J, Stachelek J, Herr JR, Millar J, Lotterhos K, Cranston K, Direk K, Tylén K, Chatzidimitriou K, Deer L, Tarkowski L, Chiapello M, Burle M, Ankenbrand M, Czapanskiy M, Moreno M, Culshaw-Maurer M, Koontz M, Weisner M, Johnston M, Carchedi N, Burge OR, Harrison P, Humburg P, Pauloo R, Peek R, Elahi R, Cortijo S, sfn_brt, Umashankar S, Goswami S, Sumedh, Yanco S, Webster T, Reiter T, Pearse W, Li Y (2020). “datacarpentry/R-ecology-lesson: Data Carpentry: Data Analysis and Visualization in R for Ecologists, June 2019.” doi: 10.5281/zenodo.3264888, https://datacarpentry.org/R-ecology-lesson/.
-- discovering statistics with R
+
 
 
 [^1] Age adjustment is a method used in epidemiology when comparing rates of disease or mortality between populations with different age breakdowns. Roughly speaking, if the population of Austin TX, for instance, is much younger than the average US population, it doesn't make sense to compare mortality rates directly. We know that older people die more frequently than younger people, so if we want an apples-to-apples comparison of two populations we have to use a weighting scheme. And that's all age standardization is - a weighting scheme that assigns more weight to certain age categories to "equalize" their weight to that of the reference population. In our example, older people in Austin would get weighted more than younger people. 
-[^2] 
 
