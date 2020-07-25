@@ -1,0 +1,1215 @@
+---
+title: Visualizing Motor Vehicle Fatalities with ggplot2
+author: "alice"
+date: '2020-07-17'
+excerpt: ""
+layout: single
+htmlwidgets: true
+toc: true
+categories:
+  - data visualization
+  - ggplot2
+  - injuries
+---
+
+_This is my favorite part about analytics: Taking boring flat data and bringing it to life through visualization. -- John Tukey_
+
+# Motivation
+
+The last two posts were a bit dense so we'll try to keep it simple here. 
+
+Let's start with a morbid stat: if you're younger than 30 and live in the United States, your most probable cause of death is a car crash. 
+
+You may have already known that. But here's a kicker - your risk of dying in a car crash is heavily influenced by the city you live in. And although metropolitan density is an obvious factor, other variables including weather, state policy, type of car involved, and emergency response capabilities play a [huge role](https://www.iihs.org/topics/fatality-statistics/detail/state-by-state#fn1ref1).
+
+In this post, we'll be using `ggplot2` - R's de-facto plotting package - to explore the relationship between city and motor vehicle fatalities in the US between 2010 and 2016.
+
+We'll be using data compiled from the [Big Cities Health Coalition](https://www.bigcitieshealth.org), a partnership organization comprised of public health leaders and thinkers from America's largest cities. I'd never heard of BCHC prior to this and I was genuinely impressed with the wealth of data and analyses published on their site. 
+
+# Background
+
+In the 1950's, the United States mortality rate due to motor vehicle crashes was about [22 per 100,000](https://web.archive.org/web/20110921222129/http://www.saferoads.org/federal/2004/TrafficFatalities1899-2003.pdf) population. That proportion peaked at about 26 in the early 1970's and has since been steadily falling. Despite a somewhat alarming uptick in 2015, the proportion today hovers at [11 per 100,000](https://web.archive.org/web/20110921222129/http://www.saferoads.org/federal/2004/TrafficFatalities1899-2003.pdf). 
+
+While that's undoubtedly huge progress, it still means that more than [35,000](https://www.cdc.gov/winnablebattles/report/motor.html) people die as a result of a motor vehicle crash every year. According to the [CDC](https://www.cdc.gov/vitalsigns/motor-vehicle-safety/index.html), about 1/3 of fatalities involve drunk drivers, another 1/3 involve drivers or passengers where proper restraints were not used (meaning seat belts, car seats, etc.), and another 1/3 involve drivers that were speeding. 
+
+Another somewhat sad statistic is that the reduction in motor vehicle fatalities in the U.S. has not kept pace with that of other high income countries. On average, high income countries reduced crash deaths by 56% between 2000 and 2013, compared with 31% in the U.S [CDC](https://www.cdc.gov/vitalsigns/motor-vehicle-safety/index.html). Today, the mortality rate in the U.S. (the 11 per 100,000 mentioned above) is by far the highest among high-income countries. 
+
+Interestingly, states that are predominantly rural tend to have higher vehicle mortality rates. Mississippi (22.5 deaths/100,000 population), South Carolina (20.4 deaths/100,000 population), and Alabama (19.5 deaths/100,000 population) represent the highest rates, while New York (4.8 deaths/100,000 population), Massachusetts (5.2 deaths/100,000 population), and New Jersey (6.3 deaths/100,000 population) represent three of the lowest [IIHS](https://www.iihs.org/topics/fatality-statistics/detail/state-by-state). However, this divide is much less clear when we drill down to individual cities. Cary, NC, for instance, is one of the safest cities for drivers (1.3 fatal accidents per 100,000 population), while Detroit is one of the most dangerous (16.2 fatal accidents per 100,000 population) [Nerdwallet](https://www.nerdwallet.com/blog/insurance/dangerous-cities-car-drivers-2016/). 
+
+Ok, enough sad statistics. Let's look at some data. 
+
+# Analysis
+
+## Data Preparation
+
+
+### Data Source
+
+These data were taken from the [data platform page](https://bchi.bigcitieshealth.org/indicators/1872/searches/34543) on the Big Cities Health Coalition [website](https://www.bigcitieshealth.org).
+
+### Libraries
+
+
+```r
+library(tidyverse)
+library(viridis)
+library(plotly)
+```
+
+
+### Data Import
+
+According to the website, this dataset was updated in March 2019. As loaded, the dataset contains 34,492 rows and 15 variables. We filter for only the motor vehicle fatality portion, which leaves us with 880 observations. 
+
+
+```r
+drive_df = read.csv(file = "../data/BCHI_dataset.csv") %>% 
+  janitor::clean_names() %>% 
+  filter(indicator == "Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people)")
+```
+
+### Data Tidy
+
+We want to make sure that the variable types R gives us are correct, variables are appropriately named, and that everything we expected in the dataframe is indeed there. We also want the data to be in [wide format... WRITE MORE HERE]
+
+
+```r
+str(drive_df)
+```
+
+```
+## 'data.frame':	880 obs. of  15 variables:
+##  $ indicator_category        : Factor w/ 13 levels "Behavioral Health/Substance Abuse",..: 9 9 9 9 9 9 9 9 9 9 ...
+##  $ indicator                 : Factor w/ 61 levels "AIDS Diagnoses Rate (Per 100,000 people)",..: 21 21 21 21 21 21 21 21 21 21 ...
+##  $ year                      : int  2010 2010 2010 2010 2010 2010 2010 2010 2010 2010 ...
+##  $ sex                       : Factor w/ 3 levels "Both","Female",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ race_ethnicity            : Factor w/ 9 levels "All","All ","American Indian/Alaska Native",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ value                     : num  2.6 3.9 4.3 5.5 5.6 5.8 6.1 6.5 6.7 6.7 ...
+##  $ place                     : Factor w/ 31 levels "Austin, TX","Baltimore, MD",..: 27 29 17 21 31 5 26 19 13 22 ...
+##  $ bchc_requested_methodology: Factor w/ 184 levels "Age-adjusted rate of asthma-related ED visits using ICD-9-CM Codes: 493.0, 493.1, 493.2, 493.8, 493.0. (Numerat"| __truncated__,..: 133 134 133 134 133 133 133 133 133 133 ...
+##  $ source                    : Factor w/ 659 levels "","(500 Cities Project)",..: 1 649 292 33 1 1 93 324 306 495 ...
+##  $ methods                   : Factor w/ 291 levels "","\"Vaccinated for flu in the past 12 months\"",..: 1 1 31 275 1 1 86 237 1 1 ...
+##  $ notes                     : Factor w/ 483 levels ""," Records where the value is blank in the data table indicate that the data are suppressed due to small counts, "| __truncated__,..: 472 1 1 1 1 1 1 1 1 1 ...
+##  $ x90_confidence_level_low  : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ x90_confidence_level_high : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ x95_confidence_level_low  : num  2 2.5 NA 3.5 NA NA NA NA 5.1 5.4 ...
+##  $ x95_confidence_level_high : num  3.4 6 NA 8.3 NA NA NA NA 8.7 7.9 ...
+```
+
+It looks like things are pretty clean. Most of the categorical variables, including race, sex, and city were read in as factors, while the mortality values and corresponding confidence intervals were read in using the double class. The only thing to fix is the `source`, `methods`, and `notes` variables, which should technically be strings since they don't contain any logical levels. I'm also going to change `year` to a categorical variable so R doesn't get confused trying to analyze it continuously. 
+
+
+```r
+drive_df = 
+  drive_df %>% 
+  mutate(year = as.factor(year), 
+         source = as.character(source), 
+         methods = as.character(methods),
+         notes = as.character(notes)
+  )
+```
+
+
+### Variables Used
+
+The variables we care about here are: 
+- `year`: 2010 through 2016
+- `sex`: Male, female, and the combined value under Both
+- `race_ethnicity`: American Indian/Alaska Native,  Asian/PI, Black, Hispanic, Other, White, and combined valued (All)
+- `value`: the mortality value we'll be analyzing (i.e. our dependent variable); the details are given under `bchc_requested_methodology`, which explains that `value` is equal to motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the 2000 census standard population. [^1]
+- `x90_confidence_level_low` and `x90_confidence_level_high`: 90% confidence interval around `value`
+- `x95_confidence_level_low` and `x95_confidence_level_high`: 95% confidence interval around `value`
+
+## Visualizing Motor Vehicle Fatalities
+
+- just ggplot
+- add geoms iteratively
+  - box plot of year vs rate
+  - violin plot? 
+  - stacked bars
+- add colors and themes
+  - virdis
+- cherry on top = ggplotly interactivity
+
+`ggplot2` works by layering graphical elements on top of one another. These layers are referred to as "geoms" and they include things like axes, grid lines, color schemes points representing your data, trend-lines connecting your data, shaded regions representing confidence intervals, and plot labels, titles, and legends. Creating a final graph requires you to define each element individually and "add" it to the `ggplot` function. 
+
+The best way to explain `ggplot2` is, of course, to demonstrate it. Let's first just apply the function to our dataframe `drive_df` to see what happens. 
+
+
+```r
+drive_df %>% 
+  ggplot()
+```
+
+![plot of chunk unnamed-chunk-252](/figs/2020-07-17-car-crashes/unnamed-chunk-252-1.png)
+
+We get this lovely gray square. Who doesn't love gray squares? 
+
+This may seem silly but the point is to demonstrate that `ggplot2` needs you to state what you want. Unlike Excel, it's not going to make any assumptions about your data and toss out a graph you might like. 
+
+The first thing we need to do is tell `ggplot2` what our dependent and independent variables are. We're interested in motor vehicle mortality year over year, so let's try the following:
+
+
+```r
+drive_df %>% 
+  ggplot(x = year, y = value)
+```
+
+![plot of chunk unnamed-chunk-253](/figs/2020-07-17-car-crashes/unnamed-chunk-253-1.png)
+
+Wait what?
+
+And this is one of the first lessons of `ggplot2`. In order to control how things look within a geom, you have to set what are known as __aesthetics__. Aesthetics set within the ggplot function itself (i.e. before geoms are defined) are global aesthetics that apply to the entire plot. Aesthetics set within a geom apply only to that geom. Therefore, when we define axes, we want to set them globally within a `ggplot` aes() statement: 
+
+
+```r
+drive_df %>% 
+  ggplot(aes(x = year, y = value))
+```
+
+![plot of chunk unnamed-chunk-254](/figs/2020-07-17-car-crashes/unnamed-chunk-254-1.png)
+
+Ah, now we're getting somewhere. 
+
+Let's now attempt to create a plot of motor vehicle mortality as a function of year. We know that we have data from 2010 through 2016 and that the data are collected (or compiled) annually. In order to get some points for each year, we'll need to "add" a point geom to `ggplot2`: 
+
+
+```r
+drive_df %>% 
+  ggplot(aes(x = year, y = value)) + 
+  geom_point()
+```
+
+![plot of chunk unnamed-chunk-255](/figs/2020-07-17-car-crashes/unnamed-chunk-255-1.png)
+
+Clearly this is a pretty bad plot and if you ever see something like this published, please assume that the author doesn't know much about plots. For one thing, using a scatterplot doesn't make sense because the year variable was measured categorically rather than continuously. BUT... this does show us something important in the data: outliers. On the left, we have points hovering at 70-75 deaths per 100,000. Recall that in the 1970s, when motor vehicle deaths peaked, the average values reached into the mid-20s. So clearly, 75 is astronomical. Let's take a detour and investigate this a bit more. I'm going to go back to the dataframe and sort in order of decreasing `value`: 
+
+
+```r
+drive_df %>% 
+  arrange(desc(value))
+```
+
+```
+##    indicator_category
+## 1     Injury/Violence
+## 2     Injury/Violence
+## 3     Injury/Violence
+## 4     Injury/Violence
+## 5     Injury/Violence
+## 6     Injury/Violence
+## 7     Injury/Violence
+## 8     Injury/Violence
+## 9     Injury/Violence
+## 10    Injury/Violence
+## 11    Injury/Violence
+## 12    Injury/Violence
+## 13    Injury/Violence
+## 14    Injury/Violence
+## 15    Injury/Violence
+## 16    Injury/Violence
+## 17    Injury/Violence
+## 18    Injury/Violence
+## 19    Injury/Violence
+## 20    Injury/Violence
+## 21    Injury/Violence
+## 22    Injury/Violence
+## 23    Injury/Violence
+## 24    Injury/Violence
+## 25    Injury/Violence
+## 26    Injury/Violence
+## 27    Injury/Violence
+## 28    Injury/Violence
+## 29    Injury/Violence
+## 30    Injury/Violence
+## 31    Injury/Violence
+## 32    Injury/Violence
+## 33    Injury/Violence
+## 34    Injury/Violence
+## 35    Injury/Violence
+## 36    Injury/Violence
+## 37    Injury/Violence
+## 38    Injury/Violence
+## 39    Injury/Violence
+## 40    Injury/Violence
+## 41    Injury/Violence
+## 42    Injury/Violence
+## 43    Injury/Violence
+## 44    Injury/Violence
+## 45    Injury/Violence
+## 46    Injury/Violence
+## 47    Injury/Violence
+## 48    Injury/Violence
+## 49    Injury/Violence
+## 50    Injury/Violence
+## 51    Injury/Violence
+## 52    Injury/Violence
+## 53    Injury/Violence
+## 54    Injury/Violence
+## 55    Injury/Violence
+## 56    Injury/Violence
+## 57    Injury/Violence
+## 58    Injury/Violence
+## 59    Injury/Violence
+## 60    Injury/Violence
+## 61    Injury/Violence
+## 62    Injury/Violence
+## 63    Injury/Violence
+## 64    Injury/Violence
+## 65    Injury/Violence
+## 66    Injury/Violence
+##                                                          indicator year
+## 1  Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2011
+## 2  Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2012
+## 3  Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2010
+## 4  Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2012
+## 5  Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2016
+## 6  Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2012
+## 7  Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2012
+## 8  Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2016
+## 9  Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2015
+## 10 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2016
+## 11 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2012
+## 12 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2013
+## 13 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2014
+## 14 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2013
+## 15 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2010
+## 16 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2016
+## 17 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2015
+## 18 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2015
+## 19 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2016
+## 20 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2016
+## 21 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2015
+## 22 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2011
+## 23 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2015
+## 24 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2016
+## 25 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2015
+## 26 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2012
+## 27 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2015
+## 28 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2016
+## 29 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2011
+## 30 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2013
+## 31 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2014
+## 32 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2015
+## 33 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2011
+## 34 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2012
+## 35 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2012
+## 36 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2013
+## 37 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2010
+## 38 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2011
+## 39 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2012
+## 40 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2015
+## 41 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2013
+## 42 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2014
+## 43 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2014
+## 44 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2016
+## 45 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2014
+## 46 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2015
+## 47 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2010
+## 48 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2010
+## 49 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2015
+## 50 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2011
+## 51 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2013
+## 52 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2014
+## 53 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2010
+## 54 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2011
+## 55 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2015
+## 56 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2016
+## 57 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2010
+## 58 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2013
+## 59 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2012
+## 60 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2015
+## 61 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2014
+## 62 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2014
+## 63 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2011
+## 64 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2012
+## 65 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2012
+## 66 Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people) 2012
+##       sex                race_ethnicity value
+## 1    Both                         Other  74.4
+## 2    Both                         Other  74.4
+## 3    Both American Indian/Alaska Native  70.5
+## 4    Both American Indian/Alaska Native  39.4
+## 5    Both                      Hispanic  35.6
+## 6    Both                      Hispanic  34.1
+## 7    Both American Indian/Alaska Native  26.8
+## 8    Male                           All  23.3
+## 9    Both                         Black  20.4
+## 10   Both                         Black  20.0
+## 11   Male                           All  19.9
+## 12   Male                           All  19.9
+## 13   Male                           All  19.5
+## 14 Female                           All  19.4
+## 15   Male                           All  19.3
+## 16   Male                           All  19.1
+## 17   Both                         Black  18.8
+## 18   Both                         Black  18.8
+## 19   Both                      Hispanic  18.8
+## 20   Male                           All  18.7
+## 21   Male                           All  18.1
+## 22   Male                           All  17.8
+## 23   Male                           All  17.3
+## 24   Both                         Black  17.3
+## 25   Both American Indian/Alaska Native  16.9
+## 26   Male                           All  16.7
+## 27   Male                           All  16.7
+## 28   Both American Indian/Alaska Native  16.7
+## 29   Both American Indian/Alaska Native  16.6
+## 30   Male                           All  16.6
+## 31   Both American Indian/Alaska Native  16.6
+## 32   Both                         Black  16.6
+## 33   Male                           All  16.5
+## 34   Male                           All  16.5
+## 35   Both American Indian/Alaska Native  16.3
+## 36   Both                      Hispanic  16.3
+## 37   Male                           All  16.2
+## 38   Male                           All  16.1
+## 39   Both                         Black  16.0
+## 40   Male                           All  16.0
+## 41   Male                           All  15.9
+## 42   Male                           All  15.9
+## 43   Male                           All  15.9
+## 44   Male                           All  15.9
+## 45   Male                           All  15.8
+## 46   Male                           All  15.8
+## 47   Both American Indian/Alaska Native  15.7
+## 48   Male                           All  15.6
+## 49   Male                           All  15.6
+## 50   Both                         Black  15.4
+## 51   Both American Indian/Alaska Native  15.4
+## 52   Male                           All  15.4
+## 53   Male                           All  15.3
+## 54   Male                           All  15.3
+## 55   Male                           All  15.2
+## 56   Both                         Black  15.1
+## 57   Both                         Black  15.0
+## 58   Both                         Black  15.0
+## 59   Male                           All  14.9
+## 60   Male                           All  14.9
+## 61   Both                         Black  14.7
+## 62   Male                           All  14.7
+## 63   Male                           All  14.6
+## 64   Both                         Black  14.4
+## 65   Male                           All  14.4
+## 66   Male                           All  14.4
+##                               place
+## 1                        Denver, CO
+## 2                        Denver, CO
+## 3                   Minneapolis, MN
+## 4                   Minneapolis, MN
+## 5                   Minneapolis, MN
+## 6                   Minneapolis, MN
+## 7                        Denver, CO
+## 8                        Denver, CO
+## 9                        Denver, CO
+## 10                  Kansas City, MO
+## 11                      Detroit, MI
+## 12                      Detroit, MI
+## 13                      Detroit, MI
+## 14                     San Jose, CA
+## 15                  Kansas City, MO
+## 16                  Kansas City, MO
+## 17                  Kansas City, MO
+## 18                  San Antonio, TX
+## 19                       Denver, CO
+## 20                     Columbus, OH
+## 21                  San Antonio, TX
+## 22  Fort Worth (Tarrant County), TX
+## 23                     Columbus, OH
+## 24                       Denver, CO
+## 25           U.S. Total, U.S. Total
+## 26                  Kansas City, MO
+## 27           U.S. Total, U.S. Total
+## 28                  Minneapolis, MN
+## 29           U.S. Total, U.S. Total
+## 30  Fort Worth (Tarrant County), TX
+## 31           U.S. Total, U.S. Total
+## 32     Las Vegas (Clark County), NV
+## 33                     Columbus, OH
+## 34           U.S. Total, U.S. Total
+## 35           U.S. Total, U.S. Total
+## 36                       Denver, CO
+## 37           U.S. Total, U.S. Total
+## 38           U.S. Total, U.S. Total
+## 39    Miami (Miami-Dade County), FL
+## 40                  Kansas City, MO
+## 41           U.S. Total, U.S. Total
+## 42    Miami (Miami-Dade County), FL
+## 43                  San Antonio, TX
+## 44 Indianapolis (Marion County), IN
+## 45           U.S. Total, U.S. Total
+## 46     Oakland (Alameda County), CA
+## 47           U.S. Total, U.S. Total
+## 48  Fort Worth (Tarrant County), TX
+## 49     Las Vegas (Clark County), NV
+## 50                       Denver, CO
+## 51           U.S. Total, U.S. Total
+## 52  Fort Worth (Tarrant County), TX
+## 53    Miami (Miami-Dade County), FL
+## 54    Miami (Miami-Dade County), FL
+## 55  Fort Worth (Tarrant County), TX
+## 56                     Columbus, OH
+## 57                  Kansas City, MO
+## 58                  Kansas City, MO
+## 59                      Houston, TX
+## 60                       Denver, CO
+## 61     Las Vegas (Clark County), NV
+## 62                  Kansas City, MO
+## 63                  Kansas City, MO
+## 64                      Detroit, MI
+## 65  Fort Worth (Tarrant County), TX
+## 66    Miami (Miami-Dade County), FL
+##                                                                                                                                                                                                                                                                               bchc_requested_methodology
+## 1   Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 2   Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 3   Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 4   Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 5   Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 6   Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 7   Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 8   Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 9   Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 10  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 11  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 12  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 13  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 14  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 15  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 16  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 17  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 18 Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2.
+## 19  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 20  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 21 Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2.
+## 22  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 23  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 24  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 25  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 26  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 27  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 28  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 29  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 30 Motor vehicale deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 31  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 32  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 33  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 34  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 35  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 36  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 37  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 38  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 39  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 40  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 41  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 42  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 43 Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2.
+## 44  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 45  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 46 Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2.
+## 47  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 48  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 49  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 50  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 51  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 52 Motor vehicale deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 53  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 54  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 55 Motor vehicale deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 56  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 57  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 58  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 59  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 60  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 61  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 62  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 63  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 64  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 65  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+## 66  Motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the year 2000 standard population. ICD-10 Codes: V02-V04, V09.0, V09.2, V12-V14, V19.0-V19.2, V19.4-V19.6, V20-V79, V80.3-V80.5, V81.0-V81.1, V82.0-V82.1, V83-V86, V87.0-V87.8, V88.0-V88.8, V89.0, V89.2
+##                                                                                                                                                                                           source
+## 1                                                                                                                                                              Colorado Vital Records Death Data
+## 2                                                                                                                                                              Colorado Vital Records Death Data
+## 3                                                                                                                                                                     Minnesota Vital Statistics
+## 4                                                                                                                                                                     Minnesota Vital Statistics
+## 5                                                                                                                                                                     Minnesota Vital Statistics
+## 6                                                                                                                                                                     Minnesota Vital Statistics
+## 7                                                                                                                                                              Colorado Vital Records Death Data
+## 8                                                                                                                   Mortality data from the Colorado Department of Public Health and Environment
+## 9                                                                                                                   Mortality data from the Colorado Department of Public Health and Environment
+## 10                                                                                                                                                                                              
+## 11                                                                                                                                                                                              
+## 12                                                                                                                                                                           MDHHS Vital Records
+## 13                                                                                                                                                                           MDHHS Vital Records
+## 14                                                                                   Santa Clara County Public Health Department, 2011-2013 Death Database, U.S. Census Bureau, Census 2000-2010
+## 15                                                                                                                                                                                              
+## 16                                                                                                                                                                                              
+## 17                                                                                                                                                                                              
+## 18                                                                                                                                                                                    CDC Wonder
+## 19                                                                                                                  Mortality data from the Colorado Department of Public Health and Environment
+## 20 Mortality data from Ohio Department of Health, Office of Vital Statistics.  Population files from US Census 2010 Decenial Census.  Analyzed by Columbus Public Health, Office of Epidemiology
+## 21                                                                                                                                                                                    CDC Wonder
+## 22                                                                                                                                                     Texas Department of State Health Services
+## 23 Mortality data from Ohio Department of Health, Office of Vital Statistics.  Population files from US Census 2010 Decenial Census.  Analyzed by Columbus Public Health, Office of Epidemiology
+## 24                                                                                                                  Mortality data from the Colorado Department of Public Health and Environment
+## 25                                                                                            Health, United States, 2016, HHS/CDC/NCHS, Table 17 https://www.cdc.gov/nchs/data/hus/2016/017.pdf
+## 26                                                                                                                                                                                              
+## 27                                                                                            Health, United States, 2016, HHS/CDC/NCHS, Table 17 https://www.cdc.gov/nchs/data/hus/2016/017.pdf
+## 28                                                                                                                                                                    Minnesota Vital Statistics
+## 29                                Motor vehicle crash deaths (age adjusted, per 100,000 population), National Vital Statistics System-Mortality (NVSS-M), CDC/NCHS; Population Estimates, Census
+## 30                                                                                                                                                         National Center for Health Statistics
+## 31                                Motor vehicle crash deaths (age adjusted, per 100,000 population), National Vital Statistics System-Mortality (NVSS-M), CDC/NCHS; Population Estimates, Census
+## 32                                                                                                                                                    Nevada Vital Records - Clark County Deaths
+## 33 Mortality data from Ohio Department of Health, Office of Vital Statistics.  Population files from US Census 2010 Decenial Census.  Analyzed by Columbus Public Health, Office of Epidemiology
+## 34                                Motor vehicle crash deaths (age adjusted, per 100,000 population), National Vital Statistics System-Mortality (NVSS-M), CDC/NCHS; Population Estimates, Census
+## 35                                Motor vehicle crash deaths (age adjusted, per 100,000 population), National Vital Statistics System-Mortality (NVSS-M), CDC/NCHS; Population Estimates, Census
+## 36                                                                                                                                                             Colorado Vital Records Death Data
+## 37                                Motor vehicle crash deaths (age adjusted, per 100,000 population), National Vital Statistics System-Mortality (NVSS-M), CDC/NCHS; Population Estimates, Census
+## 38                                Motor vehicle crash deaths (age adjusted, per 100,000 population), National Vital Statistics System-Mortality (NVSS-M), CDC/NCHS; Population Estimates, Census
+## 39                                                                                                                                                                                              
+## 40                                                                                                                                                                                              
+## 41                                Motor vehicle crash deaths (age adjusted, per 100,000 population), National Vital Statistics System-Mortality (NVSS-M), CDC/NCHS; Population Estimates, Census
+## 42                                                                                                                                                                                              
+## 43                                                                                                                                                                                    CDC Wonder
+## 44                                                                                                                                                                  MCPHD Death Certificate data
+## 45                                Motor vehicle crash deaths (age adjusted, per 100,000 population), National Vital Statistics System-Mortality (NVSS-M), CDC/NCHS; Population Estimates, Census
+## 46                                                                                                                                                         Alameda County vital statistics files
+## 47                                Motor vehicle crash deaths (age adjusted, per 100,000 population), National Vital Statistics System-Mortality (NVSS-M), CDC/NCHS; Population Estimates, Census
+## 48                                                                                                                                                     Texas Department of State Health Services
+## 49                                                                                                                                                    Nevada Vital Records - Clark County Deaths
+## 50                                                                                                                                                             Colorado Vital Records Death Data
+## 51                                Motor vehicle crash deaths (age adjusted, per 100,000 population), National Vital Statistics System-Mortality (NVSS-M), CDC/NCHS; Population Estimates, Census
+## 52                                                                                                                                                         National Center for Health Statistics
+## 53                                                                                                                                                                                              
+## 54                                                                                                                                                                                              
+## 55                                                                                                                                                         National Center for Health Statistics
+## 56 Mortality data from Ohio Department of Health, Office of Vital Statistics.  Population files from US Census 2010 Decenial Census.  Analyzed by Columbus Public Health, Office of Epidemiology
+## 57                                                                                                                                                                                              
+## 58                                                                                                                                                                                              
+## 59                               Texas Department of State Health Services, Center for Health Statistics, 2015. Available at http://soupfin.tdh.state.tx.us/death10.htm.  Accessed May 10, 2015.
+## 60                                                                                                                  Mortality data from the Colorado Department of Public Health and Environment
+## 61                                                                                                                                                    Nevada Vital Records - Clark County Deaths
+## 62                                                                                                                                                                                              
+## 63                                                                                                                                                                                              
+## 64                                                                                                                                                                                              
+## 65                                                                                                                                                     Texas Department of State Health Services
+## 66                                                                                                                                                                                              
+##                                                                                                                          methods
+## 1                                                             2011-2013 years are the most recently available data at this time.
+## 2                                                             2011-2013 years are the most recently available data at this time.
+## 3  Rates per 100,000 calculated using the Minneapolis 2010 Census population; age-adjusted using the 2000 US standard population
+## 4  Rates per 100,000 calculated using the Minneapolis 2010 Census population; age-adjusted using the 2000 US standard population
+## 5                                                                                                                               
+## 6  Rates per 100,000 calculated using the Minneapolis 2010 Census population; age-adjusted using the 2000 US standard population
+## 7                                                             2011-2013 years are the most recently available data at this time.
+## 8                                                                                                                               
+## 9                                                                                                                               
+## 10                                                                                                                              
+## 11                                                                                                                              
+## 12                                                                                                                              
+## 13                                                                                                                              
+## 14                                                                                                                              
+## 15                                                                                                                              
+## 16                                                                                                                              
+## 17                                                                                                                              
+## 18                                                                                                                              
+## 19                                                                                                                              
+## 20                                                                                                                              
+## 21                                                                                                                              
+## 22                                                                                                                              
+## 23                                                                                                                              
+## 24                                                                                                                              
+## 25                                                                                                                              
+## 26                                                                                                                              
+## 27                                                                                                                              
+## 28                                                                                                                              
+## 29                                                                                                                              
+## 30                                                                                                                              
+## 31                                                                                                                              
+## 32                                                                                                                              
+## 33                                                                                                                              
+## 34                                                                                                                              
+## 35                                                                                                                              
+## 36                                                            2011-2013 years are the most recently available data at this time.
+## 37                                                                                                                              
+## 38                                                                                                                              
+## 39                                                                                                                              
+## 40                                                                                                                              
+## 41                                                                                                                              
+## 42                                                                                                                              
+## 43                                                                                                                              
+## 44                                                                                                                              
+## 45                                                                                                                              
+## 46                                                                                      Using 2015 mid-year population estimates
+## 47                                                                                                                              
+## 48                                                                                                                              
+## 49                                                                                                                              
+## 50                                                            2011-2013 years are the most recently available data at this time.
+## 51                                                                                                                              
+## 52                                                                                                                              
+## 53                                                                                                                              
+## 54                                                                                                                              
+## 55                                                                                                                              
+## 56                                                                                                                              
+## 57                                                                                                                              
+## 58                                                                                                                              
+## 59                                                                                                                              
+## 60                                                                                                                              
+## 61                                                                                                                              
+## 62                                                                                                                              
+## 63                                                                                                                              
+## 64                                                                                                                              
+## 65                                                                                                                              
+## 66                                                                                                                              
+##                                                                                                                                                                                 notes
+## 1                                                                                                                                                                                    
+## 2                                                                                                                                                                                    
+## 3                                                                                                                                                                                    
+## 4                                                                                                                                                                                    
+## 5                                                                                                                                                                                    
+## 6                                                                                                                                                                                    
+## 7                                                                                                                                                               American Indian alone
+## 8                                                                                                                                                                                    
+## 9                                                                                                                                                                                    
+## 10                                                                                                                                                                                   
+## 11                                                                                                                                                                                   
+## 12                                                                                                                                                                                   
+## 13                                                                                                                                                                                   
+## 14                                                                                                                                                                                   
+## 15                                                                                                                                                                                   
+## 16                                                                                                                                                                                   
+## 17                                                                                                                                                                                   
+## 18                                                                                                                                                            Bexar County level data
+## 19                                                                                                                                                                                   
+## 20 Columbus defined based on resident zipcode within (43201,43202,43203,43204,43205,43206,43207,43209,43211,43214,43215,43219,43222,43223,43224,43227,43228,43229,43231,43232,43235).
+## 21                                                                                                                                                            Bexar County level data
+## 22                                                                                                                                               Tarrant County (not just Fort Worth)
+## 23 Columbus defined based on resident zipcode within (43201,43202,43203,43204,43205,43206,43207,43209,43211,43214,43215,43219,43222,43223,43224,43227,43228,43229,43231,43232,43235).
+## 24                                                                                                                                                                                   
+## 25                                                                                                                                                                                   
+## 26                                                                                                                                                                                   
+## 27                                                                                                                                                                                   
+## 28                                                                                                                                                                                   
+## 29                                                                                                                                                              American Indian alone
+## 30                                                                                                                                                                                   
+## 31                                                                                                                                                                                   
+## 32                                                                                                                                                                                   
+## 33 Columbus defined based on resident zipcode within (43201,43202,43203,43204,43205,43206,43207,43209,43211,43214,43215,43219,43222,43223,43224,43227,43228,43229,43231,43232,43235).
+## 34                                                                                                                                                                                   
+## 35                                                                                                                                                              American Indian alone
+## 36                                                                                                                                                                                   
+## 37                                                                                                                                                                                   
+## 38                                                                                                                                                                                   
+## 39                                                                                                                                                                                   
+## 40                                                                                                                                                                                   
+## 41                                                                                                                                                                                   
+## 42                                                                                                                                                                                   
+## 43                                                                                                                                                            Bexar County level data
+## 44                                                                                                                                                                                   
+## 45                                                                                                                                                                                   
+## 46                                                                                                                                                                                   
+## 47                                                                                                                                                              American Indian alone
+## 48                                                                                                                                               Tarrant County (not just Fort Worth)
+## 49                                                                                                                                                                                   
+## 50                                                                                                                                                                                   
+## 51                                                                                                                                                                                   
+## 52                                                                                                                                                                                   
+## 53                                                                                                                                                                                   
+## 54                                                                                                                                                                                   
+## 55                                                                                                                                                                                   
+## 56 Columbus defined based on resident zipcode within (43201,43202,43203,43204,43205,43206,43207,43209,43211,43214,43215,43219,43222,43223,43224,43227,43228,43229,43231,43232,43235).
+## 57                                                                                                                                                                                   
+## 58                                                                                                                                                                                   
+## 59                                                                                                                                               Harris County data, not just Houston
+## 60                                                                                                                                                                                   
+## 61                                                                                                                                                                                   
+## 62                                                                                                                                                                                   
+## 63                                                                                                                                                                                   
+## 64                                                                                                                                                                                   
+## 65                                                                                                                                               Tarrant County (not just Fort Worth)
+## 66                                                                                                                                                                                   
+##    x90_confidence_level_low x90_confidence_level_high
+## 1                        NA                        NA
+## 2                        NA                        NA
+## 3                        NA                        NA
+## 4                        NA                        NA
+## 5                        NA                        NA
+## 6                        NA                        NA
+## 7                        NA                        NA
+## 8                        NA                        NA
+## 9                        NA                        NA
+## 10                       NA                        NA
+## 11                       NA                        NA
+## 12                       NA                        NA
+## 13                       NA                        NA
+## 14                       NA                        NA
+## 15                       NA                        NA
+## 16                       NA                        NA
+## 17                       NA                        NA
+## 18                       NA                        NA
+## 19                       NA                        NA
+## 20                       NA                        NA
+## 21                       NA                        NA
+## 22                       NA                        NA
+## 23                       NA                        NA
+## 24                       NA                        NA
+## 25                       NA                        NA
+## 26                       NA                        NA
+## 27                       NA                        NA
+## 28                       NA                        NA
+## 29                       NA                        NA
+## 30                       NA                        NA
+## 31                       NA                        NA
+## 32                       NA                        NA
+## 33                       NA                        NA
+## 34                       NA                        NA
+## 35                       NA                        NA
+## 36                       NA                        NA
+## 37                       NA                        NA
+## 38                       NA                        NA
+## 39                       NA                        NA
+## 40                       NA                        NA
+## 41                       NA                        NA
+## 42                       NA                        NA
+## 43                       NA                        NA
+## 44                       NA                        NA
+## 45                       NA                        NA
+## 46                       NA                        NA
+## 47                       NA                        NA
+## 48                       NA                        NA
+## 49                       NA                        NA
+## 50                       NA                        NA
+## 51                       NA                        NA
+## 52                       NA                        NA
+## 53                       NA                        NA
+## 54                       NA                        NA
+## 55                       NA                        NA
+## 56                       NA                        NA
+## 57                       NA                        NA
+## 58                       NA                        NA
+## 59                       NA                        NA
+## 60                       NA                        NA
+## 61                       NA                        NA
+## 62                       NA                        NA
+## 63                       NA                        NA
+## 64                       NA                        NA
+## 65                       NA                        NA
+## 66                       NA                        NA
+##    x95_confidence_level_low x95_confidence_level_high
+## 1                        NA                        NA
+## 2                        NA                        NA
+## 3                        NA                        NA
+## 4                        NA                        NA
+## 5                        NA                        NA
+## 6                        NA                        NA
+## 7                        NA                        NA
+## 8                        NA                        NA
+## 9                        NA                        NA
+## 10                       NA                        NA
+## 11                       NA                        NA
+## 12                     15.1                      24.7
+## 13                     14.8                      24.2
+## 14                       NA                        NA
+## 15                       NA                        NA
+## 16                       NA                        NA
+## 17                       NA                        NA
+## 18                     12.2                      27.8
+## 19                       NA                        NA
+## 20                     14.0                      24.4
+## 21                     15.3                      20.9
+## 22                       NA                        NA
+## 23                     12.8                      23.0
+## 24                       NA                        NA
+## 25                       NA                        NA
+## 26                       NA                        NA
+## 27                       NA                        NA
+## 28                       NA                        NA
+## 29                       NA                        NA
+## 30                     13.9                      19.3
+## 31                       NA                        NA
+## 32                     10.9                      22.4
+## 33                     12.1                      22.0
+## 34                       NA                        NA
+## 35                       NA                        NA
+## 36                       NA                        NA
+## 37                       NA                        NA
+## 38                       NA                        NA
+## 39                       NA                        NA
+## 40                       NA                        NA
+## 41                       NA                        NA
+## 42                       NA                        NA
+## 43                     13.3                      18.6
+## 44                     12.3                      20.4
+## 45                       NA                        NA
+## 46                     10.7                      22.6
+## 47                       NA                        NA
+## 48                       NA                        NA
+## 49                     13.0                      18.1
+## 50                       NA                        NA
+## 51                       NA                        NA
+## 52                     12.8                      17.9
+## 53                       NA                        NA
+## 54                       NA                        NA
+## 55                     12.7                      17.7
+## 56                      9.9                      22.0
+## 57                       NA                        NA
+## 58                       NA                        NA
+## 59                       NA                        NA
+## 60                       NA                        NA
+## 61                      9.3                      20.0
+## 62                       NA                        NA
+## 63                       NA                        NA
+## 64                       NA                        NA
+## 65                       NA                        NA
+## 66                       NA                        NA
+##  [ reached 'max' / getOption("max.print") -- omitted 814 rows ]
+```
+
+The top three outliers belong to 2011 Denver, CO (74.4 deaths), 2012 Denver, CO (also 74.4 deaths), and 2010 Minneapolis, MN (70.5 deaths). What's important is that these are race-stratified. While all three represent total values for both males and females, the Denver numbers represent data for race labeled "Other" and the Minneapolis number belongs to the American Indian/Alaska Native population. If we wanted to dig around, we could perhaps find the original Denver and Minneapolis data and double check these numbers. They might be correct or they might be attributed to typos. 
+
+In this case, we're not interested in racial distribution for the moment, so we're going to restrict our dataset to the collapsed values, meaning those representing the averages of both sexes and all races. Then we'll re-attempt the pseudo-scatterplot. 
+
+
+```r
+drive_df %>% 
+  filter(sex == "Both", race_ethnicity == "All") %>% 
+  ggplot(aes(x = year, y = value)) + 
+  geom_point()
+```
+
+![plot of chunk unnamed-chunk-257](/figs/2020-07-17-car-crashes/unnamed-chunk-257-1.png)
+
+Ok, that's a little better, but it still doesn't tell us anything interesting. Each year has many data points representing an individual city and on this plot, it's impossible to tell which city corresponds to which point. We'll come back to this question in a moment, but for now, let's try to extract something useful from the plot. Let's try to answer the question: __on average, did motor vehicle fatalities in the US increase, decrease, or remain stable between 2010 and 2016?__ To visualize the answer, we'll need a plot that can show us the center value of each year, and maybe some indication of the distribution within that year. Enter the boxplot. 
+
+#### Boxplot
+
+I confess, I love a good boxplot (perhaps even more than I love a good gray square). Here's a wonderful TDS [post](https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51) on boxplots. Let's quickly toss in a boxplot geom: 
+
+
+```r
+drive_df %>% 
+  filter(sex == "Both", race_ethnicity == "All") %>% 
+  ggplot(aes(x = year, y = value)) + 
+    geom_boxplot()
+```
+
+![plot of chunk unnamed-chunk-258](/figs/2020-07-17-car-crashes/unnamed-chunk-258-1.png)
+
+Brilliant! Immediately we gleaned a useful nugget of information: there was an alarming spike in the data. Things were chugging along and then something happened in 2015. If you do a news search on this topic, you'll see that public health and safety folks [noticed](https://www.npr.org/sections/thetwo-way/2016/02/18/467230965/2015-traffic-fatalities-rose-by-largest-percent-in-50-years-safety-group-says) this, too. It looks like fuel prices and job growth were potential culprits, but either way, this is clearly a very useful insight.   
+
+Let's spice this plot up a bit. Let's say we want to compare men and women in the same time frame. We will need to specify a color code within the aesthetic for `geom_boxplot` and we'll also need to filter out the "Both" values for sex, since we just want male vs female. 
+
+
+```r
+drive_df %>% 
+  filter(race_ethnicity == "All", !sex == "Both") %>% 
+  ggplot(aes(x = year, y = value, fill = sex)) + 
+    geom_boxplot()
+```
+
+![plot of chunk unnamed-chunk-259](/figs/2020-07-17-car-crashes/unnamed-chunk-259-1.png)
+
+NICE. These are meaty results. There's an obvious disparity in mortality between males and females. Most years, male fatality averages are more than double that of females, and some years (2015, for instance) it's more like triple. 
+
+I'm not a huge fan of that color scheme, so let's use some nicer colors. For two-tone plots, I like to just manually choose the colors (there are a million color tools online, but [this one](https://coolors.co) is my favorite). For three or more colors, I normally use a package like `RColorBrewer` (built-in) or the extra-fancy [`viridis` package](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html), which you'd need to install. I'm also going to get rid of the gray background using a theme and change the opacity of the fill color using an `alpha` statement (the latter is just personal preference). Finally, I'll capitalize the axis labels, and add a title and caption. 
+
+
+```r
+drive_df %>% 
+  filter(race_ethnicity == "All", !sex == "Both") %>% 
+  ggplot(aes(x = year, y = value, fill = sex)) + 
+    #change outline color to gray
+    geom_boxplot(alpha = 0.7) +
+    scale_fill_manual(values=c("#996699", "#99CC99")) + 
+    theme_bw() +
+    labs(
+      title = "Motor Vehicle Fatality Rate 2010-2016 by Sex",
+      x = "Year",
+      y = "Fatality (death/100,000 population)",
+      caption = "Data source: Big Cities Health Initiative"
+    )
+```
+
+![plot of chunk unnamed-chunk-260](/figs/2020-07-17-car-crashes/unnamed-chunk-260-1.png)
+Great, we wound up with a nice-looking boxplot with some useful information. 
+
+#### Violin Plot
+
+Now let's take a look at a cousin of the boxplot: the violin plot. All you really need to know to understand how it works is shown in this figure, taken from another [TDS post](https://towardsdatascience.com/violin-plots-explained-fb1d115e023d).
+
+<figure>
+    <a href="../assets/images/violin.png"><img src="../assets/images/violin.png"></a>
+    <figcaption>Violin Plot</figcaption>
+</figure>
+
+There was a time a few years back when everyone thought violin plots were the best thing since sliced bagels. The trend seems to have somewhat faded but I think they're nice so let's make one. 
+
+
+```r
+drive_df %>% 
+  filter(sex == "Both", race_ethnicity == "All") %>%
+  ggplot(aes(x = year, y = value)) + 
+    geom_violin()
+```
+
+![plot of chunk unnamed-chunk-261](/figs/2020-07-17-car-crashes/unnamed-chunk-261-1.png)
+
+Is it just me or do these look like a Dr. Seuss version of stick-figures? 
+
+Anyway, these aren't very "violin-y" but the point is that higher frequencies of values lead to wider parts of the plots and vice-versa. If we want to see a more violin shape, we can combine some of the years to get more data points per 'violin". Let's do that here: 
+
+
+```r
+drive_df %>% 
+  filter(sex == "Both", race_ethnicity == "All") %>%
+  mutate(year_group = if_else(year %in% c(2010, 2011, 2012), "2010-2012", "2013-2016")) %>% 
+  ggplot(aes(x = year_group, y = value)) + 
+    geom_violin()
+```
+
+![plot of chunk unnamed-chunk-262](/figs/2020-07-17-car-crashes/unnamed-chunk-262-1.png)
+
+Much more violin-like! Clearly, the 2010-2012 group had most of its data points in the 6-6.5 range, while 2013-2016 was a bit more spread out across its range of values and its median is a bit higher (probably driven by that alarming 2015 number).
+
+What if we split out males vs females like we did in our boxplots? 
+
+```r
+violin = 
+drive_df %>% 
+  filter(!sex == "Both", race_ethnicity == "All") %>%
+  mutate(year_group = if_else(year %in% c(2010, 2011, 2012), "2010-2012", "2013-2016")) %>% 
+  ggplot(aes(x = year_group, y = value, fill = sex)) + 
+    geom_violin(alpha = 0.7)
+
+violin
+```
+
+![plot of chunk unnamed-chunk-263](/figs/2020-07-17-car-crashes/unnamed-chunk-263-1.png)
+
+Cute, right? The gender difference we saw in the boxplots is even more detailed here. 
+
+Let's clean this up a bit and then we're going to do something __really__ exciting. 
+
+```r
+violin_1 = 
+  violin +
+  scale_fill_manual(values=c("#996699", "#99CC99")) + 
+  theme_bw() +
+  labs(
+      title = "Motor Vehicle Fatality Rates, Early vs Mid 2000s by Sex",
+      x = "Year",
+      y = "Fatality (death/100,000 population)",
+      caption = "Data source: Big Cities Health Initiative"
+    )
+
+violin_1
+```
+
+![plot of chunk unnamed-chunk-264](/figs/2020-07-17-car-crashes/unnamed-chunk-264-1.png)
+
+All right, let's get extra fancy. We're going to use a function within `ggplot2` called `stat_summary` to give us some extra detail. 
+
+EXPLAIN STAT_SUMMARY
+
+
+```r
+violin_1 +
+  stat_summary(fun = median, geom="point", position = position_dodge(width = 0.9))
+```
+
+![plot of chunk unnamed-chunk-265](/figs/2020-07-17-car-crashes/unnamed-chunk-265-1.png)
+
+```r
+violin_1 +
+  stat_summary(fun.data = mean_sdl, geom = "pointrange", position = position_dodge(width = 0.9))
+```
+
+![plot of chunk unnamed-chunk-266](/figs/2020-07-17-car-crashes/unnamed-chunk-266-1.png)
+
+There's lots of other stats you can layer on. You can even embed little boxplots within the violin plots. [This page](http://www.sthda.com/english/wiki/ggplot2-violin-plot-quick-start-guide-r-software-and-data-visualization) gives a great summary, but for our purposes we're going to end our mini-tour of violin plots here and move on. 
+
+### Scatterplots by city
+
+Now let's come back to our initial question of how motor vehicle fatalities differ across cities in the US. Recall that we started with the scatterplot below: 
+
+
+```r
+drive_df %>% 
+  filter(sex == "Both", race_ethnicity == "All") %>% 
+  ggplot(aes(x = year, y = value)) + 
+  geom_point()
+```
+
+![plot of chunk unnamed-chunk-267](/figs/2020-07-17-car-crashes/unnamed-chunk-267-1.png)
+
+Each dot represents a city and every city has a value for every year of measurement, so of course we want to know which dot belongs to which city. Let's start with some basic color-coding. 
+
+
+```r
+drive_df %>% 
+  filter(sex == "Both", race_ethnicity == "All") %>% 
+  ggplot(aes(x = year, y = value)) + 
+  geom_point(aes(color = place))
+```
+
+![plot of chunk unnamed-chunk-268](/figs/2020-07-17-car-crashes/unnamed-chunk-268-1.png)
+Yikes. It's basically impossible to distinguish any of these colors from one another, or to follow the trajectory of any city year to year. We need lines rather than dots. We also need ggplot2` to know that each city should be treated as a grouping (this latter point is not super intuitive to me, but just know that it doesn't work otherwise).
+
+
+```r
+drive_df %>% 
+  filter(sex == "Both", race_ethnicity == "All") %>% 
+  ggplot(aes(x = year, y = value, group = place)) + 
+  geom_line()  
+```
+
+![plot of chunk unnamed-chunk-269](/figs/2020-07-17-car-crashes/unnamed-chunk-269-1.png)
+Does this bring back fond [Etch A Sketch](https://etchasketch.com) memories? 
+
+What we've created here is called a __spaghetti plot__ for reasons that should be obvious. Clearly we need colors though. Let's drop a color aesthetic into our line geom. 
+
+
+```r
+spaghetti_plot = 
+drive_df %>% 
+  filter(sex == "Both", race_ethnicity == "All") %>% 
+  ggplot(aes(x = year, y = value, group = place)) + 
+  geom_line(aes(color = place)) 
+
+spaghetti_plot
+```
+
+![plot of chunk unnamed-chunk-270](/figs/2020-07-17-car-crashes/unnamed-chunk-270-1.png)
+Yikes. Too many similar colors. Too much legend. 
+
+
+```r
+spaghetti_plot_1 = 
+  spaghetti_plot +
+  scale_color_viridis(discrete = TRUE) + 
+  theme_bw() + 
+  theme(legend.position = "bottom", legend.title = element_text(size = 8),
+  legend.text = element_text(size = 6) 
+  ) +
+  labs(
+      title = "Motor Vehicle Fatality Rates by City",
+      x = "Year",
+      y = "Fatality (death/100,000 population)",
+      caption = "Data source: Big Cities Health Initiative"
+    )
+
+spaghetti_plot_1
+```
+
+![plot of chunk unnamed-chunk-271](/figs/2020-07-17-car-crashes/unnamed-chunk-271-1.png)
+That's a lot better, but there's still no way anyone would be able to distinguish Houston from Indianapolis, or even be able to infer which city has the highest crash fatality burden versus lowest. And this is where interactivity comes in handy. A word of warning, it's easy to over-do interactivity and go nuts with things like `plotly` because it's fun and flashy. Don't do it. If it doesn't add value to visualizing patterns in the data, it doesn't have any place on your plot. 
+
+In this case, we definitely want some interactivity to help us understand the data. We're going to use [`ggplotly`](https://www.rdocumentation.org/packages/plotly/versions/4.9.2.1/topics/ggplotly), a convenient marriage of `plotly` and `ggplot2`. You can hover on a line to see which city it represents, or double any city in the legend to isolate it on the plot.
+
+
+```r
+spaghetti_plot_1 %>% 
+  ggplotly()
+```
+
+<div class="figure">
+<!--html_preserve--><div id="htmlwidget-201a8bf25be01ab8cbde" style="width:504px;height:504px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-201a8bf25be01ab8cbde">{"x":{"data":[{"x":[1,3,4,5,6],"y":[null,5,4.7,4.3,3.8],"text":["place: Boston, MA<br />year: 2010<br />value:   NA<br />place: Boston, MA","place: Boston, MA<br />year: 2012<br />value:  5.0<br />place: Boston, MA","place: Boston, MA<br />year: 2013<br />value:  4.7<br />place: Boston, MA","place: Boston, MA<br />year: 2014<br />value:  4.3<br />place: Boston, MA","place: Boston, MA<br />year: 2015<br />value:  3.8<br />place: Boston, MA"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(68,1,84,1)","dash":"solid"},"hoveron":"points","name":"Boston, MA","legendgroup":"Boston, MA","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4],"y":[5.8,5.7,6.5,6.3],"text":["place: Chicago, Il<br />year: 2010<br />value:  5.8<br />place: Chicago, Il","place: Chicago, Il<br />year: 2011<br />value:  5.7<br />place: Chicago, Il","place: Chicago, Il<br />year: 2012<br />value:  6.5<br />place: Chicago, Il","place: Chicago, Il<br />year: 2013<br />value:  6.3<br />place: Chicago, Il"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(71,16,99,1)","dash":"solid"},"hoveron":"points","name":"Chicago, Il","legendgroup":"Chicago, Il","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3,4,5],"y":[7.3,7.1,6.3],"text":["place: Cleveland, OH<br />year: 2012<br />value:  7.3<br />place: Cleveland, OH","place: Cleveland, OH<br />year: 2013<br />value:  7.1<br />place: Cleveland, OH","place: Cleveland, OH<br />year: 2014<br />value:  6.3<br />place: Cleveland, OH"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(72,29,111,1)","dash":"solid"},"hoveron":"points","name":"Cleveland, OH","legendgroup":"Cleveland, OH","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,6,7],"y":[9.4,10.7,10.5,8.3,12.1,12.8],"text":["place: Columbus, OH<br />year: 2010<br />value:  9.4<br />place: Columbus, OH","place: Columbus, OH<br />year: 2011<br />value: 10.7<br />place: Columbus, OH","place: Columbus, OH<br />year: 2012<br />value: 10.5<br />place: Columbus, OH","place: Columbus, OH<br />year: 2013<br />value:  8.3<br />place: Columbus, OH","place: Columbus, OH<br />year: 2015<br />value: 12.1<br />place: Columbus, OH","place: Columbus, OH<br />year: 2016<br />value: 12.8<br />place: Columbus, OH"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(72,41,122,1)","dash":"solid"},"hoveron":"points","name":"Columbus, OH","legendgroup":"Columbus, OH","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7],"y":[8.5,7.2,6.5,8.4,7.7,10.7,13.5],"text":["place: Denver, CO<br />year: 2010<br />value:  8.5<br />place: Denver, CO","place: Denver, CO<br />year: 2011<br />value:  7.2<br />place: Denver, CO","place: Denver, CO<br />year: 2012<br />value:  6.5<br />place: Denver, CO","place: Denver, CO<br />year: 2013<br />value:  8.4<br />place: Denver, CO","place: Denver, CO<br />year: 2014<br />value:  7.7<br />place: Denver, CO","place: Denver, CO<br />year: 2015<br />value: 10.7<br />place: Denver, CO","place: Denver, CO<br />year: 2016<br />value: 13.5<br />place: Denver, CO"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(69,53,129,1)","dash":"solid"},"hoveron":"points","name":"Denver, CO","legendgroup":"Denver, CO","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2,3,4,5],"y":[9,12.9,12.9,13.2],"text":["place: Detroit, MI<br />year: 2011<br />value:  9.0<br />place: Detroit, MI","place: Detroit, MI<br />year: 2012<br />value: 12.9<br />place: Detroit, MI","place: Detroit, MI<br />year: 2013<br />value: 12.9<br />place: Detroit, MI","place: Detroit, MI<br />year: 2014<br />value: 13.2<br />place: Detroit, MI"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(66,65,134,1)","dash":"solid"},"hoveron":"points","name":"Detroit, MI","legendgroup":"Detroit, MI","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5],"y":[9.3,10.9,9.9,11.6,9.8],"text":["place: Fort Worth (Tarrant County), TX<br />year: 2010<br />value:  9.3<br />place: Fort Worth (Tarrant County), TX","place: Fort Worth (Tarrant County), TX<br />year: 2011<br />value: 10.9<br />place: Fort Worth (Tarrant County), TX","place: Fort Worth (Tarrant County), TX<br />year: 2012<br />value:  9.9<br />place: Fort Worth (Tarrant County), TX","place: Fort Worth (Tarrant County), TX<br />year: 2013<br />value: 11.6<br />place: Fort Worth (Tarrant County), TX","place: Fort Worth (Tarrant County), TX<br />year: 2014<br />value:  9.8<br />place: Fort Worth (Tarrant County), TX"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(61,77,138,1)","dash":"solid"},"hoveron":"points","name":"Fort Worth (Tarrant County), TX","legendgroup":"Fort Worth (Tarrant County), TX","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3],"y":[10.1,9.8,9.7],"text":["place: Houston, TX<br />year: 2010<br />value: 10.1<br />place: Houston, TX","place: Houston, TX<br />year: 2011<br />value:  9.8<br />place: Houston, TX","place: Houston, TX<br />year: 2012<br />value:  9.7<br />place: Houston, TX"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(56,87,140,1)","dash":"solid"},"hoveron":"points","name":"Houston, TX","legendgroup":"Houston, TX","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,7],"y":[6.7,7.3,5.9,6.5,5.4,8.9],"text":["place: Indianapolis (Marion County), IN<br />year: 2010<br />value:  6.7<br />place: Indianapolis (Marion County), IN","place: Indianapolis (Marion County), IN<br />year: 2011<br />value:  7.3<br />place: Indianapolis (Marion County), IN","place: Indianapolis (Marion County), IN<br />year: 2012<br />value:  5.9<br />place: Indianapolis (Marion County), IN","place: Indianapolis (Marion County), IN<br />year: 2013<br />value:  6.5<br />place: Indianapolis (Marion County), IN","place: Indianapolis (Marion County), IN<br />year: 2014<br />value:  5.4<br />place: Indianapolis (Marion County), IN","place: Indianapolis (Marion County), IN<br />year: 2016<br />value:  8.9<br />place: Indianapolis (Marion County), IN"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(52,97,141,1)","dash":"solid"},"hoveron":"points","name":"Indianapolis (Marion County), IN","legendgroup":"Indianapolis (Marion County), IN","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7],"y":[12.6,9.8,10.7,9,9.4,10.8,11.5],"text":["place: Kansas City, MO<br />year: 2010<br />value: 12.6<br />place: Kansas City, MO","place: Kansas City, MO<br />year: 2011<br />value:  9.8<br />place: Kansas City, MO","place: Kansas City, MO<br />year: 2012<br />value: 10.7<br />place: Kansas City, MO","place: Kansas City, MO<br />year: 2013<br />value:  9.0<br />place: Kansas City, MO","place: Kansas City, MO<br />year: 2014<br />value:  9.4<br />place: Kansas City, MO","place: Kansas City, MO<br />year: 2015<br />value: 10.8<br />place: Kansas City, MO","place: Kansas City, MO<br />year: 2016<br />value: 11.5<br />place: Kansas City, MO"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(47,107,142,1)","dash":"solid"},"hoveron":"points","name":"Kansas City, MO","legendgroup":"Kansas City, MO","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6],"y":[8.7,7.8,8.8,9.1,8.8,10.6],"text":["place: Las Vegas (Clark County), NV<br />year: 2010<br />value:  8.7<br />place: Las Vegas (Clark County), NV","place: Las Vegas (Clark County), NV<br />year: 2011<br />value:  7.8<br />place: Las Vegas (Clark County), NV","place: Las Vegas (Clark County), NV<br />year: 2012<br />value:  8.8<br />place: Las Vegas (Clark County), NV","place: Las Vegas (Clark County), NV<br />year: 2013<br />value:  9.1<br />place: Las Vegas (Clark County), NV","place: Las Vegas (Clark County), NV<br />year: 2014<br />value:  8.8<br />place: Las Vegas (Clark County), NV","place: Las Vegas (Clark County), NV<br />year: 2015<br />value: 10.6<br />place: Las Vegas (Clark County), NV"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(43,116,142,1)","dash":"solid"},"hoveron":"points","name":"Las Vegas (Clark County), NV","legendgroup":"Las Vegas (Clark County), NV","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2,3,4,5],"y":[4.5,6.1,3.9,4.4],"text":["place: Long Beach, CA<br />year: 2011<br />value:  4.5<br />place: Long Beach, CA","place: Long Beach, CA<br />year: 2012<br />value:  6.1<br />place: Long Beach, CA","place: Long Beach, CA<br />year: 2013<br />value:  3.9<br />place: Long Beach, CA","place: Long Beach, CA<br />year: 2014<br />value:  4.4<br />place: Long Beach, CA"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(39,126,142,1)","dash":"solid"},"hoveron":"points","name":"Long Beach, CA","legendgroup":"Long Beach, CA","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3],"y":[4.3,3.7,4.1],"text":["place: Los Angeles, CA<br />year: 2010<br />value:  4.3<br />place: Los Angeles, CA","place: Los Angeles, CA<br />year: 2011<br />value:  3.7<br />place: Los Angeles, CA","place: Los Angeles, CA<br />year: 2012<br />value:  4.1<br />place: Los Angeles, CA"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(36,135,142,1)","dash":"solid"},"hoveron":"points","name":"Los Angeles, CA","legendgroup":"Los Angeles, CA","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2,3,4,5],"y":[10.3,9.9,8.8,10.1],"text":["place: Miami (Miami-Dade County), FL<br />year: 2011<br />value: 10.3<br />place: Miami (Miami-Dade County), FL","place: Miami (Miami-Dade County), FL<br />year: 2012<br />value:  9.9<br />place: Miami (Miami-Dade County), FL","place: Miami (Miami-Dade County), FL<br />year: 2013<br />value:  8.8<br />place: Miami (Miami-Dade County), FL","place: Miami (Miami-Dade County), FL<br />year: 2014<br />value: 10.1<br />place: Miami (Miami-Dade County), FL"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(33,144,140,1)","dash":"solid"},"hoveron":"points","name":"Miami (Miami-Dade County), FL","legendgroup":"Miami (Miami-Dade County), FL","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7],"y":[6.5,3.3,4.6,6.6,2.8,3.3,6.6],"text":["place: Minneapolis, MN<br />year: 2010<br />value:  6.5<br />place: Minneapolis, MN","place: Minneapolis, MN<br />year: 2011<br />value:  3.3<br />place: Minneapolis, MN","place: Minneapolis, MN<br />year: 2012<br />value:  4.6<br />place: Minneapolis, MN","place: Minneapolis, MN<br />year: 2013<br />value:  6.6<br />place: Minneapolis, MN","place: Minneapolis, MN<br />year: 2014<br />value:  2.8<br />place: Minneapolis, MN","place: Minneapolis, MN<br />year: 2015<br />value:  3.3<br />place: Minneapolis, MN","place: Minneapolis, MN<br />year: 2016<br />value:  6.6<br />place: Minneapolis, MN"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(31,153,138,1)","dash":"solid"},"hoveron":"points","name":"Minneapolis, MN","legendgroup":"Minneapolis, MN","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2,4,5,6],"y":[3.4,3.6,3.1,2.9],"text":["place: New York City, NY<br />year: 2011<br />value:  3.4<br />place: New York City, NY","place: New York City, NY<br />year: 2013<br />value:  3.6<br />place: New York City, NY","place: New York City, NY<br />year: 2014<br />value:  3.1<br />place: New York City, NY","place: New York City, NY<br />year: 2015<br />value:  2.9<br />place: New York City, NY"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(31,162,135,1)","dash":"solid"},"hoveron":"points","name":"New York City, NY","legendgroup":"New York City, NY","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7],"y":[5.5,6.7,12.9,7.7,5.9,10.3,8.6],"text":["place: Oakland (Alameda County), CA<br />year: 2010<br />value:  5.5<br />place: Oakland (Alameda County), CA","place: Oakland (Alameda County), CA<br />year: 2011<br />value:  6.7<br />place: Oakland (Alameda County), CA","place: Oakland (Alameda County), CA<br />year: 2012<br />value: 12.9<br />place: Oakland (Alameda County), CA","place: Oakland (Alameda County), CA<br />year: 2013<br />value:  7.7<br />place: Oakland (Alameda County), CA","place: Oakland (Alameda County), CA<br />year: 2014<br />value:  5.9<br />place: Oakland (Alameda County), CA","place: Oakland (Alameda County), CA<br />year: 2015<br />value: 10.3<br />place: Oakland (Alameda County), CA","place: Oakland (Alameda County), CA<br />year: 2016<br />value:  8.6<br />place: Oakland (Alameda County), CA"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(37,172,130,1)","dash":"solid"},"hoveron":"points","name":"Oakland (Alameda County), CA","legendgroup":"Oakland (Alameda County), CA","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,7],"y":[6.7,6.8,6.8,7,6.7,7.2],"text":["place: Philadelphia, PA<br />year: 2010<br />value:  6.7<br />place: Philadelphia, PA","place: Philadelphia, PA<br />year: 2011<br />value:  6.8<br />place: Philadelphia, PA","place: Philadelphia, PA<br />year: 2012<br />value:  6.8<br />place: Philadelphia, PA","place: Philadelphia, PA<br />year: 2013<br />value:  7.0<br />place: Philadelphia, PA","place: Philadelphia, PA<br />year: 2014<br />value:  6.7<br />place: Philadelphia, PA","place: Philadelphia, PA<br />year: 2016<br />value:  7.2<br />place: Philadelphia, PA"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(49,181,123,1)","dash":"solid"},"hoveron":"points","name":"Philadelphia, PA","legendgroup":"Philadelphia, PA","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3,5],"y":[8.7,10],"text":["place: Phoenix, AZ<br />year: 2012<br />value:  8.7<br />place: Phoenix, AZ","place: Phoenix, AZ<br />year: 2014<br />value: 10.0<br />place: Phoenix, AZ"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(64,188,114,1)","dash":"solid"},"hoveron":"points","name":"Phoenix, AZ","legendgroup":"Phoenix, AZ","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2,3,4,5,6,7],"y":[4.5,6,7.6,5.7,6.2,null],"text":["place: Portland (Multnomah County), OR<br />year: 2011<br />value:  4.5<br />place: Portland (Multnomah County), OR","place: Portland (Multnomah County), OR<br />year: 2012<br />value:  6.0<br />place: Portland (Multnomah County), OR","place: Portland (Multnomah County), OR<br />year: 2013<br />value:  7.6<br />place: Portland (Multnomah County), OR","place: Portland (Multnomah County), OR<br />year: 2014<br />value:  5.7<br />place: Portland (Multnomah County), OR","place: Portland (Multnomah County), OR<br />year: 2015<br />value:  6.2<br />place: Portland (Multnomah County), OR","place: Portland (Multnomah County), OR<br />year: 2016<br />value:   NA<br />place: Portland (Multnomah County), OR"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(83,197,105,1)","dash":"solid"},"hoveron":"points","name":"Portland (Multnomah County), OR","legendgroup":"Portland (Multnomah County), OR","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6],"y":[8.9,6.4,7.8,7.6,10.6,12],"text":["place: San Antonio, TX<br />year: 2010<br />value:  8.9<br />place: San Antonio, TX","place: San Antonio, TX<br />year: 2011<br />value:  6.4<br />place: San Antonio, TX","place: San Antonio, TX<br />year: 2012<br />value:  7.8<br />place: San Antonio, TX","place: San Antonio, TX<br />year: 2013<br />value:  7.6<br />place: San Antonio, TX","place: San Antonio, TX<br />year: 2014<br />value: 10.6<br />place: San Antonio, TX","place: San Antonio, TX<br />year: 2015<br />value: 12.0<br />place: San Antonio, TX"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(103,204,92,1)","dash":"solid"},"hoveron":"points","name":"San Antonio, TX","legendgroup":"San Antonio, TX","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7],"y":[6.1,6.1,6.7,6.1,7,7.1,7.3],"text":["place: San Diego County, CA<br />year: 2010<br />value:  6.1<br />place: San Diego County, CA","place: San Diego County, CA<br />year: 2011<br />value:  6.1<br />place: San Diego County, CA","place: San Diego County, CA<br />year: 2012<br />value:  6.7<br />place: San Diego County, CA","place: San Diego County, CA<br />year: 2013<br />value:  6.1<br />place: San Diego County, CA","place: San Diego County, CA<br />year: 2014<br />value:  7.0<br />place: San Diego County, CA","place: San Diego County, CA<br />year: 2015<br />value:  7.1<br />place: San Diego County, CA","place: San Diego County, CA<br />year: 2016<br />value:  7.3<br />place: San Diego County, CA"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(127,211,78,1)","dash":"solid"},"hoveron":"points","name":"San Diego County, CA","legendgroup":"San Diego County, CA","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,4],"y":[2.6,3.8],"text":["place: San Francisco, CA<br />year: 2010<br />value:  2.6<br />place: San Francisco, CA","place: San Francisco, CA<br />year: 2013<br />value:  3.8<br />place: San Francisco, CA"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(151,216,63,1)","dash":"solid"},"hoveron":"points","name":"San Francisco, CA","legendgroup":"San Francisco, CA","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2,3,4],"y":[5.9,6.1,7.1],"text":["place: San Jose, CA<br />year: 2011<br />value:  5.9<br />place: San Jose, CA","place: San Jose, CA<br />year: 2012<br />value:  6.1<br />place: San Jose, CA","place: San Jose, CA<br />year: 2013<br />value:  7.1<br />place: San Jose, CA"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(177,221,46,1)","dash":"solid"},"hoveron":"points","name":"San Jose, CA","legendgroup":"San Jose, CA","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5],"y":[3.9,2.9,5.2,3,3.6],"text":["place: Seattle, WA<br />year: 2010<br />value:  3.9<br />place: Seattle, WA","place: Seattle, WA<br />year: 2011<br />value:  2.9<br />place: Seattle, WA","place: Seattle, WA<br />year: 2012<br />value:  5.2<br />place: Seattle, WA","place: Seattle, WA<br />year: 2013<br />value:  3.0<br />place: Seattle, WA","place: Seattle, WA<br />year: 2014<br />value:  3.6<br />place: Seattle, WA"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(203,225,30,1)","dash":"solid"},"hoveron":"points","name":"Seattle, WA","legendgroup":"Seattle, WA","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6],"y":[11.3,11.1,11.4,10.9,10.8,11.4],"text":["place: U.S. Total, U.S. Total<br />year: 2010<br />value: 11.3<br />place: U.S. Total, U.S. Total","place: U.S. Total, U.S. Total<br />year: 2011<br />value: 11.1<br />place: U.S. Total, U.S. Total","place: U.S. Total, U.S. Total<br />year: 2012<br />value: 11.4<br />place: U.S. Total, U.S. Total","place: U.S. Total, U.S. Total<br />year: 2013<br />value: 10.9<br />place: U.S. Total, U.S. Total","place: U.S. Total, U.S. Total<br />year: 2014<br />value: 10.8<br />place: U.S. Total, U.S. Total","place: U.S. Total, U.S. Total<br />year: 2015<br />value: 11.4<br />place: U.S. Total, U.S. Total"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(229,228,25,1)","dash":"solid"},"hoveron":"points","name":"U.S. Total, U.S. Total","legendgroup":"U.S. Total, U.S. Total","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3],"y":[5.6,5.4,6.6],"text":["place: Washington, DC<br />year: 2010<br />value:  5.6<br />place: Washington, DC","place: Washington, DC<br />year: 2011<br />value:  5.4<br />place: Washington, DC","place: Washington, DC<br />year: 2012<br />value:  6.6<br />place: Washington, DC"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(253,231,37,1)","dash":"solid"},"hoveron":"points","name":"Washington, DC","legendgroup":"Washington, DC","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":40.8401826484018,"r":7.30593607305936,"b":37.2602739726027,"l":37.2602739726027},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"title":{"text":"Motor Vehicle Fatality Rates by City","font":{"color":"rgba(0,0,0,1)","family":"","size":17.5342465753425},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.4,7.6],"tickmode":"array","ticktext":["2010","2011","2012","2013","2014","2015","2016"],"tickvals":[1,2,3,4,5,6,7],"categoryorder":"array","categoryarray":["2010","2011","2012","2013","2014","2015","2016"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"Year","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[2.055,14.045],"tickmode":"array","ticktext":["5","10"],"tickvals":[5,10],"categoryorder":"array","categoryarray":["5","10"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"Fatality (death/100,000 population)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":7.97011207970112},"y":0.955005624296963},"annotations":[{"text":"place","x":1.02,"y":1,"showarrow":false,"ax":0,"ay":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":10.6268161062682},"xref":"paper","yref":"paper","textangle":-0,"xanchor":"left","yanchor":"bottom","legendTitle":true}],"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"ed946a4d894":{"colour":{},"x":{},"y":{},"type":"scatter"}},"cur_data":"ed946a4d894","visdat":{"ed946a4d894":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><!--/html_preserve-->
+<p class="caption">plot of chunk unnamed-chunk-272</p>
+</div>
+
+Isn't this amazing? I'm blown away by the power of one line of code. 
+
+### Faceting
+
+Ok, one last trick. Say we wanted to give each city its own little plot to understand time-trends within the city. We can certainly get this information from the spaghetti plot but it would undoubtedly cause a headache. Let's play with `facet_wrap` and `facet_grid` instead. 
+
+The difference between these two isn't super clear to start with, but basically, `facet_wrap` is good if you're just faceting on one variable (in our case, city). If you want to end up with a separate mini-plot for each combination of two variables (for instance, a mini-plot for female fatalities in Denver, another plot for male fatalities in Denver, and so on for every combination of city and sex), you want `facet_grid` (more info [here](https://ggplot2-book.org/facet.html)).
+
+We're going to start with `facet_wrap`.
+
+
+```r
+drive_df %>% 
+  filter(sex == "Both", race_ethnicity == "All") %>% 
+  ggplot(aes(x = year, y = value, group = place)) + 
+  geom_line() + 
+  facet_wrap(vars(place))
+```
+
+![plot of chunk unnamed-chunk-273](/figs/2020-07-17-car-crashes/unnamed-chunk-273-1.png)
+Aside from the fact that the x-axis labels are a bit messed up, this is actually pretty nice. 
+
+Now let's try a grid for combinations of place and sex.
+
+
+```r
+drive_df %>% 
+  filter(!sex == "Both", race_ethnicity == "All") %>% 
+  ggplot(aes(x = year, y = value, group = place)) + 
+  geom_line() + 
+  facet_grid(sex ~ place)
+```
+
+![plot of chunk unnamed-chunk-274](/figs/2020-07-17-car-crashes/unnamed-chunk-274-1.png)
+Oh boy. Let's go back to `facet_wrap` and just do some color-coding for sex rather than trying to make sense of this crazy grid. 
+
+
+```r
+drive_df %>% 
+  filter(!sex == "Both", race_ethnicity == "All") %>% 
+  ggplot(aes(x = year, y = value, group = sex)) + 
+  geom_line(aes(color = sex)) + 
+  facet_wrap(vars(place))
+```
+
+![plot of chunk unnamed-chunk-275](/figs/2020-07-17-car-crashes/unnamed-chunk-275-1.png)
+NICE. If we fix up the formatting, this will actually be an ok plot. First off, we should minimize the number of plots displayed horizontally using `ncol`. 
+
+
+```r
+drive_df %>% 
+  filter(!sex == "Both", race_ethnicity == "All") %>% 
+  ggplot(aes(x = year, y = value, group = sex)) + 
+  geom_line(aes(color = sex)) + 
+  facet_wrap(vars(place), ncol = 3)
+```
+
+![plot of chunk unnamed-chunk-276](/figs/2020-07-17-car-crashes/unnamed-chunk-276-1.png)
+Now we're cooking. Let's fix up the colors, axes, legend, etc. 
+
+
+```r
+drive_df %>% 
+  filter(!sex == "Both", race_ethnicity == "All") %>% 
+  ggplot(aes(x = year, y = value, group = sex)) + 
+  geom_line(aes(color = sex)) + 
+  scale_color_manual(values=c("#996699", "#99CC99")) +
+  facet_wrap(vars(place), ncol = 3)  + 
+    theme_bw() +
+    labs(
+      title = "Motor Vehicle Fatality Rate 2010-2016 by Sex",
+      x = "Year",
+      y = "Fatality (death/100,000 population)",
+      caption = "Data source: Big Cities Health Initiative"
+    )
+```
+
+![plot of chunk unnamed-chunk-277](/figs/2020-07-17-car-crashes/unnamed-chunk-277-1.png)
+
+
+# Conclusions
+
+# Further Reading 
+- cheat sheet: https://rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
+- A beautiful [collection](https://www.r-graph-gallery.com/index.html) of R data viz inspiration
+
+
+# References
+
+- Michonneau F, Teal T, Fournier A, Seok B, Obeng A, Pawlik AN, Conrado AC, Woo K, Lijnzaad P, Hart T, White EP, Marwick B, Bolker B, Jordan KL, Ashander J, Dashnow H, Hertweck K, Cuesta SM, Becker EA, Guillou S, Shiklomanov A, Klinges D, Odom GJ, Jean M, Mislan KAS, Johnson K, Jahn N, Mannheimer S, Pederson S, Pletzer A, Fouilloux A, Switzer C, Bahlai C, Li D, Kerchner D, Rodriguez-Sanchez F, Rajeg GPW, Ye H, Tavares H, Leinweber K, Peck K, Lepore ML, Hancock S, Sandmann T, Hodges T, Tirok K, Jean M, Bailey A, von Hardenberg A, Theobold A, Wright A, Basu A, Johnson C, Voter C, Hulshof C, Bouquin D, Quinn D, Vanichkina D, Wilson E, Strauss E, Bledsoe E, Gan E, Fishman D, Boehm F, Daskalova G, Tavares H, Kaupp J, Dunic J, Keane J, Stachelek J, Herr JR, Millar J, Lotterhos K, Cranston K, Direk K, Tylén K, Chatzidimitriou K, Deer L, Tarkowski L, Chiapello M, Burle M, Ankenbrand M, Czapanskiy M, Moreno M, Culshaw-Maurer M, Koontz M, Weisner M, Johnston M, Carchedi N, Burge OR, Harrison P, Humburg P, Pauloo R, Peek R, Elahi R, Cortijo S, sfn_brt, Umashankar S, Goswami S, Sumedh, Yanco S, Webster T, Reiter T, Pearse W, Li Y (2020). “datacarpentry/R-ecology-lesson: Data Carpentry: Data Analysis and Visualization in R for Ecologists, June 2019.” doi: 10.5281/zenodo.3264888, https://datacarpentry.org/R-ecology-lesson/.
+- discovering statistics with R
+
+
+[^1] Age adjustment is a method used in epidemiology when comparing rates of disease or mortality between populations with different age breakdowns. Roughly speaking, if the population of Austin TX, for instance, is much younger than the average US population, it doesn't make sense to compare mortality rates directly. We know that older people die more frequently than younger people, so if we want an apples-to-apples comparison of two populations we have to use a weighting scheme. And that's all age standardization is - a weighting scheme that assigns more weight to certain age categories to "equalize" their weight to that of the reference population. In our example, older people in Austin would get weighted more than younger people. 
+[^2] 
+

@@ -22,4 +22,10 @@ var store = [{
         "tags": ["Environment","NHANES"],
         "url": "http://localhost:4000/phthalates-II/",
         "teaser": null
+      },{
+        "title": "Visualizing Motor Vehicle Fatalities with ggplot2",
+        "excerpt":"This is my favorite part about analytics: Taking boring flat data and bringing it to life through visualization. – John Tukey Motivation The last two posts were a bit dense so we’ll try to keep it simple here. Let’s start with a morbid stat: if you’re younger than 30 and...","categories": ["data visualization","ggplot2","injuries"],
+        "tags": [],
+        "url": "http://localhost:4000/data%20visualization/ggplot2/injuries/car-crashes/",
+        "teaser": null
       }]
