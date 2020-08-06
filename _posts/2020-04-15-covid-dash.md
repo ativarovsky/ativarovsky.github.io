@@ -2,7 +2,7 @@
 title: "Summarizing Covid-19 with flexdashboard"
 author: "Alice Tivarovsky"
 layout: single
-date: '2020-07-09'
+date: '2020-08-05'
 permalink: /blog/2020/07/covid_dashboard/
 ---
 
