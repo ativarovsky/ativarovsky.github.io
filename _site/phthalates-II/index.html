@@ -1,10 +1,4 @@
 <!doctype html>
-<!--
-  Minimal Mistakes Jekyll Theme 4.19.3 by Michael Rose
-  Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes
-  Free for personal and commercial use under the MIT license
-  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
--->
 <html lang="en" class="no-js">
   <head>
     <meta charset="utf-8">
@@ -319,7 +313,7 @@
 
 <h1 id="analysis">Analysis</h1>
 
-<p>We’ll be using the same datasets we used in Part I, and we’ll start here with the cleaned dataframe <code class="highlighter-rouge">all_data_c</code> (<code class="highlighter-rouge">_c</code> refers to creatinine-adjusted). Please refer back to <a href="../phthalates">Part I</a> if something doesn’t make sense.</p>
+<p>We’ll be using the same datasets we used in Part I, and we’ll start here with the cleaned dataframe <code class="language-plaintext highlighter-rouge">all_data_c</code> (<code class="language-plaintext highlighter-rouge">_c</code> refers to creatinine-adjusted). Please refer back to <a href="../phthalates">Part I</a> if something doesn’t make sense.</p>
 
 <p>Libraries:</p>
 
@@ -332,7 +326,7 @@
 </span><span class="n">library</span><span class="p">(</span><span class="n">sjPlot</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p>Load in <code class="highlighter-rouge">all_data_c</code>:</p>
+<p>Load in <code class="language-plaintext highlighter-rouge">all_data_c</code>:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">all_data_c</span><span class="w"> </span><span class="o">=</span><span class="w"> 
   </span><span class="n">readRDS</span><span class="p">(</span><span class="s2">"all_data_c.RDS"</span><span class="p">)</span><span class="w"> 
@@ -341,30 +335,30 @@
 <h3 id="variables-used">Variables Used</h3>
 
 <ul>
-  <li><code class="highlighter-rouge">SEQN</code>: Unique NHANES identifier</li>
-  <li><code class="highlighter-rouge">RIAGENDR</code>: Gender</li>
-  <li><code class="highlighter-rouge">RIDAGEYR</code>: Age</li>
-  <li><code class="highlighter-rouge">RIDRETH1</code>: Ethnicity</li>
-  <li><code class="highlighter-rouge">DMDEDUC2</code>: Education</li>
-  <li><code class="highlighter-rouge">DMDMARTL</code>: Marital Status</li>
-  <li><code class="highlighter-rouge">INDHHIN2</code>: Annual household income (cycles 2007-2008, 2009-2010, 2011-2012, 2013-2014, 2015-2016)</li>
-  <li><code class="highlighter-rouge">INDFMIN2</code>: Annual family income (cycles 2007-2008, 2009-2010, 2011-2012, 2013-2014, 2015-2016)</li>
-  <li><code class="highlighter-rouge">INDHHINC</code>: Annual household income (cycles 2003-2004, 2005-2006)</li>
-  <li><code class="highlighter-rouge">INDFMINC</code>: Annual family income (cycles 2003-2004, 2005-2006)</li>
-  <li><code class="highlighter-rouge">WTMEC2YR</code>, <code class="highlighter-rouge">SDMVPSU</code>,<code class="highlighter-rouge">SDMVSTRA</code>: Survey weighting variables, addressed in Question 2 below</li>
-  <li><code class="highlighter-rouge">URXUCR</code>: Urinary creatinine</li>
-  <li><code class="highlighter-rouge">URXCNP</code>: Mono(carboxyisononyl) phthalate (MCNP) (ng/mL)</li>
-  <li><code class="highlighter-rouge">URXCOP</code>: Mono(carboxyisoctyl) phthalate (MCOP) (ng/mL)</li>
-  <li><code class="highlighter-rouge">URXMNP</code>: Mono-isononyl phthalate (MiNP) (ng/mL)</li>
-  <li><code class="highlighter-rouge">URXECP</code>: Mono-2-ethyl-5-carboxypentyl phthalate (MECPP) (ng/mL)</li>
-  <li><code class="highlighter-rouge">URXMHH</code>: Mono-(2-ethyl-5-hydroxyhexyl) phthalate (MEHHP) (ng/mL)</li>
-  <li><code class="highlighter-rouge">URXMHP</code>: Mono-(2-ethyl)-hexyl phthalate (MEHP) (ng/mL)</li>
-  <li><code class="highlighter-rouge">URXMOH</code>: Mono-(2-ethyl-5-oxohexyl) phthalate (MEOHP) (ng/mL)</li>
-  <li><code class="highlighter-rouge">URXMBP</code>: Mono-n-butyl phthalate (MnBP) (ng/mL)</li>
-  <li><code class="highlighter-rouge">URXMEP</code>: Mono-ethyl phthalate (MEP) (ng/mL)</li>
-  <li><code class="highlighter-rouge">URXMIB</code>: Mono-isobutyl phthalate (MiBP) (ng/mL)</li>
-  <li><code class="highlighter-rouge">URXMC1</code>: Mono-(3-carboxypropyl) phthalate (MCPP) (ng/mL)</li>
-  <li><code class="highlighter-rouge">URXMZP</code>: Mono-benzyl phthalate (MBzP) (ng/mL)</li>
+  <li><code class="language-plaintext highlighter-rouge">SEQN</code>: Unique NHANES identifier</li>
+  <li><code class="language-plaintext highlighter-rouge">RIAGENDR</code>: Gender</li>
+  <li><code class="language-plaintext highlighter-rouge">RIDAGEYR</code>: Age</li>
+  <li><code class="language-plaintext highlighter-rouge">RIDRETH1</code>: Ethnicity</li>
+  <li><code class="language-plaintext highlighter-rouge">DMDEDUC2</code>: Education</li>
+  <li><code class="language-plaintext highlighter-rouge">DMDMARTL</code>: Marital Status</li>
+  <li><code class="language-plaintext highlighter-rouge">INDHHIN2</code>: Annual household income (cycles 2007-2008, 2009-2010, 2011-2012, 2013-2014, 2015-2016)</li>
+  <li><code class="language-plaintext highlighter-rouge">INDFMIN2</code>: Annual family income (cycles 2007-2008, 2009-2010, 2011-2012, 2013-2014, 2015-2016)</li>
+  <li><code class="language-plaintext highlighter-rouge">INDHHINC</code>: Annual household income (cycles 2003-2004, 2005-2006)</li>
+  <li><code class="language-plaintext highlighter-rouge">INDFMINC</code>: Annual family income (cycles 2003-2004, 2005-2006)</li>
+  <li><code class="language-plaintext highlighter-rouge">WTMEC2YR</code>, <code class="language-plaintext highlighter-rouge">SDMVPSU</code>,<code class="language-plaintext highlighter-rouge">SDMVSTRA</code>: Survey weighting variables, addressed in Question 2 below</li>
+  <li><code class="language-plaintext highlighter-rouge">URXUCR</code>: Urinary creatinine</li>
+  <li><code class="language-plaintext highlighter-rouge">URXCNP</code>: Mono(carboxyisononyl) phthalate (MCNP) (ng/mL)</li>
+  <li><code class="language-plaintext highlighter-rouge">URXCOP</code>: Mono(carboxyisoctyl) phthalate (MCOP) (ng/mL)</li>
+  <li><code class="language-plaintext highlighter-rouge">URXMNP</code>: Mono-isononyl phthalate (MiNP) (ng/mL)</li>
+  <li><code class="language-plaintext highlighter-rouge">URXECP</code>: Mono-2-ethyl-5-carboxypentyl phthalate (MECPP) (ng/mL)</li>
+  <li><code class="language-plaintext highlighter-rouge">URXMHH</code>: Mono-(2-ethyl-5-hydroxyhexyl) phthalate (MEHHP) (ng/mL)</li>
+  <li><code class="language-plaintext highlighter-rouge">URXMHP</code>: Mono-(2-ethyl)-hexyl phthalate (MEHP) (ng/mL)</li>
+  <li><code class="language-plaintext highlighter-rouge">URXMOH</code>: Mono-(2-ethyl-5-oxohexyl) phthalate (MEOHP) (ng/mL)</li>
+  <li><code class="language-plaintext highlighter-rouge">URXMBP</code>: Mono-n-butyl phthalate (MnBP) (ng/mL)</li>
+  <li><code class="language-plaintext highlighter-rouge">URXMEP</code>: Mono-ethyl phthalate (MEP) (ng/mL)</li>
+  <li><code class="language-plaintext highlighter-rouge">URXMIB</code>: Mono-isobutyl phthalate (MiBP) (ng/mL)</li>
+  <li><code class="language-plaintext highlighter-rouge">URXMC1</code>: Mono-(3-carboxypropyl) phthalate (MCPP) (ng/mL)</li>
+  <li><code class="language-plaintext highlighter-rouge">URXMZP</code>: Mono-benzyl phthalate (MBzP) (ng/mL)</li>
 </ul>
 
 <h2 id="question-2-are-phthalate-levels-disproportionately-distributed-through-the-population-namely-is-there-an-association-with-phthalates-and-socioeconomic-status">Question 2: Are phthalate levels disproportionately distributed through the population? Namely, is there an association with phthalates and socioeconomic status?</h2>
@@ -401,7 +395,7 @@
   </span><span class="n">cor</span><span class="p">(</span><span class="n">use</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"complete.obs"</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"pearson"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##                  household_income family_income
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##                  household_income family_income
 ## household_income        1.0000000     0.9095916
 ## family_income           0.9095916     1.0000000
 </code></pre></div></div>
@@ -546,7 +540,7 @@
 
 <p>This is where it gets a little tricky. NHANES uses a complex, stratified survey design (detailed <a href="https://www.cdc.gov/nchs/data/series/sr_02/sr02_162.pdf">here</a>), along with over-sampling in accordance with the US census. Simply put, the ~10,000 individuals that participate in NHANES do not constitute a perfect random sample of the entire US population. Inevitably, some demographic groups will be over- or under-represented and some might not be represented at all. Therefore, each individual is assigned a sampling weight, which allows us to extrapolate results to the US population.</p>
 
-<p>Because of this, it’s not enough to put the variables of interest into a model and hit play. Instead, we must utilize the <code class="highlighter-rouge">survey</code> package and the three survey variables, <code class="highlighter-rouge">WTMEC2YR, SDMVPSU,SDMVSTRA</code> that we’ve ignored up to now. The way these variables work is somewhat complicated and we won’t go into detail, but you can read all about it <a href="https://www.cdc.gov/nchs/data/series/sr_02/sr02-184-508.pdf">here</a>. For our purposes, we need two steps: 1. create a survey design object using the survey variables and 2. carry out regression modeling using <code class="highlighter-rouge">svyglm</code>. <a href="https://stats.idre.ucla.edu/r/faq/how-can-i-do-regression-estimation-with-survey-data/">This site</a> provides a reference for both.</p>
+<p>Because of this, it’s not enough to put the variables of interest into a model and hit play. Instead, we must utilize the <code class="language-plaintext highlighter-rouge">survey</code> package and the three survey variables, <code class="language-plaintext highlighter-rouge">WTMEC2YR, SDMVPSU,SDMVSTRA</code> that we’ve ignored up to now. The way these variables work is somewhat complicated and we won’t go into detail, but you can read all about it <a href="https://www.cdc.gov/nchs/data/series/sr_02/sr02-184-508.pdf">here</a>. For our purposes, we need two steps: 1. create a survey design object using the survey variables and 2. carry out regression modeling using <code class="language-plaintext highlighter-rouge">svyglm</code>. <a href="https://stats.idre.ucla.edu/r/faq/how-can-i-do-regression-estimation-with-survey-data/">This site</a> provides a reference for both.</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># adjust weighting variable for aggregation of 7 cycles</span><span class="w">
 </span><span class="n">all_data_c</span><span class="o">$</span><span class="n">WTMEC14YR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">all_data_c</span><span class="o">$</span><span class="n">WTMEC2YR</span><span class="o">/</span><span class="m">7</span><span class="w">
@@ -1371,6 +1365,39 @@
     
     <h2 class="archive__item-title" itemprop="headline">
       
+        <a href="/blog/2020/07/covid_dashboard/" rel="permalink">Summarizing Covid-19 with flexdashboard
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  less than 1 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">
+    
+    screenshot from jun 16 2020
+
+
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
         <a href="/data%20visualization/ggplot2/injuries/car-crashes/" rel="permalink">Visualizing Motor Vehicle Fatalities with ggplot2
 </a>
       
@@ -1415,39 +1442,6 @@
 </p>
     
     <p class="archive__item-excerpt" itemprop="description">
-</p>
-  </article>
-</div>
-
-        
-          
-
-
-
-<div class="grid__item">
-  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
-    
-    <h2 class="archive__item-title" itemprop="headline">
-      
-        <a href="/blog/2020/07/covid_dashboard/" rel="permalink">Summarizing Covid-19 with flexdashboard
-</a>
-      
-    </h2>
-    
-      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
-
-
-
-
-  less than 1 minute read
-
-</p>
-    
-    <p class="archive__item-excerpt" itemprop="description">
-    
-    screenshot from jun 16 2020
-
-
 </p>
   </article>
 </div>
@@ -1567,3 +1561,9 @@
 
   </body>
 </html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.19.3 by Michael Rose
+  Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->

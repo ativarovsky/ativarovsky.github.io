@@ -1,4 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-08-05T16:43:09-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Alice Tivarovsky</title><author><name>Alice Tivarovsky</name></author><entry><title type="html">Visualizing Motor Vehicle Fatalities with ggplot2</title><link href="http://localhost:4000/data%20visualization/ggplot2/injuries/car-crashes/" rel="alternate" type="text/html" title="Visualizing Motor Vehicle Fatalities with ggplot2" /><published>2020-07-17T00:00:00-07:00</published><updated>2020-07-17T00:00:00-07:00</updated><id>http://localhost:4000/data%20visualization/ggplot2/injuries/car-crashes</id><content type="html" xml:base="http://localhost:4000/data%20visualization/ggplot2/injuries/car-crashes/">&lt;p&gt;&lt;em&gt;“This is my favorite part about analytics: Taking boring flat data and bringing it to life through visualization.” – John Tukey&lt;/em&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-08-18T09:15:24-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Alice Tivarovsky</title><author><name>Alice Tivarovsky</name></author><entry><title type="html">Summarizing Covid-19 with flexdashboard</title><link href="http://localhost:4000/blog/2020/07/covid_dashboard/" rel="alternate" type="text/html" title="Summarizing Covid-19 with flexdashboard" /><published>2020-08-05T00:00:00-07:00</published><updated>2020-08-05T00:00:00-07:00</updated><id>http://localhost:4000/blog/2020/07/covid-dash</id><content type="html" xml:base="http://localhost:4000/blog/2020/07/covid_dashboard/">&lt;figure&gt;
+    &lt;a href=&quot;/assets/covid_dash&quot;&gt;&lt;img src=&quot;/assets/images/covid.png&quot; /&gt;&lt;/a&gt;
+    &lt;figcaption&gt;screenshot from jun 16 2020&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;For those following the Covid-19 trajectories, this &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;flexdashboard&lt;/code&gt; not a novel concept (pun not intended). My version is adapted from Rami Krispin’s &lt;a href=&quot;https://ramikrispin.github.io/coronavirus_dashboard/&quot;&gt;original&lt;/a&gt; and uses his &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;coronavirus&lt;/code&gt; package. Check it out &lt;a href=&quot;/assets/covid_dash&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;</content><author><name>Alice Tivarovsky</name></author><summary type="html">screenshot from jun 16 2020</summary></entry><entry><title type="html">Visualizing Motor Vehicle Fatalities with ggplot2</title><link href="http://localhost:4000/data%20visualization/ggplot2/injuries/car-crashes/" rel="alternate" type="text/html" title="Visualizing Motor Vehicle Fatalities with ggplot2" /><published>2020-07-17T00:00:00-07:00</published><updated>2020-07-17T00:00:00-07:00</updated><id>http://localhost:4000/data%20visualization/ggplot2/injuries/car-crashes</id><content type="html" xml:base="http://localhost:4000/data%20visualization/ggplot2/injuries/car-crashes/">&lt;p&gt;&lt;em&gt;“This is my favorite part about analytics: Taking boring flat data and bringing it to life through visualization.” – John Tukey&lt;/em&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;motivation&quot;&gt;Motivation&lt;/h2&gt;
 
@@ -8,7 +13,7 @@
 
 &lt;p&gt;You may have already known that. But here’s a kicker - your risk of dying in a car crash is heavily influenced by the city you live in. And although metropolitan density is an obvious factor, other variables including weather, state policy, type of car involved, and emergency response capabilities play a &lt;a href=&quot;https://www.iihs.org/topics/fatality-statistics/detail/state-by-state#fn1ref1&quot;&gt;huge role&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;In this post, we’ll be using &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; - R’s de-facto plotting package &lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; - to explore the relationship between city and motor vehicle fatalities in the US between 2010 and 2016.&lt;/p&gt;
+&lt;p&gt;In this post, we’ll be using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; - R’s de-facto plotting package &lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; - to explore the relationship between city and motor vehicle fatalities in the US between 2010 and 2016.&lt;/p&gt;
 
 &lt;p&gt;We’ll be using data compiled from the &lt;a href=&quot;https://www.bigcitieshealth.org&quot;&gt;Big Cities Health Coalition&lt;/a&gt;, a partnership organization comprised of public health leaders and thinkers from America’s largest cities. I’d never heard of BCHC prior to this and I was genuinely impressed with the wealth of data and analyses published on their site.&lt;/p&gt;
 
@@ -53,7 +58,7 @@
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## 'data.frame':	880 obs. of  15 variables:
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## 'data.frame':	880 obs. of  15 variables:
 ##  $ indicator_category        : Factor w/ 13 levels &quot;Behavioral Health/Substance Abuse&quot;,..: 9 9 9 9 9 9 9 9 9 9 ...
 ##  $ indicator                 : Factor w/ 61 levels &quot;AIDS Diagnoses Rate (Per 100,000 people)&quot;,..: 21 21 21 21 21 21 21 21 21 21 ...
 ##  $ year                      : int  2010 2010 2010 2010 2010 2010 2010 2010 2010 2010 ...
@@ -71,7 +76,7 @@
 ##  $ x95_confidence_level_high : num  3.4 6 NA 8.3 NA NA NA NA 8.7 7.9 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;It looks like things are pretty clean. Most of the categorical variables, including race, sex, and city were read in as factors, while the mortality values and corresponding confidence intervals were read in using the double class. The only thing to fix is the &lt;code class=&quot;highlighter-rouge&quot;&gt;source&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;methods&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;notes&lt;/code&gt; variables, which should technically be strings since they don’t contain any logical levels. I’m also going to change &lt;code class=&quot;highlighter-rouge&quot;&gt;year&lt;/code&gt; to a categorical variable so R doesn’t get confused trying to analyze it continuously.&lt;/p&gt;
+&lt;p&gt;It looks like things are pretty clean. Most of the categorical variables, including race, sex, and city were read in as factors, while the mortality values and corresponding confidence intervals were read in using the double class. The only thing to fix is the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;source&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;methods&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;notes&lt;/code&gt; variables, which should technically be strings since they don’t contain any logical levels. I’m also going to change &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;year&lt;/code&gt; to a categorical variable so R doesn’t get confused trying to analyze it continuously.&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
@@ -86,19 +91,19 @@
 
 &lt;p&gt;The variables we care about here are:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;year&lt;/code&gt;: 2010 through 2016&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sex&lt;/code&gt;: Male, female, and the combined value under Both&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;race_ethnicity&lt;/code&gt;: American Indian/Alaska Native,  Asian/PI, Black, Hispanic, Other, White, and combined valued (All)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt;: the mortality value we’ll be analyzing (i.e. our dependent variable); the details are given under &lt;code class=&quot;highlighter-rouge&quot;&gt;bchc_requested_methodology&lt;/code&gt;, which explains that &lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt; is equal to motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the 2000 census standard population. &lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;x90_confidence_level_low&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;x90_confidence_level_high&lt;/code&gt;: 90% confidence interval around &lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;x95_confidence_level_low&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;x95_confidence_level_high&lt;/code&gt;: 95% confidence interval around &lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;year&lt;/code&gt;: 2010 through 2016&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sex&lt;/code&gt;: Male, female, and the combined value under Both&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;race_ethnicity&lt;/code&gt;: American Indian/Alaska Native,  Asian/PI, Black, Hispanic, Other, White, and combined valued (All)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt;: the mortality value we’ll be analyzing (i.e. our dependent variable); the details are given under &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bchc_requested_methodology&lt;/code&gt;, which explains that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt; is equal to motor vehicle deaths per 100,000 population using 2010 US Census figures, age adjusted to the 2000 census standard population. &lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x90_confidence_level_low&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x90_confidence_level_high&lt;/code&gt;: 90% confidence interval around &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x95_confidence_level_low&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x95_confidence_level_high&lt;/code&gt;: 95% confidence interval around &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;visualizing-motor-vehicle-fatalities&quot;&gt;Visualizing Motor Vehicle Fatalities&lt;/h2&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; works by layering graphical elements on top of one another. These layers are referred to as “geoms” and they include things like axes, grid lines, color schemes points representing your data, trend-lines connecting your data, shaded regions representing confidence intervals, and plot labels, titles, and legends. Creating a final graph requires you to define each element individually and “add” it to the &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot()&lt;/code&gt; call.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; works by layering graphical elements on top of one another. These layers are referred to as “geoms” and they include things like axes, grid lines, color schemes points representing your data, trend-lines connecting your data, shaded regions representing confidence intervals, and plot labels, titles, and legends. Creating a final graph requires you to define each element individually and “add” it to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot()&lt;/code&gt; call.&lt;/p&gt;
 
-&lt;p&gt;The best way to explain &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; is, of course, to demonstrate it. Let’s first just apply the function to our dataframe &lt;code class=&quot;highlighter-rouge&quot;&gt;drive_df&lt;/code&gt; to see what happens.&lt;/p&gt;
+&lt;p&gt;The best way to explain &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; is, of course, to demonstrate it. Let’s first just apply the function to our dataframe &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;drive_df&lt;/code&gt; to see what happens.&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
@@ -108,9 +113,9 @@
 
 &lt;p&gt;We get this lovely gray square. Who doesn’t love gray squares?&lt;/p&gt;
 
-&lt;p&gt;This may seem silly but the point is to demonstrate that &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; needs you to state what you want.&lt;/p&gt;
+&lt;p&gt;This may seem silly but the point is to demonstrate that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; needs you to state what you want.&lt;/p&gt;
 
-&lt;p&gt;The first thing we need to do is tell &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; what our dependent and independent variables are. We’re interested in motor vehicle mortality year over year, so let’s try the following:&lt;/p&gt;
+&lt;p&gt;The first thing we need to do is tell &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; what our dependent and independent variables are. We’re interested in motor vehicle mortality year over year, so let’s try the following:&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
@@ -120,11 +125,11 @@
 
 &lt;p&gt;Wait what?&lt;/p&gt;
 
-&lt;p&gt;And this is one of the first lessons of &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt;. In order to control how things look within a geom, you have to set what are known as &lt;strong&gt;aesthetics&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;And this is one of the first lessons of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt;. In order to control how things look within a geom, you have to set what are known as &lt;strong&gt;aesthetics&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;h3 id=&quot;aesthetics&quot;&gt;Aesthetics&lt;/h3&gt;
 
-&lt;p&gt;Aesthetics set within the ggplot function itself (i.e. before geoms are defined) are global aesthetics that apply to the entire plot. Aesthetics set within a geom apply only to that geom. Therefore, when we define axes, we want to set them globally within a &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot(aes()&lt;/code&gt; call:&lt;/p&gt;
+&lt;p&gt;Aesthetics set within the ggplot function itself (i.e. before geoms are defined) are global aesthetics that apply to the entire plot. Aesthetics set within a geom apply only to that geom. Therefore, when we define axes, we want to set them globally within a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot(aes()&lt;/code&gt; call:&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
@@ -134,7 +139,7 @@
 
 &lt;p&gt;Ah, now we’re getting somewhere.&lt;/p&gt;
 
-&lt;p&gt;Let’s attempt to create a plot of motor vehicle mortality as a function of year. We know that we have data from 2010 through 2016 and that the data are collected (or compiled) annually. In order to get some points for each year, we’ll need to “add” a point geom to &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;Let’s attempt to create a plot of motor vehicle mortality as a function of year. We know that we have data from 2010 through 2016 and that the data are collected (or compiled) annually. In order to get some points for each year, we’ll need to “add” a point geom to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt;:&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
@@ -143,14 +148,14 @@
 
 &lt;p&gt;&lt;img src=&quot;/figs/2020-07-17-car-crashes/unnamed-chunk-4-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-4&quot; height=&quot;600px&quot; width=&quot;600px&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Clearly this is a pretty bad plot and if you ever see something like this published, please assume that the author doesn’t know much about plots. For one thing, using a scatterplot doesn’t make sense because the year variable was measured categorically rather than continuously. BUT… this does show us something important in the data: &lt;strong&gt;outliers&lt;/strong&gt;. On the left, we have points hovering at 70-75 deaths per 100,000. Recall that in the 1970s, when motor vehicle deaths peaked, the average values reached into the mid-20s. So clearly, 75 is astronomical. Let’s take a detour and investigate this a bit more. I’m going to go back to the dataframe and sort in order of decreasing &lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;Clearly this is a pretty bad plot and if you ever see something like this published, please assume that the author doesn’t know much about plots. For one thing, using a scatterplot doesn’t make sense because the year variable was measured categorically rather than continuously. BUT… this does show us something important in the data: &lt;strong&gt;outliers&lt;/strong&gt;. On the left, we have points hovering at 70-75 deaths per 100,000. Recall that in the 1970s, when motor vehicle deaths peaked, the average values reached into the mid-20s. So clearly, 75 is astronomical. Let’s take a detour and investigate this a bit more. I’m going to go back to the dataframe and sort in order of decreasing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt;:&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;desc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;head&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##   indicator_category
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##   indicator_category
 ## 1    Injury/Violence
 ## 2    Injury/Violence
 ## 3    Injury/Violence
@@ -238,7 +243,7 @@
 
 &lt;p&gt;Brilliant! Immediately we gleaned a useful nugget of information: there was an alarming spike in the data. Things were chugging along and then something happened in 2015. If you do a news search on this topic, you’ll see that public health and safety folks &lt;a href=&quot;https://www.npr.org/sections/thetwo-way/2016/02/18/467230965/2015-traffic-fatalities-rose-by-largest-percent-in-50-years-safety-group-says&quot;&gt;noticed&lt;/a&gt; this, too. It looks like fuel prices and job growth were potential culprits, but either way, this is clearly a very useful insight.&lt;/p&gt;
 
-&lt;p&gt;Let’s spice this plot up a bit. Let’s say we want to compare men and women in the same time frame. We will need to specify a color code within the aesthetic for &lt;code class=&quot;highlighter-rouge&quot;&gt;geom_boxplot&lt;/code&gt; and we’ll also need to filter out the “Both” values for sex, since we just want male vs female.&lt;/p&gt;
+&lt;p&gt;Let’s spice this plot up a bit. Let’s say we want to compare men and women in the same time frame. We will need to specify a color code within the aesthetic for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;geom_boxplot&lt;/code&gt; and we’ll also need to filter out the “Both” values for sex, since we just want male vs female.&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;race_ethnicity&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;All&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sex&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Both&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
@@ -250,7 +255,7 @@
 
 &lt;p&gt;NICE. These are meaty results. There’s an obvious disparity in mortality between males and females. Most years, male fatality averages are more than double that of females, and some years (2015, for instance) it’s more like triple. The female boxplot for 2016 also looks suspiciously narrow. It’s worth investigating but for now let’s move on.&lt;/p&gt;
 
-&lt;p&gt;I’m not a huge fan of that color scheme, so let’s use some nicer colors. For two-tone plots, I like to just manually choose the colors (there are a million color tools online, but &lt;a href=&quot;https://coolors.co&quot;&gt;this one&lt;/a&gt; is my favorite). For three or more colors, I normally use a package like &lt;a href=&quot;https://cran.r-project.org/web/packages/RColorBrewer/RColorBrewer.pdf&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;RColorBrewer&lt;/code&gt;&lt;/a&gt; (built-in) or the extra-fancy &lt;a href=&quot;https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;viridis&lt;/code&gt;&lt;/a&gt; package, which you’d need to install. I’m also going to get rid of the gray background using a theme and change the opacity of the fill color using an &lt;code class=&quot;highlighter-rouge&quot;&gt;alpha&lt;/code&gt; statement (the latter is just personal preference). Finally, I’ll capitalize the axis labels, and add a title and caption.&lt;/p&gt;
+&lt;p&gt;I’m not a huge fan of that color scheme, so let’s use some nicer colors. For two-tone plots, I like to just manually choose the colors (there are a million color tools online, but &lt;a href=&quot;https://coolors.co&quot;&gt;this one&lt;/a&gt; is my favorite). For three or more colors, I normally use a package like &lt;a href=&quot;https://cran.r-project.org/web/packages/RColorBrewer/RColorBrewer.pdf&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RColorBrewer&lt;/code&gt;&lt;/a&gt; (built-in) or the extra-fancy &lt;a href=&quot;https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;viridis&lt;/code&gt;&lt;/a&gt; package, which you’d need to install. I’m also going to get rid of the gray background using a theme and change the opacity of the fill color using an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;alpha&lt;/code&gt; statement (the latter is just personal preference). Finally, I’ll capitalize the axis labels, and add a title and caption.&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;race_ethnicity&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;All&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sex&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Both&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
@@ -338,13 +343,13 @@
 
 &lt;p&gt;&lt;img src=&quot;/figs/2020-07-17-car-crashes/unnamed-chunk-13-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-13&quot; height=&quot;600px&quot; width=&quot;600px&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;All right, let’s get extra fancy. We’re going to use a function within &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; called &lt;code class=&quot;highlighter-rouge&quot;&gt;stat_summary&lt;/code&gt; to give us some extra detail.&lt;/p&gt;
+&lt;p&gt;All right, let’s get extra fancy. We’re going to use a function within &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stat_summary&lt;/code&gt; to give us some extra detail.&lt;/p&gt;
 
-&lt;h4 id=&quot;stat_summary&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;stat_summary()&lt;/code&gt;&lt;/h4&gt;
+&lt;h4 id=&quot;stat_summary&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stat_summary()&lt;/code&gt;&lt;/h4&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;stat_summary&lt;/code&gt; does just what it sounds like - it summarizes stats. We’ve been using stats within our geoms this whole time, we just didn’t know about it because &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; does it in the background. For instance, the boxplot geom calculates the median, 25th, and 75th percentile stats.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stat_summary&lt;/code&gt; does just what it sounds like - it summarizes stats. We’ve been using stats within our geoms this whole time, we just didn’t know about it because &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; does it in the background. For instance, the boxplot geom calculates the median, 25th, and 75th percentile stats.&lt;/p&gt;
 
-&lt;p&gt;Here, we’ll add dots to indicate the median in each violin. The &lt;code class=&quot;highlighter-rouge&quot;&gt;position_dodge&lt;/code&gt; function moves the dots inside the violins, as opposed to positioning them directly on the gridline.&lt;/p&gt;
+&lt;p&gt;Here, we’ll add dots to indicate the median in each violin. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;position_dodge&lt;/code&gt; function moves the dots inside the violins, as opposed to positioning them directly on the gridline.&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;violin_1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stat_summary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fun&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;median&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geom&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;point&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;position_dodge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
@@ -384,7 +389,7 @@
 
 &lt;p&gt;&lt;img src=&quot;/figs/2020-07-17-car-crashes/unnamed-chunk-17-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-17&quot; height=&quot;600px&quot; width=&quot;600px&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Yikes. It’s basically impossible to distinguish any of these colors from one another, or to follow the trajectory of any city year to year. We need lines rather than dots. We also need &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; to know that each city should be treated as a grouping (this latter point is not super intuitive to me, but just know that it doesn’t work otherwise).&lt;/p&gt;
+&lt;p&gt;Yikes. It’s basically impossible to distinguish any of these colors from one another, or to follow the trajectory of any city year to year. We need lines rather than dots. We also need &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; to know that each city should be treated as a grouping (this latter point is not super intuitive to me, but just know that it doesn’t work otherwise).&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sex&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Both&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;race_ethnicity&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;All&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
@@ -432,11 +437,11 @@
 
 &lt;p&gt;That’s a lot better, but there’s still no way anyone would be able to distinguish Houston from Indianapolis, or even be able to infer which city has the highest crash fatality burden versus lowest. And this is where interactivity comes in handy.&lt;/p&gt;
 
-&lt;p&gt;A word of warning, it’s easy to over-do interactivity and go nuts with things like &lt;code class=&quot;highlighter-rouge&quot;&gt;plotly&lt;/code&gt; because it’s fun and flashy. Don’t do it. If it doesn’t add value to visualizing patterns in the data, it doesn’t have any place on your plot.&lt;/p&gt;
+&lt;p&gt;A word of warning, it’s easy to over-do interactivity and go nuts with things like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;plotly&lt;/code&gt; because it’s fun and flashy. Don’t do it. If it doesn’t add value to visualizing patterns in the data, it doesn’t have any place on your plot.&lt;/p&gt;
 
-&lt;h3 id=&quot;ggplotly&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ggplotly&lt;/code&gt;&lt;/h3&gt;
+&lt;h3 id=&quot;ggplotly&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplotly&lt;/code&gt;&lt;/h3&gt;
 
-&lt;p&gt;In this case, we definitely want some interactivity to help us understand the data. We’re going to use &lt;a href=&quot;https://www.rdocumentation.org/packages/plotly/versions/4.9.2.1/topics/ggplotly&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ggplotly&lt;/code&gt;&lt;/a&gt;, a convenient marriage of &lt;code class=&quot;highlighter-rouge&quot;&gt;plotly&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt;. You can hover on a line to see which city it represents, or double any city in the legend to isolate it on the plot.&lt;/p&gt;
+&lt;p&gt;In this case, we definitely want some interactivity to help us understand the data. We’re going to use &lt;a href=&quot;https://www.rdocumentation.org/packages/plotly/versions/4.9.2.1/topics/ggplotly&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplotly&lt;/code&gt;&lt;/a&gt;, a convenient marriage of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;plotly&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt;. You can hover on a line to see which city it represents, or double any city in the legend to isolate it on the plot.&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;spaghetti_plot_1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggplotly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
@@ -451,11 +456,11 @@
 
 &lt;h3 id=&quot;faceting&quot;&gt;Faceting&lt;/h3&gt;
 
-&lt;p&gt;Ok, one last trick. Say we wanted to give each city its own little plot to understand time-trends within the city. We can certainly get this information from the spaghetti plot but it would undoubtedly cause a headache. Let’s play with &lt;code class=&quot;highlighter-rouge&quot;&gt;facet_wrap&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;facet_grid&lt;/code&gt; instead.&lt;/p&gt;
+&lt;p&gt;Ok, one last trick. Say we wanted to give each city its own little plot to understand time-trends within the city. We can certainly get this information from the spaghetti plot but it would undoubtedly cause a headache. Let’s play with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;facet_wrap&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;facet_grid&lt;/code&gt; instead.&lt;/p&gt;
 
-&lt;p&gt;The difference between these two isn’t super clear to start with, but basically, &lt;code class=&quot;highlighter-rouge&quot;&gt;facet_wrap&lt;/code&gt; is good if you’re just faceting on one variable (in our case, city). If you want to end up with a separate mini-plot for each combination of two variables (for instance, a mini-plot for female fatalities in Denver, another plot for male fatalities in Denver, and so on for every combination of city and sex), you want &lt;code class=&quot;highlighter-rouge&quot;&gt;facet_grid&lt;/code&gt; (more info &lt;a href=&quot;https://ggplot2-book.org/facet.html&quot;&gt;here&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;The difference between these two isn’t super clear to start with, but basically, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;facet_wrap&lt;/code&gt; is good if you’re just faceting on one variable (in our case, city). If you want to end up with a separate mini-plot for each combination of two variables (for instance, a mini-plot for female fatalities in Denver, another plot for male fatalities in Denver, and so on for every combination of city and sex), you want &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;facet_grid&lt;/code&gt; (more info &lt;a href=&quot;https://ggplot2-book.org/facet.html&quot;&gt;here&lt;/a&gt;).&lt;/p&gt;
 
-&lt;p&gt;We’re going to start with &lt;code class=&quot;highlighter-rouge&quot;&gt;facet_wrap&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;We’re going to start with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;facet_wrap&lt;/code&gt;.&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sex&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Both&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;race_ethnicity&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;All&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
@@ -479,7 +484,7 @@
 
 &lt;p&gt;&lt;img src=&quot;/figs/2020-07-17-car-crashes/unnamed-chunk-23-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-23&quot; height=&quot;650px&quot; width=&quot;650px&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Oh boy. Let’s go back to &lt;code class=&quot;highlighter-rouge&quot;&gt;facet_wrap&lt;/code&gt; and just do some color-coding for sex rather than trying to make sense of this crazy grid.&lt;/p&gt;
+&lt;p&gt;Oh boy. Let’s go back to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;facet_wrap&lt;/code&gt; and just do some color-coding for sex rather than trying to make sense of this crazy grid.&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sex&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Both&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;race_ethnicity&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;All&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
@@ -490,7 +495,7 @@
 
 &lt;p&gt;&lt;img src=&quot;/figs/2020-07-17-car-crashes/unnamed-chunk-24-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-24&quot; height=&quot;650px&quot; width=&quot;650px&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;NIIIIICE. If we fix the formatting, this will actually be an ok plot. First off, we should minimize the number of plots displayed horizontally using &lt;code class=&quot;highlighter-rouge&quot;&gt;ncol&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;NIIIIICE. If we fix the formatting, this will actually be an ok plot. First off, we should minimize the number of plots displayed horizontally using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncol&lt;/code&gt;.&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;drive_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sex&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Both&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;race_ethnicity&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;All&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
@@ -528,10 +533,10 @@
 &lt;ul&gt;
   &lt;li&gt;There is a huge disparity between male and female motor vehicle fatalities in nearly every big city in the U.S., males experiencing double and sometimes triple the female average fatality rate.&lt;/li&gt;
   &lt;li&gt;Detroit has historically had the highest burden of motor vehicle fatalities, but Denver has recently caught up.&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; is very cool. &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplotly&lt;/code&gt; is also very cool.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; is very cool. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplotly&lt;/code&gt; is also very cool.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;This is absolutely just a surface-scratch of all the things &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; can do, so please take a look at the links below for more complete package exploration.&lt;/p&gt;
+&lt;p&gt;This is absolutely just a surface-scratch of all the things &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; can do, so please take a look at the links below for more complete package exploration.&lt;/p&gt;
 
 &lt;h2 id=&quot;further-reading&quot;&gt;Further Reading&lt;/h2&gt;
 
@@ -549,13 +554,13 @@
 &lt;div class=&quot;footnotes&quot;&gt;
   &lt;ol&gt;
     &lt;li id=&quot;fn:1&quot;&gt;
-      &lt;p&gt;There are people who would trash me for making that statement, given that R has an actual base graphics &lt;a href=&quot;https://www.rdocumentation.org/packages/graphics/versions/3.6.2&quot;&gt;package&lt;/a&gt; and from what I’ve seen, it works just fine. Data people on the internet sometimes &lt;a href=&quot;https://flowingdata.com/2016/03/22/comparing-ggplot2-and-r-base-graphics/&quot;&gt;argue&lt;/a&gt; against &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; since it seems the base graphics can get you similar results with less code. I have no position on the matter - I use &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; because I’m a sheep and that’s what everyone else seems to use (and hence, what you can find a lot more online help for). &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;There are people who would trash me for making that statement, given that R has an actual base graphics &lt;a href=&quot;https://www.rdocumentation.org/packages/graphics/versions/3.6.2&quot;&gt;package&lt;/a&gt; and from what I’ve seen, it works just fine. Data people on the internet sometimes &lt;a href=&quot;https://flowingdata.com/2016/03/22/comparing-ggplot2-and-r-base-graphics/&quot;&gt;argue&lt;/a&gt; against &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; since it seems the base graphics can get you similar results with less code. I have no position on the matter - I use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplot2&lt;/code&gt; because I’m a sheep and that’s what everyone else seems to use (and hence, what you can find a lot more online help for). &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
     &lt;li id=&quot;fn:2&quot;&gt;
       &lt;p&gt;Age adjustment is a method used in epidemiology when comparing rates of disease or mortality between populations with different age breakdowns. Roughly speaking, if the population of Austin TX, for instance, is much younger than the average U.S. population, it doesn’t make sense to compare mortality rates directly. We know that older people die more frequently than younger people, so if we want an apples-to-apples comparison of two populations we have to use a weighting scheme. And that’s all age standardization is - a weighting scheme that assigns more weight to certain age categories to “equalize” their weight to that of the reference population. In our example, older people in Austin would get weighted more than younger people. &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>alice</name></author></entry><entry><title type="html">Phthalate Exposure in U.S. Women of Reproductive Age - an NHANES Review, Part II</title><link href="http://localhost:4000/phthalates-II/" rel="alternate" type="text/html" title="Phthalate Exposure in U.S. Women of Reproductive Age - an NHANES Review, Part II" /><published>2020-07-12T00:00:00-07:00</published><updated>2020-07-12T00:00:00-07:00</updated><id>http://localhost:4000/phthalates-II</id><content type="html" xml:base="http://localhost:4000/phthalates-II/">&lt;h1 id=&quot;motivation&quot;&gt;Motivation&lt;/h1&gt;
+&lt;/div&gt;</content><author><name>alice</name></author><category term="data visualization" /><category term="ggplot2" /><category term="injuries" /></entry><entry><title type="html">Phthalate Exposure in U.S. Women of Reproductive Age - an NHANES Review, Part II</title><link href="http://localhost:4000/phthalates-II/" rel="alternate" type="text/html" title="Phthalate Exposure in U.S. Women of Reproductive Age - an NHANES Review, Part II" /><published>2020-07-12T00:00:00-07:00</published><updated>2020-07-12T00:00:00-07:00</updated><id>http://localhost:4000/phthalates-II</id><content type="html" xml:base="http://localhost:4000/phthalates-II/">&lt;h1 id=&quot;motivation&quot;&gt;Motivation&lt;/h1&gt;
 
 &lt;p&gt;In &lt;a href=&quot;../phthalates&quot;&gt;Part I&lt;/a&gt; of this post, we looked at what phthalates are, how humans interact with them, how much we have in our bodies, and how those levels have changed over time.&lt;/p&gt;
 
@@ -568,7 +573,7 @@
 
 &lt;h1 id=&quot;analysis&quot;&gt;Analysis&lt;/h1&gt;
 
-&lt;p&gt;We’ll be using the same datasets we used in Part I, and we’ll start here with the cleaned dataframe &lt;code class=&quot;highlighter-rouge&quot;&gt;all_data_c&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;_c&lt;/code&gt; refers to creatinine-adjusted). Please refer back to &lt;a href=&quot;../phthalates&quot;&gt;Part I&lt;/a&gt; if something doesn’t make sense.&lt;/p&gt;
+&lt;p&gt;We’ll be using the same datasets we used in Part I, and we’ll start here with the cleaned dataframe &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;all_data_c&lt;/code&gt; (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_c&lt;/code&gt; refers to creatinine-adjusted). Please refer back to &lt;a href=&quot;../phthalates&quot;&gt;Part I&lt;/a&gt; if something doesn’t make sense.&lt;/p&gt;
 
 &lt;p&gt;Libraries:&lt;/p&gt;
 
@@ -581,7 +586,7 @@
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sjPlot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Load in &lt;code class=&quot;highlighter-rouge&quot;&gt;all_data_c&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;Load in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;all_data_c&lt;/code&gt;:&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;all_data_c&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;readRDS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;all_data_c.RDS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
@@ -590,30 +595,30 @@
 &lt;h3 id=&quot;variables-used&quot;&gt;Variables Used&lt;/h3&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;SEQN&lt;/code&gt;: Unique NHANES identifier&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;RIAGENDR&lt;/code&gt;: Gender&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;RIDAGEYR&lt;/code&gt;: Age&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;RIDRETH1&lt;/code&gt;: Ethnicity&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;DMDEDUC2&lt;/code&gt;: Education&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;DMDMARTL&lt;/code&gt;: Marital Status&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;INDHHIN2&lt;/code&gt;: Annual household income (cycles 2007-2008, 2009-2010, 2011-2012, 2013-2014, 2015-2016)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;INDFMIN2&lt;/code&gt;: Annual family income (cycles 2007-2008, 2009-2010, 2011-2012, 2013-2014, 2015-2016)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;INDHHINC&lt;/code&gt;: Annual household income (cycles 2003-2004, 2005-2006)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;INDFMINC&lt;/code&gt;: Annual family income (cycles 2003-2004, 2005-2006)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;WTMEC2YR&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;SDMVPSU&lt;/code&gt;,&lt;code class=&quot;highlighter-rouge&quot;&gt;SDMVSTRA&lt;/code&gt;: Survey weighting variables, addressed in Question 2 below&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXUCR&lt;/code&gt;: Urinary creatinine&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXCNP&lt;/code&gt;: Mono(carboxyisononyl) phthalate (MCNP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXCOP&lt;/code&gt;: Mono(carboxyisoctyl) phthalate (MCOP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMNP&lt;/code&gt;: Mono-isononyl phthalate (MiNP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXECP&lt;/code&gt;: Mono-2-ethyl-5-carboxypentyl phthalate (MECPP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMHH&lt;/code&gt;: Mono-(2-ethyl-5-hydroxyhexyl) phthalate (MEHHP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMHP&lt;/code&gt;: Mono-(2-ethyl)-hexyl phthalate (MEHP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMOH&lt;/code&gt;: Mono-(2-ethyl-5-oxohexyl) phthalate (MEOHP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMBP&lt;/code&gt;: Mono-n-butyl phthalate (MnBP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMEP&lt;/code&gt;: Mono-ethyl phthalate (MEP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMIB&lt;/code&gt;: Mono-isobutyl phthalate (MiBP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMC1&lt;/code&gt;: Mono-(3-carboxypropyl) phthalate (MCPP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMZP&lt;/code&gt;: Mono-benzyl phthalate (MBzP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SEQN&lt;/code&gt;: Unique NHANES identifier&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RIAGENDR&lt;/code&gt;: Gender&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RIDAGEYR&lt;/code&gt;: Age&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RIDRETH1&lt;/code&gt;: Ethnicity&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DMDEDUC2&lt;/code&gt;: Education&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DMDMARTL&lt;/code&gt;: Marital Status&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INDHHIN2&lt;/code&gt;: Annual household income (cycles 2007-2008, 2009-2010, 2011-2012, 2013-2014, 2015-2016)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INDFMIN2&lt;/code&gt;: Annual family income (cycles 2007-2008, 2009-2010, 2011-2012, 2013-2014, 2015-2016)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INDHHINC&lt;/code&gt;: Annual household income (cycles 2003-2004, 2005-2006)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INDFMINC&lt;/code&gt;: Annual family income (cycles 2003-2004, 2005-2006)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WTMEC2YR&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SDMVPSU&lt;/code&gt;,&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SDMVSTRA&lt;/code&gt;: Survey weighting variables, addressed in Question 2 below&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXUCR&lt;/code&gt;: Urinary creatinine&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXCNP&lt;/code&gt;: Mono(carboxyisononyl) phthalate (MCNP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXCOP&lt;/code&gt;: Mono(carboxyisoctyl) phthalate (MCOP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMNP&lt;/code&gt;: Mono-isononyl phthalate (MiNP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXECP&lt;/code&gt;: Mono-2-ethyl-5-carboxypentyl phthalate (MECPP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMHH&lt;/code&gt;: Mono-(2-ethyl-5-hydroxyhexyl) phthalate (MEHHP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMHP&lt;/code&gt;: Mono-(2-ethyl)-hexyl phthalate (MEHP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMOH&lt;/code&gt;: Mono-(2-ethyl-5-oxohexyl) phthalate (MEOHP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMBP&lt;/code&gt;: Mono-n-butyl phthalate (MnBP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMEP&lt;/code&gt;: Mono-ethyl phthalate (MEP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMIB&lt;/code&gt;: Mono-isobutyl phthalate (MiBP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMC1&lt;/code&gt;: Mono-(3-carboxypropyl) phthalate (MCPP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMZP&lt;/code&gt;: Mono-benzyl phthalate (MBzP) (ng/mL)&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;question-2-are-phthalate-levels-disproportionately-distributed-through-the-population-namely-is-there-an-association-with-phthalates-and-socioeconomic-status&quot;&gt;Question 2: Are phthalate levels disproportionately distributed through the population? Namely, is there an association with phthalates and socioeconomic status?&lt;/h2&gt;
@@ -650,7 +655,7 @@
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;complete.obs&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;pearson&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##                  household_income family_income
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##                  household_income family_income
 ## household_income        1.0000000     0.9095916
 ## family_income           0.9095916     1.0000000
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -795,7 +800,7 @@
 
 &lt;p&gt;This is where it gets a little tricky. NHANES uses a complex, stratified survey design (detailed &lt;a href=&quot;https://www.cdc.gov/nchs/data/series/sr_02/sr02_162.pdf&quot;&gt;here&lt;/a&gt;), along with over-sampling in accordance with the US census. Simply put, the ~10,000 individuals that participate in NHANES do not constitute a perfect random sample of the entire US population. Inevitably, some demographic groups will be over- or under-represented and some might not be represented at all. Therefore, each individual is assigned a sampling weight, which allows us to extrapolate results to the US population.&lt;/p&gt;
 
-&lt;p&gt;Because of this, it’s not enough to put the variables of interest into a model and hit play. Instead, we must utilize the &lt;code class=&quot;highlighter-rouge&quot;&gt;survey&lt;/code&gt; package and the three survey variables, &lt;code class=&quot;highlighter-rouge&quot;&gt;WTMEC2YR, SDMVPSU,SDMVSTRA&lt;/code&gt; that we’ve ignored up to now. The way these variables work is somewhat complicated and we won’t go into detail, but you can read all about it &lt;a href=&quot;https://www.cdc.gov/nchs/data/series/sr_02/sr02-184-508.pdf&quot;&gt;here&lt;/a&gt;. For our purposes, we need two steps: 1. create a survey design object using the survey variables and 2. carry out regression modeling using &lt;code class=&quot;highlighter-rouge&quot;&gt;svyglm&lt;/code&gt;. &lt;a href=&quot;https://stats.idre.ucla.edu/r/faq/how-can-i-do-regression-estimation-with-survey-data/&quot;&gt;This site&lt;/a&gt; provides a reference for both.&lt;/p&gt;
+&lt;p&gt;Because of this, it’s not enough to put the variables of interest into a model and hit play. Instead, we must utilize the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;survey&lt;/code&gt; package and the three survey variables, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WTMEC2YR, SDMVPSU,SDMVSTRA&lt;/code&gt; that we’ve ignored up to now. The way these variables work is somewhat complicated and we won’t go into detail, but you can read all about it &lt;a href=&quot;https://www.cdc.gov/nchs/data/series/sr_02/sr02-184-508.pdf&quot;&gt;here&lt;/a&gt;. For our purposes, we need two steps: 1. create a survey design object using the survey variables and 2. carry out regression modeling using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;svyglm&lt;/code&gt;. &lt;a href=&quot;https://stats.idre.ucla.edu/r/faq/how-can-i-do-regression-estimation-with-survey-data/&quot;&gt;This site&lt;/a&gt; provides a reference for both.&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# adjust weighting variable for aggregation of 7 cycles&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;all_data_c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WTMEC14YR&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;all_data_c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WTMEC2YR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
@@ -1561,7 +1566,7 @@
 
 &lt;h1 id=&quot;analysis&quot;&gt;Analysis&lt;/h1&gt;
 
-&lt;p&gt;Although there is a &lt;a href=&quot;https://cran.r-project.org/web/packages/RNHANES/index.html&quot;&gt;library&lt;/a&gt; for analyzing NHANES in R (aptly named &lt;code class=&quot;highlighter-rouge&quot;&gt;RNHANES&lt;/code&gt;), if you work with it long enough, you will notice that only some cycles and variables are available. I spent more time than I care to admit wrangling with this library, and ultimately concluded it would not give me what I needed. Instead, I downloaded the SAS export files from CDC’s NHANES &lt;a href=&quot;https://www.cdc.gov/nchs/nhanes/index.htm&quot;&gt;website&lt;/a&gt; and imported them to R using the &lt;code class=&quot;highlighter-rouge&quot;&gt;foreign&lt;/code&gt; library. Below are the setup, import, and tidying steps I used.&lt;/p&gt;
+&lt;p&gt;Although there is a &lt;a href=&quot;https://cran.r-project.org/web/packages/RNHANES/index.html&quot;&gt;library&lt;/a&gt; for analyzing NHANES in R (aptly named &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RNHANES&lt;/code&gt;), if you work with it long enough, you will notice that only some cycles and variables are available. I spent more time than I care to admit wrangling with this library, and ultimately concluded it would not give me what I needed. Instead, I downloaded the SAS export files from CDC’s NHANES &lt;a href=&quot;https://www.cdc.gov/nchs/nhanes/index.htm&quot;&gt;website&lt;/a&gt; and imported them to R using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foreign&lt;/code&gt; library. Below are the setup, import, and tidying steps I used.&lt;/p&gt;
 
 &lt;h2 id=&quot;data-preparation&quot;&gt;Data Preparation&lt;/h2&gt;
 
@@ -1614,7 +1619,7 @@
 
 &lt;h3 id=&quot;data-tidy&quot;&gt;Data Tidy&lt;/h3&gt;
 
-&lt;p&gt;Next we’ll bind the data files for each cycle using left-joins, merging on the unique identifier &lt;code class=&quot;highlighter-rouge&quot;&gt;SEQN&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Next we’ll bind the data files for each cycle using left-joins, merging on the unique identifier &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SEQN&lt;/code&gt;.&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;data_03_04&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;left_join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;demo_03_04&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;phthalate_03_04&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;by&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;SEQN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
@@ -1651,37 +1656,37 @@
 
 &lt;h4 id=&quot;variables-used&quot;&gt;Variables Used&lt;/h4&gt;
 
-&lt;p&gt;Next, we’ll select the variables we want. We will choose 12 phthalates measured in NHANES between 2003 and 2016, as well as urinary &lt;a href=&quot;https://en.wikipedia.org/wiki/Creatinine&quot;&gt;creatinine&lt;/a&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;URXUCR&lt;/code&gt;. The latter is a constant byproduct of metabolic activities and is often used to measure urinary dilution.&lt;/p&gt;
+&lt;p&gt;Next, we’ll select the variables we want. We will choose 12 phthalates measured in NHANES between 2003 and 2016, as well as urinary &lt;a href=&quot;https://en.wikipedia.org/wiki/Creatinine&quot;&gt;creatinine&lt;/a&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXUCR&lt;/code&gt;. The latter is a constant byproduct of metabolic activities and is often used to measure urinary dilution.&lt;/p&gt;
 
 &lt;p&gt;NHANES takes biosample data for about 1/3 of the survey participants, so we will remove observations with missing phthalate data. We will restrict analysis to female respondents between the ages of 20 and 44, which we’ll take to mean reproductive age in this analysis. We will also include age and socioeconomic measures to be used in Question 2.&lt;/p&gt;
 
 &lt;p&gt;Below are the NHANES variables used, along with abbreviations for phthalate names. More intuitive variable names are assigned the subsequent code chunk.&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;SEQN&lt;/code&gt;: Unique NHANES identifier&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;RIAGENDR&lt;/code&gt;: Gender&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;RIDAGEYR&lt;/code&gt;: Age&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;RIDRETH1&lt;/code&gt;: Ethnicity&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;DMDEDUC2&lt;/code&gt;: Education&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;DMDMARTL&lt;/code&gt;: Marital Status&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;INDHHIN2&lt;/code&gt;: Annual household income (cycles 2007-2008, 2009-2010, 2011-2012, 2013-2014, 2015-2016)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;INDFMIN2&lt;/code&gt;: Annual family income (cycles 2007-2008, 2009-2010, 2011-2012, 2013-2014, 2015-2016)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;INDHHINC&lt;/code&gt;: Annual household income (cycles 2003-2004, 2005-2006)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;INDFMINC&lt;/code&gt;: Annual family income (cycles 2003-2004, 2005-2006)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;WTMEC2YR&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;SDMVPSU&lt;/code&gt;,&lt;code class=&quot;highlighter-rouge&quot;&gt;SDMVSTRA&lt;/code&gt;: Survey weighting variables, addressed in Question 2 below&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXUCR&lt;/code&gt;: Urinary creatinine&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXCNP&lt;/code&gt;: Mono(carboxyisononyl) phthalate (MCNP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXCOP&lt;/code&gt;: Mono(carboxyisoctyl) phthalate (MCOP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMNP&lt;/code&gt;: Mono-isononyl phthalate (MiNP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXECP&lt;/code&gt;: Mono-2-ethyl-5-carboxypentyl phthalate (MECPP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMHH&lt;/code&gt;: Mono-(2-ethyl-5-hydroxyhexyl) phthalate (MEHHP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMHP&lt;/code&gt;: Mono-(2-ethyl)-hexyl phthalate (MEHP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMOH&lt;/code&gt;: Mono-(2-ethyl-5-oxohexyl) phthalate (MEOHP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMBP&lt;/code&gt;: Mono-n-butyl phthalate (MnBP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMEP&lt;/code&gt;: Mono-ethyl phthalate (MEP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMIB&lt;/code&gt;: Mono-isobutyl phthalate (MiBP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMC1&lt;/code&gt;: Mono-(3-carboxypropyl) phthalate (MCPP) (ng/mL)&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;URXMZP&lt;/code&gt;: Mono-benzyl phthalate (MBzP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SEQN&lt;/code&gt;: Unique NHANES identifier&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RIAGENDR&lt;/code&gt;: Gender&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RIDAGEYR&lt;/code&gt;: Age&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RIDRETH1&lt;/code&gt;: Ethnicity&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DMDEDUC2&lt;/code&gt;: Education&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DMDMARTL&lt;/code&gt;: Marital Status&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INDHHIN2&lt;/code&gt;: Annual household income (cycles 2007-2008, 2009-2010, 2011-2012, 2013-2014, 2015-2016)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INDFMIN2&lt;/code&gt;: Annual family income (cycles 2007-2008, 2009-2010, 2011-2012, 2013-2014, 2015-2016)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INDHHINC&lt;/code&gt;: Annual household income (cycles 2003-2004, 2005-2006)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INDFMINC&lt;/code&gt;: Annual family income (cycles 2003-2004, 2005-2006)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WTMEC2YR&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SDMVPSU&lt;/code&gt;,&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SDMVSTRA&lt;/code&gt;: Survey weighting variables, addressed in Question 2 below&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXUCR&lt;/code&gt;: Urinary creatinine&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXCNP&lt;/code&gt;: Mono(carboxyisononyl) phthalate (MCNP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXCOP&lt;/code&gt;: Mono(carboxyisoctyl) phthalate (MCOP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMNP&lt;/code&gt;: Mono-isononyl phthalate (MiNP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXECP&lt;/code&gt;: Mono-2-ethyl-5-carboxypentyl phthalate (MECPP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMHH&lt;/code&gt;: Mono-(2-ethyl-5-hydroxyhexyl) phthalate (MEHHP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMHP&lt;/code&gt;: Mono-(2-ethyl)-hexyl phthalate (MEHP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMOH&lt;/code&gt;: Mono-(2-ethyl-5-oxohexyl) phthalate (MEOHP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMBP&lt;/code&gt;: Mono-n-butyl phthalate (MnBP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMEP&lt;/code&gt;: Mono-ethyl phthalate (MEP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMIB&lt;/code&gt;: Mono-isobutyl phthalate (MiBP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMC1&lt;/code&gt;: Mono-(3-carboxypropyl) phthalate (MCPP) (ng/mL)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;URXMZP&lt;/code&gt;: Mono-benzyl phthalate (MBzP) (ng/mL)&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# select variables of interest, drop every observation without biomarker data, filter out women aged 20-44, and consolidate household and family income variables&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
@@ -1698,7 +1703,7 @@
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INDHHINC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INDHHIN2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INDFMINC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INDFMIN2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Finally, we will add variables for creatinine-adjusted phthalate concentrations. There is, however, a units mismatch we’ll need to deal with. Creatinine is measured in mg/dL and all phthalate biomarkers are measured in ng/mL. Creatinine adjusted measures are reported here (and often in literature) in units of \(\mu\)g phthalate/g creatinine. To get to these final units, we multiply the phthalate concentration by 100 and divide by creatinine &lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. Adjusted values are denoted with a &lt;code class=&quot;highlighter-rouge&quot;&gt;_c&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Finally, we will add variables for creatinine-adjusted phthalate concentrations. There is, however, a units mismatch we’ll need to deal with. Creatinine is measured in mg/dL and all phthalate biomarkers are measured in ng/mL. Creatinine adjusted measures are reported here (and often in literature) in units of \(\mu\)g phthalate/g creatinine. To get to these final units, we multiply the phthalate concentration by 100 and divide by creatinine &lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. Adjusted values are denoted with a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_c&lt;/code&gt;.&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;all_data_c&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;all_data&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
@@ -1718,7 +1723,7 @@
 
 &lt;h2 id=&quot;question-1-what-phthalates-are-present-in-women-in-the-us-what-are-the-average-levels-of-these-chemicals-and-how-have-these-levels-changed-over-time&quot;&gt;Question 1: What phthalates are present in women in the US, what are the average levels of these chemicals, and how have these levels changed over time?&lt;/h2&gt;
 
-&lt;p&gt;After I set about answering the first question, I realized that the most interesting part is the temporal aspect. If there were spikes in certain phthalates, for instance, that would narrow my focus going forward. Conversely, if phthalates were steadily decreasing in the population, maybe this would assuage my anxieties and I could find something else to worry about. Either way, I decided to tackle this question first. I used a spaghetti plot to visualize phthalates over the seven cycles of data and added &lt;code class=&quot;highlighter-rouge&quot;&gt;ggplotly&lt;/code&gt; interactivity to help distinguish one line from the other.&lt;/p&gt;
+&lt;p&gt;After I set about answering the first question, I realized that the most interesting part is the temporal aspect. If there were spikes in certain phthalates, for instance, that would narrow my focus going forward. Conversely, if phthalates were steadily decreasing in the population, maybe this would assuage my anxieties and I could find something else to worry about. Either way, I decided to tackle this question first. I used a spaghetti plot to visualize phthalates over the seven cycles of data and added &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggplotly&lt;/code&gt; interactivity to help distinguish one line from the other.&lt;/p&gt;
 
 &lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;means_c&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;all_data_c&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
@@ -1770,7 +1775,7 @@
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cycle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chemical_c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;median_c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## # A tibble: 10 x 3
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## # A tibble: 10 x 3
 ## # Groups:   cycle [1]
 ##    cycle     chemical_c                                        median_c
 ##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;                                                &amp;lt;dbl&amp;gt;
@@ -2018,12 +2023,7 @@ a high degree of right-skew in the data. To illustrate this, here is a quick his
       &lt;p&gt;Since 1 mg/dL = 10,000 ng/mL, we divide phthalate concentration by 10,000 to get the units to match, then take phthalate/creatinine. Most values are in the \(1e-6\) (micro) order of magnitude, so we express the final adjusted answer in micrograms phthalate per gram creatinine. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>alice</name></author><category term="Environment" /><category term="NHANES" /></entry><entry><title type="html">Summarizing Covid-19 with flexdashboard</title><link href="http://localhost:4000/blog/2020/07/covid_dashboard/" rel="alternate" type="text/html" title="Summarizing Covid-19 with flexdashboard" /><published>2020-07-09T00:00:00-07:00</published><updated>2020-07-09T00:00:00-07:00</updated><id>http://localhost:4000/blog/2020/07/covid-dash</id><content type="html" xml:base="http://localhost:4000/blog/2020/07/covid_dashboard/">&lt;figure&gt;
-    &lt;a href=&quot;/assets/covid_dash&quot;&gt;&lt;img src=&quot;/assets/images/covid.png&quot; /&gt;&lt;/a&gt;
-    &lt;figcaption&gt;screenshot from jun 16 2020&lt;/figcaption&gt;
-&lt;/figure&gt;
-
-&lt;p&gt;For those following the Covid-19 trajectories, this &lt;code class=&quot;highlighter-rouge&quot;&gt;flexdashboard&lt;/code&gt; not a novel concept (pun not intended). My version is adapted from Rami Krispin’s &lt;a href=&quot;https://ramikrispin.github.io/coronavirus_dashboard/&quot;&gt;original&lt;/a&gt; and uses his &lt;code class=&quot;highlighter-rouge&quot;&gt;coronavirus&lt;/code&gt; package. Check it out &lt;a href=&quot;/assets/covid_dash&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;</content><author><name>Alice Tivarovsky</name></author><summary type="html">screenshot from jun 16 2020</summary></entry><entry><title type="html">Hello (blog)World</title><link href="http://localhost:4000/blog/2020/07/hello-blogworld/" rel="alternate" type="text/html" title="Hello (blog)World" /><published>2020-07-06T00:00:00-07:00</published><updated>2020-07-06T00:00:00-07:00</updated><id>http://localhost:4000/blog/2020/07/hello-blogworld</id><content type="html" xml:base="http://localhost:4000/blog/2020/07/hello-blogworld/">&lt;h2 id=&quot;why-i-created-this-blog&quot;&gt;Why I created this blog…&lt;/h2&gt;
+&lt;/div&gt;</content><author><name>alice</name></author><category term="Environment" /><category term="NHANES" /></entry><entry><title type="html">Hello (blog)World</title><link href="http://localhost:4000/blog/2020/07/hello-blogworld/" rel="alternate" type="text/html" title="Hello (blog)World" /><published>2020-07-06T00:00:00-07:00</published><updated>2020-07-06T00:00:00-07:00</updated><id>http://localhost:4000/blog/2020/07/hello-blogworld</id><content type="html" xml:base="http://localhost:4000/blog/2020/07/hello-blogworld/">&lt;h2 id=&quot;why-i-created-this-blog&quot;&gt;Why I created this blog…&lt;/h2&gt;
 
 &lt;p&gt;…basically because everyone has a blog. Your mom, your best friend, your cat probably has a blog. As always, I’m late to the party.&lt;/p&gt;
 
@@ -2042,7 +2042,7 @@ a high degree of right-skew in the data. To illustrate this, here is a quick his
   &lt;li&gt;Some handy tutorials:
     &lt;ul&gt;
       &lt;li&gt;&lt;a href=&quot;https://www.cross-validated.com/How-to-render-math-on-Minimal-Mistakes/&quot;&gt;Getting math to render&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://g3rv4.com/2017/08/htmlwidgets-jekyll-rstats&quot;&gt;Converting from &lt;code class=&quot;highlighter-rouge&quot;&gt;.Rmd&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;.md&lt;/code&gt; and preserving html widgets&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://g3rv4.com/2017/08/htmlwidgets-jekyll-rstats&quot;&gt;Converting from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.Rmd&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.md&lt;/code&gt; and preserving html widgets&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ul&gt;</content><author><name>Alice Tivarovsky</name></author><summary type="html">Why I created this blog…</summary></entry></feed>
