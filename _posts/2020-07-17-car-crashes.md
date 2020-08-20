@@ -2,7 +2,6 @@
 title: Visualizing Motor Vehicle Fatalities with ggplot2
 author: "alice"
 date: '2020-07-17'
-excerpt: ""
 layout: single
 htmlwidgets: true
 toc: true
@@ -11,6 +10,8 @@ categories:
   - ggplot2
   - injuries
 ---
+
+An analysis of car fatalities by state using data from the Big Cities Health Initiative. 
 
 _"This is my favorite part about analytics: Taking boring flat data and bringing it to life through visualization." -- John Tukey_
 

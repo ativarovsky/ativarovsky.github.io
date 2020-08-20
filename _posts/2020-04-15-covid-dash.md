@@ -6,6 +6,8 @@ date: '2020-08-05'
 permalink: /blog/2020/07/covid_dashboard/
 ---
 
+Dashboards are fantastic. 
+
 <figure>
     <a href="/assets/covid_dash"><img src="/assets/images/covid.png"></a>
     <figcaption>screenshot from jun 16 2020</figcaption>
