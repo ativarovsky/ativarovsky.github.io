@@ -1,0 +1,203 @@
+---
+title: Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data
+author: "alice"
+date: '2020-08-24'
+excerpt: "Don't Worry. Be Happy"
+layout: single
+htmlwidgets: true
+toc: true
+categories:
+  - correlation
+  - mental health
+---
+
+## Outline
+- Motivation
+  - happiness index
+  - brief overview of correlation
+- Background
+  - Happiness index
+  - Correlation
+    - what it's used for
+    - types of correlation coefficients
+  - R packages for correlation analysis
+- Data Analysis
+  - libraries
+  - import
+  - tidy
+  - variables used
+  - correlation analysis
+    - pearson 
+      - Shapiro Wilk?
+    - spearman
+    - kendall
+    - correlation matrix (?)
+- Conclusions
+
+ADD FORMULAS??
+
+## Motivation
+
+Although limited in its applications, in the right circumstances, correlation analysis can be a useful (and fairly simple) skill to have in your tool-box. 
+
+Simply put, a correlation coefficient measures the strength of the linear or monotonic relationship between two variables. As we will see below, correlation coefficients come in several flavors, but they are all measured on the same scale, ranging from -1 to +1, where +1 means that that the variables are perfectly correlated in the same direction, -1 means they are perfectly correlated in opposite directions, and 0 means there is no correlation at all. 
+
+PUT PICTURE   
+
+Below, we will conduct correlation analyses using data from the [World Happiness Report](https://worldhappiness.report), an annual survey that seeks to quantify well-being and life satisfaction in 156 countries. The survey uses a unique methodology to gauge happiness in respondents, and reports the average per country, along with GDP, healthy life expectancy, and subjective measures of generosity, perceptions of government corruption, and self-perceived autonomy and social support. Using several correlation coefficients, we will determine which variables are correlated with happiness around the world. 
+
+
+
+continuous variables are __linearly__ correlated. The emphasis on "linearly" correlated means that if your variables have a parabolic, exponential, sinusoidal, etc. relationship, a correlation coefficient is about as useful as a glass hammer. 
+
+Below, we will examine relationships visually, check assumptions, and if all holds, we will determine linear correlation using the correlation trifecta: Pearson's, Spearman's, and Kendall's correlation coefficients. Each one suits a unique data situation, but all three use the same scale: 
+
+We'll be using data compiled from the [World Happiness Report](https://worldhappiness.report), publicly available as a  [Kaggle dataset](https://www.kaggle.com/mathurinache/world-happiness-report). 
+
+## Background
+
+### World Happiness Report 
+
+You've probably heard that Scandinavian countries boast the highest average levels of happiness and life satisfaction. While you may have observed this anecdotally, or perhaps in the media, the main quantitative data source on the topic is the [World Happiness Report](https://worldhappiness.report). 
+
+
+### Correlation
+
+A correlation coefficient is a quantitative measure of the strength of the linear relationship between two variables. It comes in 3 flavors: Pearson, Spearman, and Kendall's Tau. 
+
+#### _Pearson_
+
+Pearson is the usually the default and the most commonly used, but its application is limited to situations where a specific set of assumptions is met. The main assumptions are: (more detailed list [here](https://statistics.laerd.com/statistical-guides/pearson-correlation-coefficient-statistical-guide.php)). 
+- Both variables are measured on a continuous scale 
+- Both variables are normally distributed
+- Observations are independent
+- Variables are linearly related
+
+The last assumption might seem odd - isn't the whole purpose of correlation coefficients to tell us whether there is a linear correlation??? The answer is no. You must always visually inspect your data first. If you see a linear relationship, you can then quantify it using a correlation coefficient. A good example of this is: 
+
+PUT PICTURE
+
+
+
+#### _Spearman_
+
+A Spearman coefficient (or Spearman's rank order correlation coefficient) can be used when the assumptions for applying a Pearson coefficient are violated. Most notably, if your variables are not normally distributed, you can still compute a Spearman coefficient reliably (ref: https://statistics.laerd.com/statistical-guides/spearmans-rank-order-correlation-statistical-guide.php). Spearman also does not stipulate that the two variables must be linearly correlated - rather, they must have a __monotonic__ relationship, meaning that when one variable increases, so does the other (not necessarily in a linear fashion.)[^1] This picture is all you need to understand monotonicity: 
+
+<figure>
+    <img src="/assets/images/monotonic.png">
+</figure>
+
+Finally, Spearman's coefficient does not require the variables to be continuous , so you can use categorical variables, as long as they are ordinal.
+
+
+#### Kendall's Tau
+
+To cap off the trifecta, Kendall's Tau is an even more flexible statistic. It follows the same assumptions as Spearman's correlation coefficient, but it's suitable for small sample sizes (typically n < 30). You can read more about it here, but for the analysis below, we have plenty of observations and don't need to worry about small sample sizes, so we'll skip Kendall. 
+
+- Background on correlation, when to use which coefficient
+  - Pearson
+  - Spearman
+  - Kendall's Tau
+- Background on R packages for correlation
+
+## Data Preparation
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+#### Data Source
+
+These data were taken from the [World Happiness Report](https://worldhappiness.report), publicly available as a  [Kaggle dataset](https://www.kaggle.com/mathurinache/world-happiness-report). We will be restricting analysis to 2020 data. 
+
+#### Libraries
+
+```{r libraries}
+library(tidyverse)
+library(skimr)
+library(PerformanceAnalytics)
+
+```
+
+
+#### Data Import
+
+The Kaggle [dataset](https://www.kaggle.com/mathurinache/world-happiness-report) loads in a zip file containing a separate .csv for every year from 2015 to 2020. We will use the 2020 data here. 
+
+```{r import}
+happy_df = read.csv(file = "../data/2020.csv") %>% 
+  janitor::clean_names() 
+
+head(happy_df)
+
+```
+
+#### Data Tidy
+
+Let's take a closer look at the data. We want to make sure that the variable types R gives us are correct, variables are appropriately named, and that everything we expected in the dataframe is indeed there. We'll also do a quick check to make sure the data are in wide format, wherein each observation is represented by a row and each variable measured for that observation is given in a column. The `glimpse()` function in `dplyr` is a great simple check for all these things. 
+
+```{r structure}
+glimpse(happy_df)
+
+```
+
+Everything looks kosher: we have 153 observations (countries) across 20 variables. The countries and regions are categorical variables, while the happiness outcome measure (`ladder_score`) and all the potentially associated variables (`social_support`, `perception_of_corruption`, etc) are numerical. 
+
+Next, we will scan for missing values and get a feel for some basic measures of central tendency across our variables of interest. `skimr::skim()` is a great function that packs a lot of information in one line of code: 
+
+```{r missing_values}
+skim(happy_df)
+
+```
+
+Overall, the dataframe looks healthy. We don't have any missing values, and the means look reasonable. Let's take a closer look at the variables and their summary stats and distributions below.   
+
+#### Variables Used
+
+The variables of interest (as detailed here [here](https://worldhappiness.report/ed/2019/changing-world-happiness/)) are: 
+- `country_name`: 153 countries total
+- `regional_indicator`: Classification for continental sub-regions, values `r happy_df %>% group_by(regional_indicator) %>% summarize() `
+- `ladder_score`: This is our outcome variable and it's worth dissecting a bit. The World Happiness Report/Gallup World Poll ascertains a respondent's happiness by asking them to compare their life to an imaginary dystopia (more details [here](https://worldhappiness.report/faq/). The measurement system used is known as a [Cantril ladder](https://news.gallup.com/poll/122453/understanding-gallup-uses-cantril-scale.aspx) The dystopian version equates to a 0 and the best possible life you can imagine for yourself equates to a 10. As we saw above, the mean `ladder_score` was 5.47 and the values appear normally distributed. 
+- `logged_gdp_per_capita`:  Pretty much what it sounds like, the log of per-capita Gross Domestic Product. Economists like log GDP (and logs of other economic measures) since a vertical move on the log scale corresponds to the same percentage change in the measure (better explanation [here](https://econbrowser.com/archives/2014/02/use-of-logarithms-in-economics)) 
+- `social_support`: National respondents' proportion of "yes" answers to the question "If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?" The question is coded binary (0 = no, 1 = yes) and the mean is 0.809 (pleasantly high in my opinion)
+- `healthy_life_expectancy`: WHO's measure of a country's healthy life expectancy at birth. From the `skim()` output above, it averages 64.4 years and is somewhat left-skewed, meaning that most countries have a higher than average healthy life expectancy
+- `freedom_to_make_life_choices`: National respondents' proportion of "yes" answers to the question "Are you satisfied or dissatisfied with your freedom to choose what you do with your life?” The question is coded binary (0 = no, 1 = yes) and the mean computed above is 0.783.
+- `generosity`: The residual of regressing the national average of responses to the question “Have you donated money to a charity in the past month?” on GDP per capita. Basically, this means that if we ran a regression of GDP (independent variable) vs the proportion of "yes" answers to this question (dependent variable), `generosity` would equal the gap between the expected value and the actual value. It's really just a means of controlling for income. Per our analysis above, the variable range is (-0.301, 0.561) and centers on -0.0146. 
+- `perceptions_of_corruption`: National respondents' proportion of "yes" answers to the question "Is corruption widespread throughout the government or not?" The question is coded binary (0 = no, 1 = yes) and the mean is 0.733.
+
+
+## Analysis
+
+### Assumptions
+
+Let's first get a handle on how our data behave. Remember that to use Pearson, we need normally distributed variables and a linear relationship and to use Spearman, we need a monotonic relationship. 
+
+To get a visual of all the individual relationships, we could generate scatterplots for each variable of interest vs the outcome of interest. This would be kind of cumbersome. We'll use the `chart.Correlation` function in the `PerformanceAnalytics` package instead. Spoiler alert: this will actually calculate all three correlation coefficients for you, but for now, just pretend you don't see any of the numbers on the figure below. 
+
+```{r}
+chart.Correlation(happy_df[, c(3,8:12)], histogram = TRUE)
+```
+
+Our outcome, `ladder_score` is on the top left, and the left-most column provides the scatter plots for `ladder_score` against all five of the independent variables. The diagonal gives the histogram for each variable individual, indicating whether it is normally distributed or not. 
+
+Looking at the diagonals, `ladder_score` and `healthy_life_expectancy` appear normally distributed. `generosity` could maybe pass for normal (we'll examine this more closely below), while `social_support`, `freedom_to_make_life_choices` and `perceptions_of_corruption` are clearly skewed. 
+
+Looking at the scatter plots, `ladder_score` vs `social_support`, `ladder_score` vs ``healthy_life_expectancy`, and `ladder_score` vs `freedom_to_make_life_choices` all appear fairly linear. `ladder_score` vs `generosity` is neither linear nor monotonic, and `ladder_score` vs `perceptions_of_corruption` is not linear but could pass for monotonic. 
+
+
+
+
+## Further Reading 
+
+
+
+## References
+
+- https://www.wired.co.uk/article/worlds-happiest-country-scandinavia
+- https://ourworldindata.org/happiness-and-life-satisfaction
+- https://worldhappiness.report
+- https://worldhappiness.report/ed/2020/the-nordic-exceptionalism-what-explains-why-the-nordic-countries-are-constantly-among-the-happiest-in-the-world/
+- 
+
+[^1]: Sometimes I imagine Spearman as Pearson's alter ego. He dropped some assumptions and shuffled around the letters in his name and suddenly he's a more flexible (yet less "mainstream") version of his daytime self. 
+
+
