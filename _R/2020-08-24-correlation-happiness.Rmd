@@ -57,10 +57,10 @@ Pearson's coefficient is the default and most commonly used, but its application
 The last assumption might seem odd - isn't the whole purpose of correlation coefficients to tell us whether there is a linear correlation??? The answer is no. __You must always visually inspect your data first.__ If you see a linear relationship, you can then quantify it using a correlation coefficient. Note, also, that the variables must be __linearly__ correlated. The emphasis on "linearly" correlated means that if your variables have a parabolic, exponential, sinusoidal, etc. relationship, a correlation coefficient is about as useful as a glass hammer. 
 
 The population correlation between two random variables X and Y is defined as: 
-\\(\rho_{XY} = \frac {Cov(X,Y)} { \sigma_X  \sigma_Y}\\)
+\\[\rho_{XY} = \frac {Cov(X,Y)} { \sigma_X  \sigma_Y}\\]
 
 and the sample correlation is defined as: 
-\\( r_{xy} = \frac {\Sigma_{i=1}^n (x_i - \bar x)(y_i - \bar y)} { \sqrt{\Sigma_{i=1}^n (x_i - \bar x)^2 } \sqrt{\Sigma_{i=1}^n(y_i - \bar y)^2}}\\)
+\\[ r_{xy} = \frac {\Sigma_{i=1}^n (x_i - \bar x)(y_i - \bar y)} { \sqrt{\Sigma_{i=1}^n (x_i - \bar x)^2 } \sqrt{\Sigma_{i=1}^n(y_i - \bar y)^2}}\\]
 
 #### _Spearman's Rho (aka Spearman's Rank Correlation Coefficient)_
 
@@ -88,21 +88,21 @@ Because of this adjustment, Spearman's coefficient is completely tolerant to out
 
 The formula for computing Spearman's coefficient is the same as Pearson's, but rather than dealing with X and Y, we're dealing with the rank of X and Y:
 
-\\(\rho_{rank_X, rank_Y} = \frac {Cov(rank_X,rank_Y)} { \sigma_{rank_X}  \sigma_{rank_Y}} \\)
+\\[\rho_{rank_X, rank_Y} = \frac {Cov(rank_X,rank_Y)} { \sigma_{rank_X}  \sigma_{rank_Y}} \\]
 
 If there are no ties, Spearman's coefficient is computed using this [formula](https://statistics.laerd.com/statistical-guides/spearmans-rank-order-correlation-statistical-guide.php):
 
-\\(r_{s} = 1 - \frac {6 \Sigma d_i^2} {n(n^2 -1)} \\)
-where \\(d = rank_{x_i} - rank_{y_i} \\)
+\\[r_{s} = 1 - \frac {6* \Sigma d_i^2} {n(n^2 -1)} \\)
+where \\(d = rank_{x_i} - rank_{y_i} \\]
 
 
 #### Kendall's Tau (aka Kendall's Rank Correlation Coefficient)
 
 Kendall's tau is another rank-based, non-parametric statistic. It follows the same assumptions as Spearman's rank-order correlation coefficient, but it produces more robust standard errors and is therefore [thought]((https://statistics.laerd.com/spss-tutorials/kendalls-tau-b-using-spss-statistics.php) to be more suitable for small sample sizes. 
 
-The calculation for Kendall's Tau is actually pretty simple. You (or your software) will simply rank all the x's and all the y's in order, pair them, and count the number of concordant vs discordant pairs. Concordant pairs are ones where \(x_i > x_{i+1} \) and \(y_i > y_{i+1} \). Discordant pairs are ones where one of those conditions is not met. 
+The calculation for Kendall's Tau is actually pretty simple. You (or your software) will simply rank all the x's and all the y's in order, pair them, and count the number of concordant vs discordant pairs. Concordant pairs are ones where \\(x_i > x_{i+1} \\) and \\(y_i > y_{i+1} \\). Discordant pairs are ones where one of those conditions is not met. 
 
-\\(  \tau = \frac {number\,concordant\,pairs - number\,discordant\,pairs} {\binom n 2}  )\\
+\\[\tau = \frac {number\,concordant\,pairs - number\,discordant\,pairs} {\binom n 2}\\]
 
 The trade-off for the increased precision we get with Kendall's tau is that the estimated correlation coefficients are generally smaller in magnitude than those computed using Spearman's rho (Fredricks & Nelsen, 2007). 
 
@@ -110,12 +110,12 @@ The trade-off for the increased precision we get with Kendall's tau is that the 
 #### Hypothesis Testing
 
 Presumably, you want to use the correlation coefficient to make some inferences about the population of interest. To do so, you need to conduct a hypothesis test and report either a p-value or a confidence interval. We will look at several functions for doing this in R below, but all have the following null and alternative hypotheses: 
-* \\( H_0: \rho = 0 )\\ there is no linear (or monotonic, in the case of Spearman and Kendall) association between the two variables in the population 
-* \\( H_a: \rho \ne 0 )\\ there is a linear/monotonic association between the two variables in the population. 
+* \\( H_0: \rho = 0 \\) there is no linear (or monotonic, in the case of Spearman and Kendall) association between the two variables in the population 
+* \\( H_a: \rho \ne 0 \\) there is a linear/monotonic association between the two variables in the population. 
 
 You can also conduct a one-sided test, where the alternative hypothesis would be one of the following: 
-* \\( H_a: \rho > 0 )\\ 
-* \\( H_a: \rho < 0 )\\
+* \\( H_a: \rho > 0 \\)
+* \\( H_a: \rho < 0 \\)
 
 
 ## Data Preparation
@@ -171,7 +171,7 @@ Overall, the dataframe looks healthy. We don't have any missing values, and the 
 
 ### Variables Used
 
-The variables of interest (as detailed here [here](https://worldhappiness.report/ed/2019/changing-world-happiness/)) are: 
+The variables of interest (as detailed [here](https://worldhappiness.report/ed/2019/changing-world-happiness/)) are: 
 - `country_name`: 153 countries total
 - `regional_indicator`: Classification for continental sub-regions, values `r levels(happy_df$regional_indicator)`
 - `ladder_score`: This is our outcome variable, the happiness ladder score. As we saw above, the mean `ladder_score` was 5.47 and the values appear normally distributed. 
@@ -214,7 +214,7 @@ shapiro.test(happy_df$healthy_life_expectancy)
 
 ```
 
-Since p << 0.05, we reject the null hypothesis and conclude that `healthy_life_expectancy` does not follow a normal distribution. As such, Spearman and Kendall coefficients are more appropriate. (see caveat below)[^3] 
+Since p < 0.05, we reject the null hypothesis and conclude that `healthy_life_expectancy` does not follow a normal distribution. As such, Spearman and Kendall coefficients are more appropriate. (see caveat below)[^3] 
 
 ### Computing Correlation Coefficients using `cor()`, `cor.test()`, and ``rcorr()`
 
@@ -250,7 +250,7 @@ pearson = as.data.frame(pearson, row.names = "pearson")
 spearman = as.data.frame(spearman, row.names = "spearman")
 kendall = as.data.frame(kendall, row.names = "kendall")
 
-bind_rows(pearson, spearman, kendall)
+knitr::kable(bind_rows(pearson, spearman, kendall))
 
 ```
 

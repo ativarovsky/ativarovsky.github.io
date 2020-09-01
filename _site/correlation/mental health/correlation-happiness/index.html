@@ -308,7 +308,7 @@
     <ul>
       <li><a href="#assumptions">Assumptions</a></li>
       <li><a href="#assessing-normality---shapiro-wilk-test">Assessing Normality - Shapiro Wilk Test</a></li>
-      <li><a href="#computing-correlation-coefficients-using-cor-cortest-and-rcorr">Computing Correlation Coefficients using cor(), cor.test(), and ``rcorr()`</a>
+      <li><a href="#computing-correlation-coefficients-using-cor-cortest-and-rcorr">Computing Correlation Coefficients using cor(), cor.test(), and rcorr()</a>
         <ul>
           <li><a href="#cor">cor</a></li>
           <li><a href="#cortest-and-rcorr">cor.test and rcorr</a></li>
@@ -333,7 +333,7 @@
 
 <figure>
     <img src="/assets/images/correlation.png" />
-    <figcaption>picture taken from <a href="https://saylordotorg.github.io/text_introductory-statistics/s14-02-the-linear-correlation-coeffic.html">Introductory Statistics</a></figcaption>
+    <figcaption>source: <a href="https://saylordotorg.github.io/text_introductory-statistics/s14-02-the-linear-correlation-coeffic.html">Introductory Statistics</a></figcaption>
 </figure>
 
 <p>Below, we will conduct correlation analyses using data from the <a href="https://worldhappiness.report">World Happiness Report</a>, an annual survey that seeks to quantify well-being and life satisfaction in over 150 countries. The survey uses a unique methodology to gauge happiness in respondents, and reports happiness, on average, per country, along with GDP, healthy life expectancy, and several subjective measures, including generosity, perceptions of government corruption, and self-perceived autonomy and social support. Using several correlation techniques, we will determine which variables are correlated with happiness around the world.</p>
@@ -352,7 +352,7 @@
 
 <h3 id="correlation">Correlation</h3>
 
-<p>A correlation coefficient is a quantitative measure of the strength of association between two variables. Several coefficients have been defined, but the most common is Pearson’s correlation coefficient. As we will see, the validity of a Pearson coefficient is based on several assumptions that are not typically observed in the real world. In these instances, two common alternatives are Spearman’s Rank-Order coefficient and Kendall’s tau coefficient <sup id="fnref:3"><a href="#fn:3" class="footnote">1</a></sup>.</p>
+<p>A correlation coefficient is a quantitative measure of the strength of association between two variables. Several coefficients have been defined, but the most common is Pearson’s correlation coefficient. As we will see, the validity of a Pearson coefficient is based on several assumptions that are not typically observed in the real world. In these instances, two common alternatives are Spearman’s Rank-Order<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup> coefficient and Kendall’s tau coefficient.</p>
 
 <p>Below, we will examine relationships visually, check assumptions, and if all holds, we will determine magnitude of correlation using these coefficients. Each one has certain advantages and disadvantages in terms of application, but all three use the same (-1, 1) scale.</p>
 
@@ -369,19 +369,20 @@
 <p>The last assumption might seem odd - isn’t the whole purpose of correlation coefficients to tell us whether there is a linear correlation??? The answer is no. <strong>You must always visually inspect your data first.</strong> If you see a linear relationship, you can then quantify it using a correlation coefficient. Note, also, that the variables must be <strong>linearly</strong> correlated. The emphasis on “linearly” correlated means that if your variables have a parabolic, exponential, sinusoidal, etc. relationship, a correlation coefficient is about as useful as a glass hammer.</p>
 
 <p>The population correlation between two random variables X and Y is defined as: 
-\(\rho_{XY} = \frac {Cov(X,Y)} { \sigma_X  \sigma_Y}\)</p>
+\[\rho_{XY} = \frac {Cov(X,Y)} { \sigma_X  \sigma_Y}\]</p>
 
 <p>and the sample correlation is defined as: 
-\( r_{xy} = \frac {\Sigma_{i=1}^n (x_i - \bar x)(y_i - \bar y)} { \sqrt{\Sigma_{i=1}^n (x_i - \bar x)^2 } \sqrt{\Sigma_{i=1}^n(y_i - \bar y)^2}}\)</p>
+\[ r_{xy} = \frac {\Sigma_{i=1}^n (x_i - \bar x)(y_i - \bar y)} { \sqrt{\Sigma_{i=1}^n (x_i - \bar x)^2 } \sqrt{\Sigma_{i=1}^n(y_i - \bar y)^2}}\]</p>
 
 <h4 id="spearmans-rho-aka-spearmans-rank-correlation-coefficient"><em>Spearman’s Rho (aka Spearman’s Rank Correlation Coefficient)</em></h4>
 
-<p>In contrast to Pearson’s rho, Spearman’s rho [\rho] is a non-parametric statistic, meaning it can be applied to non normally-distributed data (Puth, Neuhäuser, &amp; Ruxton, 2015).</p>
+<p>In contrast to Pearson’s rho, Spearman’s rho [\rho] is a non-parametric statistic, meaning it can be applied to non normally-distributed data (Puth, Neuhäuser, &amp; Ruxton, 2015).<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup></p>
 
-<p>Spearman’s coefficient also does not stipulate that the two variables must be linearly correlated - rather, they must have a <strong>monotonic</strong> relationship, meaning that when one variable increases, so does the other (not necessarily in a linear fashion.)<sup id="fnref:1"><a href="#fn:1" class="footnote">2</a></sup> This picture is all you need to understand monotonicity:</p>
+<p>Spearman’s coefficient also does not stipulate that the two variables must be linearly correlated - rather, they must have a <strong>monotonic</strong> relationship, meaning that when one variable increases, so does the other (not necessarily in a linear fashion.) This picture is all you need to understand monotonicity:</p>
 
 <figure>
     <img src="/assets/images/monotonic.png" />
+    <figcaption> <a href="https://statistics.laerd.com/statistical-guides/spearmans-rank-order-correlation-statistical-guide.php">source</a></figcaption>
 </figure>
 
 <p>Finally, Spearman’s coefficient does not require that the variables be continuous, so you can use categorical variables, as long as they are ordinal.</p>
@@ -402,20 +403,20 @@
 
 <p>The formula for computing Spearman’s coefficient is the same as Pearson’s, but rather than dealing with X and Y, we’re dealing with the rank of X and Y:</p>
 
-<p>\(\rho_{rank_X, rank_Y} = \frac {Cov(rank_X,rank_Y)} { \sigma_{rank_X}  \sigma_{rank_Y}} \)</p>
+<p>\[\rho_{rank_X, rank_Y} = \frac {Cov(rank_X,rank_Y)} { \sigma_{rank_X}  \sigma_{rank_Y}} \]</p>
 
 <p>If there are no ties, Spearman’s coefficient is computed using this <a href="https://statistics.laerd.com/statistical-guides/spearmans-rank-order-correlation-statistical-guide.php">formula</a>:</p>
 
-<p>\(r_{s} = 1 - \frac {6 \Sigma d_i^2} {n(n^2 -1)} \)
+<p>\[r_{s} = 1 - \frac {6 \Sigma d_i^2} {n(n^2 -1)} \]
 where \(d = rank_{x_i} - rank_{y_i} \)</p>
 
 <h4 id="kendalls-tau-aka-kendalls-rank-correlation-coefficient">Kendall’s Tau (aka Kendall’s Rank Correlation Coefficient)</h4>
 
 <p>Kendall’s tau is another rank-based, non-parametric statistic. It follows the same assumptions as Spearman’s rank-order correlation coefficient, but it produces more robust standard errors and is therefore [thought]((https://statistics.laerd.com/spss-tutorials/kendalls-tau-b-using-spss-statistics.php) to be more suitable for small sample sizes.</p>
 
-<p>The calculation for Kendall’s Tau is actually pretty simple. You (or your software) will simply rank all the x’s and all the y’s in order, pair them, and count the number of concordant vs discordant pairs. Concordant pairs are ones where (x_i &gt; x_{i+1} ) and (y_i &gt; y_{i+1} ). Discordant pairs are ones where one of those conditions is not met.</p>
+<p>The calculation for Kendall’s Tau is actually pretty simple. You (meaning your software) will simply rank all the x’s and all the y’s in order, pair them, and count the number of concordant vs discordant pairs. Concordant pairs are ones where \(x_i &gt; x_{i+1} \) and \(y_i &gt; y_{i+1} \). Discordant pairs are ones where one of those conditions is not met.</p>
 
-<p>\(  \tau = \frac {number\,concordant\,pairs - number\,discordant\,pairs} {\binom n 2}  )\</p>
+<p>\[\tau = \frac {number\,concordant\,pairs - number\,discordant\,pairs} {\binom n 2}\]</p>
 
 <p>The trade-off for the increased precision we get with Kendall’s tau is that the estimated correlation coefficients are generally smaller in magnitude than those computed using Spearman’s rho (Fredricks &amp; Nelsen, 2007).</p>
 
@@ -423,14 +424,14 @@ where \(d = rank_{x_i} - rank_{y_i} \)</p>
 
 <p>Presumably, you want to use the correlation coefficient to make some inferences about the population of interest. To do so, you need to conduct a hypothesis test and report either a p-value or a confidence interval. We will look at several functions for doing this in R below, but all have the following null and alternative hypotheses:</p>
 <ul>
-  <li>\( H_0: \rho = 0 )\ there is no linear (or monotonic, in the case of Spearman and Kendall) association between the two variables in the population</li>
-  <li>\( H_a: \rho \ne 0 )\ there is a linear/monotonic association between the two variables in the population.</li>
+  <li>\( H_0: \rho = 0 \) there is no linear (or monotonic, in the case of Spearman and Kendall) association between the two variables in the population</li>
+  <li>\( H_a: \rho \ne 0 \) there is a linear/monotonic association between the two variables in the population.</li>
 </ul>
 
 <p>You can also conduct a one-sided test, where the alternative hypothesis would be one of the following:</p>
 <ul>
-  <li>\( H_a: \rho &gt; 0 )\</li>
-  <li>\( H_a: \rho &lt; 0 )\</li>
+  <li>\( H_a: \rho &gt; 0 \)</li>
+  <li>\( H_a: \rho &lt; 0 \)</li>
 </ul>
 
 <h2 id="data-preparation">Data Preparation</h2>
@@ -883,7 +884,7 @@ where \(d = rank_{x_i} - rank_{y_i} \)</p>
 
 <h3 id="variables-used">Variables Used</h3>
 
-<p>The variables of interest (as detailed here <a href="https://worldhappiness.report/ed/2019/changing-world-happiness/">here</a>) are:</p>
+<p>The variables of interest (as detailed <a href="https://worldhappiness.report/ed/2019/changing-world-happiness/">here</a>) are:</p>
 <ul>
   <li><code class="language-plaintext highlighter-rouge">country_name</code>: 153 countries total</li>
   <li><code class="language-plaintext highlighter-rouge">regional_indicator</code>: Classification for continental sub-regions, values Central and Eastern Europe, Commonwealth of Independent States, East Asia, Latin America and Caribbean, Middle East and North Africa, North America and ANZ, South Asia, Southeast Asia, Sub-Saharan Africa, Western Europe</li>
@@ -935,9 +936,9 @@ where \(d = rank_{x_i} - rank_{y_i} \)</p>
 ## W = 0.95457, p-value = 6.744e-05
 </code></pre></div></div>
 
-<p>Since p « 0.05, we reject the null hypothesis and conclude that <code class="language-plaintext highlighter-rouge">healthy_life_expectancy</code> does not follow a normal distribution. As such, Spearman and Kendall coefficients are more appropriate. (see caveat below)<sup id="fnref:3:1"><a href="#fn:3" class="footnote">1</a></sup></p>
+<p>Since p &lt; 0.05, we reject the null hypothesis and conclude that <code class="language-plaintext highlighter-rouge">healthy_life_expectancy</code> does not follow a normal distribution. As such, Spearman and Kendall coefficients are more appropriate. (see caveat below)<sup id="fnref:2:1"><a href="#fn:2" class="footnote">2</a></sup></p>
 
-<h3 id="computing-correlation-coefficients-using-cor-cortest-and-rcorr">Computing Correlation Coefficients using <code class="language-plaintext highlighter-rouge">cor()</code>, <code class="language-plaintext highlighter-rouge">cor.test()</code>, and ``rcorr()`</h3>
+<h3 id="computing-correlation-coefficients-using-cor-cortest-and-rcorr">Computing Correlation Coefficients using <code class="language-plaintext highlighter-rouge">cor()</code>, <code class="language-plaintext highlighter-rouge">cor.test()</code>, and <code class="language-plaintext highlighter-rouge">rcorr()</code></h3>
 
 <h4 id="cor"><code class="language-plaintext highlighter-rouge">cor</code></h4>
 
@@ -985,18 +986,47 @@ where \(d = rank_{x_i} - rank_{y_i} \)</p>
 </span><span class="n">spearman</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">spearman</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"spearman"</span><span class="p">)</span><span class="w">
 </span><span class="n">kendall</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">kendall</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kendall"</span><span class="p">)</span><span class="w">
 
-</span><span class="n">bind_rows</span><span class="p">(</span><span class="n">pearson</span><span class="p">,</span><span class="w"> </span><span class="n">spearman</span><span class="p">,</span><span class="w"> </span><span class="n">kendall</span><span class="p">)</span><span class="w">
+</span><span class="n">knitr</span><span class="o">::</span><span class="n">kable</span><span class="p">(</span><span class="n">bind_rows</span><span class="p">(</span><span class="n">pearson</span><span class="p">,</span><span class="w"> </span><span class="n">spearman</span><span class="p">,</span><span class="w"> </span><span class="n">kendall</span><span class="p">))</span><span class="w">
 </span></code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##          social_support healthy_life_expectancy freedom_to_make_life_choices generosity
-## pearson       0.7650008               0.7703163                    0.5905968 0.06904313
-## spearman      0.8031141               0.7830361                    0.5919578 0.07451114
-## kendall       0.6081871               0.5775102                    0.4248366 0.04317165
-##          perceptions_of_corruption
-## pearson                 -0.4183051
-## spearman                -0.2774517
-## kendall                 -0.1854145
-</code></pre></div></div>
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: right">social_support</th>
+      <th style="text-align: right">healthy_life_expectancy</th>
+      <th style="text-align: right">freedom_to_make_life_choices</th>
+      <th style="text-align: right">generosity</th>
+      <th style="text-align: right">perceptions_of_corruption</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">pearson</td>
+      <td style="text-align: right">0.7650008</td>
+      <td style="text-align: right">0.7703163</td>
+      <td style="text-align: right">0.5905968</td>
+      <td style="text-align: right">0.0690431</td>
+      <td style="text-align: right">-0.4183051</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">spearman</td>
+      <td style="text-align: right">0.8031141</td>
+      <td style="text-align: right">0.7830361</td>
+      <td style="text-align: right">0.5919578</td>
+      <td style="text-align: right">0.0745111</td>
+      <td style="text-align: right">-0.2774517</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">kendall</td>
+      <td style="text-align: right">0.6081871</td>
+      <td style="text-align: right">0.5775102</td>
+      <td style="text-align: right">0.4248366</td>
+      <td style="text-align: right">0.0431717</td>
+      <td style="text-align: right">-0.1854145</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>Comparing Pearson vs Spearman, the only big difference with respect to happiness is perception of corruption (Pearson -0.42 vs Spearman -0.28). This isn’t surprising, given that <code class="language-plaintext highlighter-rouge">perception_of_corruption</code> appeared to be the most skewed (i.e. the most deviant from normal distribution) in the <code class="language-plaintext highlighter-rouge">chart.Correlation</code> matrix we looked at above.</p>
 
@@ -1167,10 +1197,10 @@ where \(d = rank_{x_i} - rank_{y_i} \)</p>
 
 <p><img src="/figs/2020-08-24-correlation-happiness/unnamed-chunk-16-1.png" alt="plot of chunk unnamed-chunk-16" /></p>
 
-<p>As before, we see the linear and non-linear associations below the diagonal, the univariate distributions along the diagonal, and the actual Spearman coefficients above the diagonal. <code class="language-plaintext highlighter-rouge">chart.Correlation</code> even does this nice thing of making the font size proportional with the magnitude of the coefficent itself. Finally, it calculates a p-value and displays it as a star above the coefficient:p-values(0, 0.001, 0.01, 0.05, 0.1, 1) &lt;=&gt; symbols(“<em><strong>”, “</strong>”, “</em>”, “.”, “ “).</p>
+<p>As before, we see the linear and non-linear associations below the diagonal, the univariate distributions along the diagonal, and the actual Spearman coefficients above the diagonal. <code class="language-plaintext highlighter-rouge">chart.Correlation</code> even does this nice thing of making the font size proportional with the magnitude of the coefficent itself. Finally, it calculates a p-value and displays it as a star above the coefficient: p-values(0, 0.001, 0.01, 0.05, 0.1, 1) &lt;=&gt; symbols(‘<em><strong>’, ‘</strong>’, ‘</em>’, ‘.’, ‘ ‘).</p>
 
 <p>There are other options for visualizing correlation matrices. <a href="http://www.sthda.com/english/wiki/visualize-correlation-matrix-using-correlogram"><code class="language-plaintext highlighter-rouge">corplot</code></a> and <a href="http://www.sthda.com/english/wiki/ggcorrplot-visualization-of-a-correlation-matrix-using-ggplot2"><code class="language-plaintext highlighter-rouge">ggcorrplot</code></a> are both great for generating customizable correlograms. 
-You can explore a full gallery of <code class="language-plaintext highlighter-rouge">corplot</code> visualization options <a href="http://www.sthda.com/english/wiki/visualize-correlation-matrix-using-correlogram">here</a>, but we’ll make one nice one here <sup id="fnref:2"><a href="#fn:2" class="footnote">3</a></sup>. Note, of course, that we’re not really interested in the entire chart. We just want <code class="language-plaintext highlighter-rouge">ladder_score</code> vs everything else.</p>
+You can explore a full gallery of <code class="language-plaintext highlighter-rouge">corplot</code> visualization options <a href="http://www.sthda.com/english/wiki/visualize-correlation-matrix-using-correlogram">here</a>, but we’ll make one nice one here. Note, of course, that we’re not really interested in the entire chart. We just want <code class="language-plaintext highlighter-rouge">ladder_score</code> vs everything else.</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cor_mat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cor</span><span class="p">(</span><span class="n">happy_df</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="m">8</span><span class="o">:</span><span class="m">12</span><span class="p">)],</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"spearman"</span><span class="p">)</span><span class="w">
 </span><span class="n">corrplot</span><span class="p">(</span><span class="n">cor_mat</span><span class="p">)</span><span class="w">
@@ -1192,7 +1222,7 @@ You can explore a full gallery of <code class="language-plaintext highlighter-ro
 <p>After checking assumptions, both visually and by conducting a Shapiro-Wilk test, we concluded that the default Pearson coefficient was not theoretically suitable for our analysis. Working primarily with Spearman’s and Kendall’s rank-order coefficients, we figured out the following:</p>
 <ul>
   <li><code class="language-plaintext highlighter-rouge">chart.Correlation</code> is a great, highly informative function for analyzing correlations in R and allows for analysis using all three coefficients of interest: Pearson, Spearman, and Kendall</li>
-  <li>Based on the World Happiness Report, country-level happiness is most closely associated with social support and healthy life expectancy for that country.<sup id="fnref:4"><a href="#fn:4" class="footnote">4</a></sup></li>
+  <li>Based on the World Happiness Report, country-level happiness is most closely associated with social support and healthy life expectancy for that country.<sup id="fnref:3"><a href="#fn:3" class="footnote">3</a></sup></li>
   <li>The three functions for computing correlation coefficients in R have their own strengths and weaknesses. If <code class="language-plaintext highlighter-rouge">chart.Correlation</code> is not sufficient for the analysis, some combination of <code class="language-plaintext highlighter-rouge">cor</code>, <code class="language-plaintext highlighter-rouge">cor.test</code>, and <code class="language-plaintext highlighter-rouge">rcorr</code> should be used.</li>
 </ul>
 
@@ -1216,17 +1246,14 @@ You can explore a full gallery of <code class="language-plaintext highlighter-ro
 
 <div class="footnotes">
   <ol>
-    <li id="fn:3">
-      <p>It should be noted that Puth et al (2015) performed a meta-analysis of research that selected rank-order measures over Pearson, and found that in most cases, the rank-order coefficients do not out-perform Pearson. <a href="#fnref:3" class="reversefootnote">&#8617;</a> <a href="#fnref:3:1" class="reversefootnote">&#8617;<sup>2</sup></a></p>
-    </li>
     <li id="fn:1">
       <p>Sometimes I imagine Spearman as Pearson’s alter ego. He dropped some assumptions and shuffled around the letters in his name and suddenly he’s a more flexible (yet less “mainstream”) version of his daytime self. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
     </li>
     <li id="fn:2">
-      <p>As far as I can tell, the only advantage of <code class="language-plaintext highlighter-rouge">ggcorplot</code> over <code class="language-plaintext highlighter-rouge">corplot</code> is that <code class="language-plaintext highlighter-rouge">ggcorplot</code> can give you p-values on the correlogram. Personally, I think the visual output of <code class="language-plaintext highlighter-rouge">chart.Correlation</code> is a bit nicer. <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
+      <p>It should be noted that Puth et al (2015) performed a meta-analysis of research that selected rank-order measures over Pearson, and found that in most cases, the rank-order coefficients do not out-perform Pearson. <a href="#fnref:2" class="reversefootnote">&#8617;</a> <a href="#fnref:2:1" class="reversefootnote">&#8617;<sup>2</sup></a></p>
     </li>
-    <li id="fn:4">
-      <p>This does not tell us anything about happiness on the individual level. These data cannot be used to determine whether an <strong>individual’s</strong> social support is correlated to their happiness. These are ecologic measures and using them for individual-level inference might lead to <a href="https://en.wikipedia.org/wiki/Ecological_fallacy">ecologic fallacy</a> <a href="#fnref:4" class="reversefootnote">&#8617;</a></p>
+    <li id="fn:3">
+      <p>This does not tell us anything about happiness on the individual level. These data cannot be used to determine whether an <strong>individual’s</strong> social support is correlated to their happiness. These are ecologic measures and using them for individual-level inference might lead to <a href="https://en.wikipedia.org/wiki/Ecological_fallacy">ecologic fallacy</a> <a href="#fnref:3" class="reversefootnote">&#8617;</a></p>
     </li>
   </ol>
 </div>
