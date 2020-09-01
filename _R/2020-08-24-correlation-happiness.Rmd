@@ -35,54 +35,58 @@ categories:
     - bootstrapping
 - Conclusions
 
-ADD FORMULAS??
-
 ## Motivation
 
 Although limited in its applications, in the right circumstances, correlation analysis can be a useful (and fairly simple) skill to have in your tool-box. 
 
-Simply put, a correlation coefficient measures the strength of association between two variables (Schober, Boer, and Schwarte, 2018). As we will see below, correlation coefficients come in several flavors, but they are all measured on the same scale, ranging from -1 to +1, where +1 means that that the variables are perfectly correlated in the same direction, -1 means they are perfectly correlated in opposite directions, and 0 means there is no correlation at all. 
+Simply put, a correlation coefficient measures the strength of association between two variables. As we will see below, correlation coefficients come in several flavors, but they are all measured on the same scale, ranging from -1 to +1, where +1 means that that the variables are perfectly correlated in the same direction, -1 means they are perfectly correlated in opposite directions, and 0 means the two variables are completely independent (Schober, Boer, and Schwarte, 2018):
 
-PUT PICTURE   
+<figure>
+    <img src="/assets/images/correlation.png">
+    <figcaption>picture taken from <a href= "https://saylordotorg.github.io/text_introductory-statistics/s14-02-the-linear-correlation-coeffic.html">Introductory Statistics</a></figcaption>
+</figure> 
 
-Below, we will conduct correlation analyses using data from the [World Happiness Report](https://worldhappiness.report), an annual survey that seeks to quantify well-being and life satisfaction in 156 countries. The survey uses a unique methodology to gauge happiness in respondents, and reports happiness, on average, per country, along with GDP, healthy life expectancy, and several subjective measures, including generosity, perceptions of government corruption, and self-perceived autonomy and social support. Using several correlation techniques, we will determine which variables are correlated with happiness around the world. 
+Below, we will conduct correlation analyses using data from the [World Happiness Report](https://worldhappiness.report), an annual survey that seeks to quantify well-being and life satisfaction in over 150 countries. The survey uses a unique methodology to gauge happiness in respondents, and reports happiness, on average, per country, along with GDP, healthy life expectancy, and several subjective measures, including generosity, perceptions of government corruption, and self-perceived autonomy and social support. Using several correlation techniques, we will determine which variables are correlated with happiness around the world. 
 
-
-
-continuous variables are __linearly__ correlated. The emphasis on "linearly" correlated means that if your variables have a parabolic, exponential, sinusoidal, etc. relationship, a correlation coefficient is about as useful as a glass hammer. 
-
-Below, we will examine relationships visually, check assumptions, and if all holds, we will determine linear correlation using the correlation trifecta: Pearson's, Spearman's, and Kendall's correlation coefficients. Each one suits a unique data situation, but all three use the same scale: 
-
-We'll be using data compiled from the [World Happiness Report](https://worldhappiness.report), publicly available as a  [Kaggle dataset](https://www.kaggle.com/mathurinache/world-happiness-report). 
+We'll be using data compiled from the [World Happiness Report](https://worldhappiness.report), publicly available as a [Kaggle dataset](https://www.kaggle.com/mathurinache/world-happiness-report). 
 
 ## Background
 
 ### World Happiness Report 
 
-You've probably heard that Scandinavian countries boast the highest average levels of happiness and life satisfaction. The main quantitative data source on the topic is the [World Happiness Report](https://worldhappiness.report), which, in turn, uses data from the [Gallup World Poll](https://www.gallup.com/analytics/232838/world-poll.aspx) to compile an annual report. 
+It's no question that the pursuit of happiness is one of the biggest drivers of human behavior. But as anyone who has ever regretted eating far too many cupcakes in this pursuit will attest to, happiness is a complicated and, often elusive thing. A lot of research is dedicated dissecting and understanding happiness, its links to mental and physical health, economic freedom, family ties, etc...
 
+WRITE MORE STUFF ABOUT HAPPINESS 
+
+You've probably heard that Scandinavian countries boast the highest average levels of happiness and life satisfaction. The main quantitative data source on the topic is the [World Happiness Report](https://worldhappiness.report), which, in turn, uses data from the [Gallup World Poll](https://www.gallup.com/analytics/232838/world-poll.aspx) to compile an annual report on the state of world happiness. 
+
+The poll surveys a random sample of respondents and ascertains their happiness by requesting they compare their life to an imaginary dystopia (more details [here](https://worldhappiness.report/faq/). The measurement system used is known as a [Cantril ladder](https://news.gallup.com/poll/122453/understanding-gallup-uses-cantril-scale.aspx) The dystopian version equates to a 0 and the best possible life you can imagine for yourself equates to a 10. The poll also measures the respondents' social support, generosity (measured via charitable giving), perceived freedom to choose a life one is satisfied with, and perceived level of government corruption. The World Happiness report takes an average of these results by nation and combines them with every nation's GDP and healthy life expectancy to create a final dataset. These are the variables we will be analyzing here. 
 
 ### Correlation
 
-A correlation coefficient is a quantitative measure of the strength of association between two variables. There are several different coefficients we can calculate, the most common being Pearson's correlation coefficient. As we will see, the Pearson coefficient is based upon several assumptions which are not typically observed in the real world. In these instances, two common alternatives are Spearman's Rank-Order coefficient and Kendall's Tau [^3]. We will introduce each individually. 
+A correlation coefficient is a quantitative measure of the strength of association between two variables. Several coefficients have been defined, but the most common is Pearson's correlation coefficient. As we will see, the Pearson coefficient is based on several assumptions that are not typically observed in the real world. In these instances, two common alternatives are Spearman's rank-order coefficient and Kendall's tau coefficient [^3]. 
+
+Below, we will examine relationships visually, check assumptions, and if all holds, we will determine magnitude of correlation using these coefficients. Each one has certain advantages and disadvantages in terms of application, but all three use the same (-1, 1) scale. 
 
 #### _Pearson's Rho (aka Pearson's Product-Moment Correlation Coefficient)_
 
-Pearson is the usually the default and the most commonly used, but its application is limited to situations where a specific set of assumptions is met. A detailed list can be found [here](https://statistics.laerd.com/statistical-guides/pearson-correlation-coefficient-statistical-guide.php) but the main ones are: 
+Pearson's coefficient is the default and most commonly used, but its application is limited to situations where a specific set of assumptions is met. A detailed list can be found [here](https://statistics.laerd.com/statistical-guides/pearson-correlation-coefficient-statistical-guide.php) but the main ones are: 
 - Both variables are measured on a continuous scale 
 - Both variables are normally distributed
 - Observations are independent
 - Variables are linearly related
 
-The last assumption might seem odd - isn't the whole purpose of correlation coefficients to tell us whether there is a linear correlation??? The answer is no. __You must always visually inspect your data first.__ If you see a linear relationship, you can then quantify it using a correlation coefficient. A quick way to understand this concept is: 
+The last assumption might seem odd - isn't the whole purpose of correlation coefficients to tell us whether there is a linear correlation??? The answer is no. __You must always visually inspect your data first.__ If you see a linear relationship, you can then quantify it using a correlation coefficient. Note, also, that the variables must be __linearly__ correlated. The emphasis on "linearly" correlated means that if your variables have a parabolic, exponential, sinusoidal, etc. relationship, a correlation coefficient is about as useful as a glass hammer. 
 
-PUT PICTURE AND FORMULA
+The population correlation between two random variables X and Y is defined as: 
+\\(\rho_{XY} = \frac {Cov(X,Y)} { \sigma_X  \sigma_Y}\\)
 
-
+and the sample correlation is defined as: 
+\\( r_{xy} = \frac {\Sigma_{i=1}^n (x_i - \bar x)(y_i - \bar y)} { \sqrt{\Sigma_{i=1}^n (x_i - \bar x)^2 } \sqrt{\Sigma_{i=1}^n(y_i - \bar y)^2}}\\)
 
 #### _Spearman's Rho (aka Spearman's Rank Correlation Coefficient)_
 
-A Spearman coefficient is a nonparametric statistic, meaning it can applied when the normality assumption for applying a Pearson coefficient is violated (Puth, Neuhäuser, & Ruxton, 2015). 
+In contrast to Pearson's rho, Spearman's rho (\\[\rho]\\) is a non-parametric statistic, meaning it can be applied to non normally-distributed data (Puth, Neuhäuser, & Ruxton, 2015). 
 
 Spearman's coefficient also does not stipulate that the two variables must be linearly correlated - rather, they must have a __monotonic__ relationship, meaning that when one variable increases, so does the other (not necessarily in a linear fashion.)[^1] This picture is all you need to understand monotonicity: 
 
@@ -90,39 +94,50 @@ Spearman's coefficient also does not stipulate that the two variables must be li
     <img src="/assets/images/monotonic.png">
 </figure>
 
-Finally, Spearman's coefficient does not require the variables to be continuous, so you can use categorical variables, as long as they are ordinal.
+Finally, Spearman's coefficient does not require that the variables be continuous, so you can use categorical variables, as long as they are ordinal.
 
-The trade-off for this flexibility is that the Spearman coefficient is slightly less interpretable. Essentially, we are not measuring the direct correlation using our exact data values. Instead, we are correlating the __rank__ of each value within one variable to the _rank_ of each value in another. For example, here are the top 6 values of the `healthy_life_expectancy` vector: 
+The trade-off for this flexibility is that the Spearman coefficient is slightly less interpretable. Essentially, we are not measuring the direct correlation using our exact data values. Instead, we are correlating the __rank__ of each value within one variable to the _rank_ of each value in another. 
 
+For example, here are the top 6 values of the `healthy_life_expectancy` vector: 
 ```{r}
 head(sort(happy_df$healthy_life_expectancy, decreasing = TRUE))
 
 ```
 
-When we compute Spearman's coefficient, these values are instead ranked, so Spearman's test would interpret 76.80 as 1, 76.77 as 2, and so on, and then correlate these ranks to the ranks of the second variable. Because of this adjustment, Spearman's coefficient is immune to outliers. But you have to bear in mind that when you compute and interpret a Spearman coefficient, you're dealing not with direct correlation between two variables but the rank correlation, so ensure you're interpreting accordingly. 
+When we compute Spearman's coefficient, these values are instead ranked, so Spearman's test would interpret 76.80 as 1, 76.77 as 2, and so on, and then correlate these ranks to the ranks of the second variable. 
+
+Because of this adjustment, Spearman's coefficient is completely tolerant to outliers. But you have to bear in mind that when you compute and interpret a Spearman coefficient, you're dealing not with direct correlation between two variables but the rank correlation, so ensure you're interpreting accordingly. 
+
+The formula for computing Spearman's coefficient is the same as Pearson's, but rather than dealing with X and Y, we're dealing with the rank of X and Y:
+
+\\( \rho_{rank_X, rank_Y} = \frac {Cov(rank_X,rank_Y)} { \sigma_{rank X}  \sigma_{rank Y}} \\)
+
+If there are no ties, Spearman's coefficient is computed using this [formula](https://statistics.laerd.com/statistical-guides/spearmans-rank-order-correlation-statistical-guide.php):
+
+\\(r_{s} = 1 - \frac {6 \Sigma d_i^2} {n(n^2 -1)} \\)
+where \\( d = rank_{x_i} - rank_{y_i} \\)
+
 
 #### Kendall's Tau (aka Kendall's Rank Correlation Coefficient)
 
 Kendall's Tau is another rank-based, non-parametric statistic. It follows the same assumptions as Spearman's rank-order correlation coefficient, but it produces more robust standard errors and is therefore [thought]((https://statistics.laerd.com/spss-tutorials/kendalls-tau-b-using-spss-statistics.php) to be more suitable for small sample sizes. 
 
-The calculation for Kendall's Tau is actually pretty simple. You (or your software) will simply rank all the y's and all the y's in order, pair them, and count the number of concordant vs discordant pairs. Concordant pairs are ones where \\(x_i > x_i+1 \\) and \\(y_i > y_i+1 \\). Discordant pairs are ones where one of those conditions is not met. 
+The calculation for Kendall's Tau is actually pretty simple. You (or your software) will simply rank all the x's and all the y's in order, pair them, and count the number of concordant vs discordant pairs. Concordant pairs are ones where \(x_i > x_{i+1} \) and \(y_i > y_{i+1} \). Discordant pairs are ones where one of those conditions is not met. 
 
-PUT EQUATION
+\\(  \tau = \frac {number\,concordant\,pairs - number\,discordant\,pairs} {\binom n 2}  )\\
 
 The trade-off for the increased precision we get with Kendall's tau is that the estimated correlation coefficients are generally smaller in magnitude than those computed using Spearman's rho (Fredricks & Nelsen, 2007). 
 
--------------
 
-- Background on correlation, when to use which coefficient
-  - Pearson
-  - Spearman
-  - Kendall's Tau
-- Background on R packages for correlation
-
------------
-
- 
 #### Hypothesis Testing
+
+Presumably, you want to use the correlation coefficient to make some inferences about the population of interest. To do so, you need to conduct a hypothesis test and report either a p-value or a confidence interval. We will look at several functions for doing this in R below, but all have the following null and alternative hypotheses: 
+* \\( H_0: \rho = 0 )\\ there is no linear (or monotonic, in the case of Spearman and Kendall) association between the two variables in the population 
+* \\( H_a: \rho \ne 0 )\\ there is a linear/monotonic association between the two variables in the population. 
+
+You can also conduct a one-sided test, where the alternative hypothesis would be one of the following: 
+* \\( H_a: \rho > 0 )\\ 
+* \\( H_a: \rho < 0 )\\
 
 
 ## Data Preparation
@@ -133,7 +148,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 #### Data Source
 
-These data were taken from the [World Happiness Report](https://worldhappiness.report), publicly available as a  [Kaggle dataset](https://www.kaggle.com/mathurinache/world-happiness-report). We will be restricting analysis to 2020 data. 
+These data were taken from the [World Happiness Report](https://worldhappiness.report), publicly available as a [Kaggle dataset](https://www.kaggle.com/mathurinache/world-happiness-report). We will be restricting analysis to 2020 data. 
 
 #### Libraries
 
@@ -185,12 +200,12 @@ Overall, the dataframe looks healthy. We don't have any missing values, and the 
 The variables of interest (as detailed here [here](https://worldhappiness.report/ed/2019/changing-world-happiness/)) are: 
 - `country_name`: 153 countries total
 - `regional_indicator`: Classification for continental sub-regions, values `r happy_df %>% group_by(regional_indicator) %>% summarize() `
-- `ladder_score`: This is our outcome variable, our happiness score, and it's worth dissecting a bit. The World Happiness Report/Gallup World Poll ascertains a respondent's happiness by asking them to compare their life to an imaginary dystopia (more details [here](https://worldhappiness.report/faq/). The measurement system used is known as a [Cantril ladder](https://news.gallup.com/poll/122453/understanding-gallup-uses-cantril-scale.aspx) The dystopian version equates to a 0 and the best possible life you can imagine for yourself equates to a 10. As we saw above, the mean `ladder_score` was 5.47 and the values appear normally distributed. 
+- `ladder_score`: This is our outcome variable, the happiness ladder score. As we saw above, the mean `ladder_score` was 5.47 and the values appear normally distributed. 
 - `logged_gdp_per_capita`:  Pretty much what it sounds like, the log of per-capita Gross Domestic Product. Economists like log GDP (and logs of other economic measures) since a vertical move on the log scale corresponds to the same percentage change in the measure (better explanation [here](https://econbrowser.com/archives/2014/02/use-of-logarithms-in-economics)) 
 - `social_support`: National respondents' proportion of "yes" answers to the question "If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?" The question is coded binary (0 = no, 1 = yes) and the mean is 0.809 (pleasantly high in my opinion)
 - `healthy_life_expectancy`: WHO's measure of a country's healthy life expectancy at birth. From the `skim()` output above, it averages 64.4 years and is somewhat left-skewed, meaning that most countries have a higher than average healthy life expectancy
 - `freedom_to_make_life_choices`: National respondents' proportion of "yes" answers to the question "Are you satisfied or dissatisfied with your freedom to choose what you do with your life?” The question is coded binary (0 = no, 1 = yes) and the mean computed above is 0.783.
-- `generosity`: The residual of regressing the national average of responses to the question “Have you donated money to a charity in the past month?” on GDP per capita. Basically, this means that if we ran a regression of GDP (independent variable) vs the proportion of "yes" answers to this question (dependent variable), `generosity` would equal the gap between the expected value and the actual value. It's really just a means of controlling for income. Per our analysis above, the variable range is (-0.301, 0.561) and centers on -0.0146. 
+- `generosity`: The residual of regressing the national average of responses to the question “Have you donated money to a charity in the past month?” on per-capita GDP. Basically, this means that if we ran a regression of GDP (independent variable) vs the proportion of "yes" answers to this question (dependent variable), `generosity` would equal the gap between the expected value and the actual value. It's really just a means of controlling for income. Per our analysis above, the variable range is (-0.301, 0.561) and centers on -0.0146. 
 - `perceptions_of_corruption`: National respondents' proportion of "yes" answers to the question "Is corruption widespread throughout the government or not?" The question is coded binary (0 = no, 1 = yes) and the mean is 0.733.
 
 
@@ -232,7 +247,7 @@ Since p << 0.05, we reject the null hypothesis and conclude that `healthy_life_e
 
 #### `cor`
 
-There are several options in R for computing correlation coefficients. The first (and most basic) is base R's [`cor`](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/cor) function, which allows selection of Pearson, Spearman, or Kendall using a method argument. We will first specify Spearman based on our conclusions above. 
+There are several options in R for computing correlation coefficients. The first is base R's [`cor`](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/cor) function, which allows selection of Pearson, Spearman, or Kendall using a method argument. We will first specify Spearman based on our conclusions above. 
 
 ```{r}
 spearman = cor(happy_df$ladder_score, happy_df[, c(8:12)], method = "spearman")
@@ -282,9 +297,11 @@ cor.test(happy_df$ladder_score, happy_df$social_support, method = "spearman", co
 
 cor.test(happy_df$ladder_score, happy_df$social_support, method = "pearson", conf.level = 0.95)
 
+cor.test(happy_df$ladder_score, happy_df$social_support, method = "kendall", conf.level = 0.95)
+
 ```
 
-So basically, in the context of this analysis, `cor.test` is weak sauce. Let's move on to `rcorr`. 
+So basically, in the context of this analysis, `cor.test` is weak sauce. Let's move on to `rcorr`, looking only at Spearman. `rcorr` does not play with Kendall and won't give you confidence intervals for any type of coefficient. But unlike `cor.test`, `rcorr` will give you a matrix of coefficients and a matrix of p-values: 
 
 ```{r rcorr}
 happy_df_corr = 
@@ -296,14 +313,15 @@ rcorr(happy_df_corr, type = "spearman")
 ```
 So we've re-computed the Spearman coefficients from `cor` and we've learned that, with respect to happiness, all correlations except `ladder_score` vs `generoisty` are statistically significant at an alpha level of 0.05. 
 
+We've also learned that all of the correlations functions we computed have gaps and inconveniences. Most likely, if you're doing a correlation analysis in R, you'll need to use some combination of these functions. 
+
 Here's a quick summary of the capabilities of `cor` vs `cor.test` vs `rcorr`: 
 
-|           | R-Package      | Multiple vs single |
-| --------  | -------------  | -----------------  |
-| `cor`     | `stats`(base) | 
-| `cor.test`| `stats`(base) |
-| `rcorr`   | `Hmisc`       |
-
+|           | R-Package      | Multiple vs single | Coefficients | p-values | CI's |
+| --------  | -------------  | -----------------  | ------------ | -------- | ---- |
+| `cor`     | `stats`(base) | multiple            | P/S/K        | x        | x    |
+| `cor.test`| `stats`(base) | single              | P/S/K        | P/S/K    | P    |  
+| `rcorr`   | `Hmisc`       | multiple            | P/S          | P/S      | x    |
 
 
 
@@ -334,7 +352,6 @@ corrplot(cor_mat, type = "upper", tl.col = "black")
 ```
 
 Ok, that's kind of better, but honestly it's not really that useful in our context. If we were looking at many variables and wanted a quick way to assess which ones most closely went with which ones, `corplot` is a great visualization tool. For our purposes here, `cor` and `chart.Correlation` are just fine. 
-
 
 
 ## Conclusions
