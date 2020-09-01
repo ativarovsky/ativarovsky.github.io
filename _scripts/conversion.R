@@ -29,7 +29,7 @@ build_article <- function(filename) {
   knitr::knit(source, dest, quiet = TRUE, encoding = 'UTF-8', envir = .GlobalEnv)
   
   # store the dependencies where they belong
-  brocks::htmlwidgets_deps(source)
+   brocks::htmlwidgets_deps(source)
 }
 
 # to run: build_article('2017-08-20-some-random-post')

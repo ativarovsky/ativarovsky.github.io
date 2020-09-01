@@ -21,6 +21,10 @@
 <lastmod>2020-08-05T00:00:00-07:00</lastmod>
 </url>
 <url>
+<loc>http://localhost:4000/correlation/mental%20health/correlation-happiness/</loc>
+<lastmod>2020-08-24T00:00:00-07:00</lastmod>
+</url>
+<url>
 <loc>http://localhost:4000/_pages/about/</loc>
 </url>
 <url>
@@ -43,6 +47,9 @@
 </url>
 <url>
 <loc>http://localhost:4000/_pages/thesis/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/page2/</loc>
 </url>
 <url>
 <loc>http://localhost:4000/assets/covid_dash.html</loc>

@@ -1,4 +1,908 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-08-23T12:28:37-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Alice Tivarovsky</title><author><name>Alice Tivarovsky</name></author><entry><title type="html">Summarizing Covid-19 with flexdashboard</title><link href="http://localhost:4000/blog/2020/07/covid_dashboard/" rel="alternate" type="text/html" title="Summarizing Covid-19 with flexdashboard" /><published>2020-08-05T00:00:00-07:00</published><updated>2020-08-05T00:00:00-07:00</updated><id>http://localhost:4000/blog/2020/07/covid-dash</id><content type="html" xml:base="http://localhost:4000/blog/2020/07/covid_dashboard/">&lt;p&gt;Dashboards are fantastic.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-01T15:55:32-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Alice Tivarovsky</title><author><name>Alice Tivarovsky</name></author><entry><title type="html">Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data</title><link href="http://localhost:4000/correlation/mental%20health/correlation-happiness/" rel="alternate" type="text/html" title="Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data" /><published>2020-08-24T00:00:00-07:00</published><updated>2020-08-24T00:00:00-07:00</updated><id>http://localhost:4000/correlation/mental%20health/correlation-happiness</id><content type="html" xml:base="http://localhost:4000/correlation/mental%20health/correlation-happiness/">&lt;h2 id=&quot;motivation&quot;&gt;Motivation&lt;/h2&gt;
+
+&lt;p&gt;Although limited in its applications, in the right circumstances, correlation analysis can be a useful skill to have in your tool-box. &lt;a href=&quot;#Correlation&quot;&gt;jump to data analysis&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Simply put, a correlation coefficient measures the strength of association between two variables. As we will see below, correlation coefficients come in several flavors, but they are all measured on the same scale, ranging from -1 to +1, where +1 means that that the variables are perfectly correlated in the same direction, -1 means they are perfectly correlated in opposite directions, and 0 means the two variables are completely independent (Schober, Boer, and Schwarte, 2018):&lt;/p&gt;
+
+&lt;figure&gt;
+    &lt;img src=&quot;/assets/images/correlation.png&quot; /&gt;
+    &lt;figcaption&gt;picture taken from &lt;a href=&quot;https://saylordotorg.github.io/text_introductory-statistics/s14-02-the-linear-correlation-coeffic.html&quot;&gt;Introductory Statistics&lt;/a&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;Below, we will conduct correlation analyses using data from the &lt;a href=&quot;https://worldhappiness.report&quot;&gt;World Happiness Report&lt;/a&gt;, an annual survey that seeks to quantify well-being and life satisfaction in over 150 countries. The survey uses a unique methodology to gauge happiness in respondents, and reports happiness, on average, per country, along with GDP, healthy life expectancy, and several subjective measures, including generosity, perceptions of government corruption, and self-perceived autonomy and social support. Using several correlation techniques, we will determine which variables are correlated with happiness around the world.&lt;/p&gt;
+
+&lt;p&gt;We’ll be using data compiled from the &lt;a href=&quot;https://worldhappiness.report&quot;&gt;World Happiness Report&lt;/a&gt;, publicly available as a &lt;a href=&quot;https://www.kaggle.com/mathurinache/world-happiness-report&quot;&gt;Kaggle dataset&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;background&quot;&gt;Background&lt;/h2&gt;
+
+&lt;h3 id=&quot;world-happiness-report&quot;&gt;World Happiness Report&lt;/h3&gt;
+
+&lt;p&gt;It’s no question that the pursuit of happiness is one of the biggest drivers of human behavior. But as anyone who has eaten too many cupcakes in this pursuit knows, happiness is a complicated and, often elusive thing. A lot of research is dedicated dissecting and understanding happiness, its links to mental and physical health, economic freedom, family relationships, social networks, etc. And while there has been enormous progress in understanding the internal drivers of happiness (gratitude, sociability, engagement with life), a particularly interesting topic is the influence of key external and environmental factors, one of which is your country of residence.&lt;/p&gt;
+
+&lt;p&gt;You’ve probably &lt;a href=&quot;https://www.wired.co.uk/article/worlds-happiest-country-scandinavia&quot;&gt;heard&lt;/a&gt; that Scandinavian countries boast the highest average levels of happiness and life satisfaction. Statistically speaking, it’s true. The main quantitative data source on the topic is the &lt;a href=&quot;https://worldhappiness.report&quot;&gt;World Happiness Report&lt;/a&gt;, which, in turn, uses data from the &lt;a href=&quot;https://www.gallup.com/analytics/232838/world-poll.aspx&quot;&gt;Gallup World Poll&lt;/a&gt; to compile an annual report on the state of world happiness. Year after year, Finland, Norway, Denmark, Sweden, and Iceland rank in the top 10.&lt;/p&gt;
+
+&lt;p&gt;The poll surveys a random sample of respondents and ascertains their happiness by requesting they compare their life to an imaginary dystopia (more details &lt;a href=&quot;https://worldhappiness.report/faq/&quot;&gt;here&lt;/a&gt;). The measurement system used is known as a &lt;a href=&quot;https://news.gallup.com/poll/122453/understanding-gallup-uses-cantril-scale.aspx&quot;&gt;Cantril ladder&lt;/a&gt;, where the dystopian version equates to a 0 and the best possible life you can imagine for yourself equates to a 10. The poll also measures the respondents’ social support, generosity (measured via charitable giving), perceived freedom to choose a life one is satisfied with, and perceived level of government corruption. The World Happiness report takes an average of these results by nation and combines them with every nation’s GDP and healthy life expectancy to create a final dataset. These are the variables we will be analyzing here.&lt;/p&gt;
+
+&lt;h3 id=&quot;correlation&quot;&gt;Correlation&lt;/h3&gt;
+
+&lt;p&gt;A correlation coefficient is a quantitative measure of the strength of association between two variables. Several coefficients have been defined, but the most common is Pearson’s correlation coefficient. As we will see, the validity of a Pearson coefficient is based on several assumptions that are not typically observed in the real world. In these instances, two common alternatives are Spearman’s Rank-Order coefficient and Kendall’s tau coefficient &lt;sup id=&quot;fnref:3&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;p&gt;Below, we will examine relationships visually, check assumptions, and if all holds, we will determine magnitude of correlation using these coefficients. Each one has certain advantages and disadvantages in terms of application, but all three use the same (-1, 1) scale.&lt;/p&gt;
+
+&lt;h4 id=&quot;pearsons-rho-aka-pearsons-product-moment-correlation-coefficient&quot;&gt;&lt;em&gt;Pearson’s Rho (aka Pearson’s Product-Moment Correlation Coefficient)&lt;/em&gt;&lt;/h4&gt;
+
+&lt;p&gt;Pearson’s coefficient is the default and most commonly used, but its application is limited to situations where a specific set of assumptions is met. A detailed list can be found &lt;a href=&quot;https://statistics.laerd.com/statistical-guides/pearson-correlation-coefficient-statistical-guide.php&quot;&gt;here&lt;/a&gt; but the main ones are:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Both variables are measured on a continuous scale&lt;/li&gt;
+  &lt;li&gt;Both variables are normally distributed&lt;/li&gt;
+  &lt;li&gt;Observations are independent&lt;/li&gt;
+  &lt;li&gt;Variables are linearly related&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The last assumption might seem odd - isn’t the whole purpose of correlation coefficients to tell us whether there is a linear correlation??? The answer is no. &lt;strong&gt;You must always visually inspect your data first.&lt;/strong&gt; If you see a linear relationship, you can then quantify it using a correlation coefficient. Note, also, that the variables must be &lt;strong&gt;linearly&lt;/strong&gt; correlated. The emphasis on “linearly” correlated means that if your variables have a parabolic, exponential, sinusoidal, etc. relationship, a correlation coefficient is about as useful as a glass hammer.&lt;/p&gt;
+
+&lt;p&gt;The population correlation between two random variables X and Y is defined as: 
+\(\rho_{XY} = \frac {Cov(X,Y)} { \sigma_X  \sigma_Y}\)&lt;/p&gt;
+
+&lt;p&gt;and the sample correlation is defined as: 
+\( r_{xy} = \frac {\Sigma_{i=1}^n (x_i - \bar x)(y_i - \bar y)} { \sqrt{\Sigma_{i=1}^n (x_i - \bar x)^2 } \sqrt{\Sigma_{i=1}^n(y_i - \bar y)^2}}\)&lt;/p&gt;
+
+&lt;h4 id=&quot;spearmans-rho-aka-spearmans-rank-correlation-coefficient&quot;&gt;&lt;em&gt;Spearman’s Rho (aka Spearman’s Rank Correlation Coefficient)&lt;/em&gt;&lt;/h4&gt;
+
+&lt;p&gt;In contrast to Pearson’s rho, Spearman’s rho [\rho] is a non-parametric statistic, meaning it can be applied to non normally-distributed data (Puth, Neuhäuser, &amp;amp; Ruxton, 2015).&lt;/p&gt;
+
+&lt;p&gt;Spearman’s coefficient also does not stipulate that the two variables must be linearly correlated - rather, they must have a &lt;strong&gt;monotonic&lt;/strong&gt; relationship, meaning that when one variable increases, so does the other (not necessarily in a linear fashion.)&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt; This picture is all you need to understand monotonicity:&lt;/p&gt;
+
+&lt;figure&gt;
+    &lt;img src=&quot;/assets/images/monotonic.png&quot; /&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;Finally, Spearman’s coefficient does not require that the variables be continuous, so you can use categorical variables, as long as they are ordinal.&lt;/p&gt;
+
+&lt;p&gt;The trade-off for this flexibility is that the Spearman coefficient is slightly less interpretable. Essentially, we are not measuring the direct correlation using our exact data values. Instead, we are correlating the &lt;strong&gt;rank&lt;/strong&gt; of each value within one variable to the &lt;em&gt;rank&lt;/em&gt; of each value in another.&lt;/p&gt;
+
+&lt;p&gt;For example, here are the top 6 values of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;healthy_life_expectancy&lt;/code&gt; vector:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;76.80458&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;76.77171&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;75.00097&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;74.40271&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;74.10245&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;73.80193&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## [1] 76.80458 76.77171 75.00097 74.40271 74.10245 73.80193
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When we compute Spearman’s coefficient, these values are instead ranked, so Spearman’s test would interpret 76.80 as 1, 76.77 as 2, and so on, and then correlate these ranks to the ranks of the second variable.&lt;/p&gt;
+
+&lt;p&gt;Because of this adjustment, Spearman’s coefficient is completely tolerant to outliers. But you have to bear in mind that when you compute and interpret a Spearman coefficient, you’re dealing not with direct correlation between two variables but the rank correlation, so ensure you’re interpreting accordingly.&lt;/p&gt;
+
+&lt;p&gt;The formula for computing Spearman’s coefficient is the same as Pearson’s, but rather than dealing with X and Y, we’re dealing with the rank of X and Y:&lt;/p&gt;
+
+&lt;p&gt;\(\rho_{rank_X, rank_Y} = \frac {Cov(rank_X,rank_Y)} { \sigma_{rank_X}  \sigma_{rank_Y}} \)&lt;/p&gt;
+
+&lt;p&gt;If there are no ties, Spearman’s coefficient is computed using this &lt;a href=&quot;https://statistics.laerd.com/statistical-guides/spearmans-rank-order-correlation-statistical-guide.php&quot;&gt;formula&lt;/a&gt;:&lt;/p&gt;
+
+&lt;p&gt;\(r_{s} = 1 - \frac {6 \Sigma d_i^2} {n(n^2 -1)} \)
+where \(d = rank_{x_i} - rank_{y_i} \)&lt;/p&gt;
+
+&lt;h4 id=&quot;kendalls-tau-aka-kendalls-rank-correlation-coefficient&quot;&gt;Kendall’s Tau (aka Kendall’s Rank Correlation Coefficient)&lt;/h4&gt;
+
+&lt;p&gt;Kendall’s tau is another rank-based, non-parametric statistic. It follows the same assumptions as Spearman’s rank-order correlation coefficient, but it produces more robust standard errors and is therefore [thought]((https://statistics.laerd.com/spss-tutorials/kendalls-tau-b-using-spss-statistics.php) to be more suitable for small sample sizes.&lt;/p&gt;
+
+&lt;p&gt;The calculation for Kendall’s Tau is actually pretty simple. You (or your software) will simply rank all the x’s and all the y’s in order, pair them, and count the number of concordant vs discordant pairs. Concordant pairs are ones where (x_i &amp;gt; x_{i+1} ) and (y_i &amp;gt; y_{i+1} ). Discordant pairs are ones where one of those conditions is not met.&lt;/p&gt;
+
+&lt;p&gt;\(  \tau = \frac {number\,concordant\,pairs - number\,discordant\,pairs} {\binom n 2}  )\&lt;/p&gt;
+
+&lt;p&gt;The trade-off for the increased precision we get with Kendall’s tau is that the estimated correlation coefficients are generally smaller in magnitude than those computed using Spearman’s rho (Fredricks &amp;amp; Nelsen, 2007).&lt;/p&gt;
+
+&lt;h4 id=&quot;hypothesis-testing&quot;&gt;Hypothesis Testing&lt;/h4&gt;
+
+&lt;p&gt;Presumably, you want to use the correlation coefficient to make some inferences about the population of interest. To do so, you need to conduct a hypothesis test and report either a p-value or a confidence interval. We will look at several functions for doing this in R below, but all have the following null and alternative hypotheses:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;\( H_0: \rho = 0 )\ there is no linear (or monotonic, in the case of Spearman and Kendall) association between the two variables in the population&lt;/li&gt;
+  &lt;li&gt;\( H_a: \rho \ne 0 )\ there is a linear/monotonic association between the two variables in the population.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You can also conduct a one-sided test, where the alternative hypothesis would be one of the following:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;\( H_a: \rho &amp;gt; 0 )\&lt;/li&gt;
+  &lt;li&gt;\( H_a: \rho &amp;lt; 0 )\&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;data-preparation&quot;&gt;Data Preparation&lt;/h2&gt;
+
+&lt;h3 id=&quot;data-source&quot;&gt;Data Source&lt;/h3&gt;
+
+&lt;p&gt;These data were taken from the &lt;a href=&quot;https://worldhappiness.report&quot;&gt;World Happiness Report&lt;/a&gt;, publicly available as a &lt;a href=&quot;https://www.kaggle.com/mathurinache/world-happiness-report&quot;&gt;Kaggle dataset&lt;/a&gt;. We will be restricting analysis to 2020 data.&lt;/p&gt;
+
+&lt;h3 id=&quot;libraries&quot;&gt;Libraries&lt;/h3&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tidyverse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;skimr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PerformanceAnalytics&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Hmisc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;corrplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggcorrplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;data-import&quot;&gt;Data Import&lt;/h3&gt;
+
+&lt;p&gt;The Kaggle &lt;a href=&quot;https://www.kaggle.com/mathurinache/world-happiness-report&quot;&gt;dataset&lt;/a&gt; loads in a zip file containing a separate .csv for every year from 2015 to 2020. We will use the 2020 data here.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read.csv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;../data/2020.csv&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;janitor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;clean_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;head&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##   country_name regional_indicator ladder_score standard_error_of_ladder_score upperwhisker
+## 1      Finland     Western Europe       7.8087                     0.03115630     7.869766
+## 2      Denmark     Western Europe       7.6456                     0.03349229     7.711245
+## 3  Switzerland     Western Europe       7.5599                     0.03501417     7.628528
+## 4      Iceland     Western Europe       7.5045                     0.05961586     7.621347
+## 5       Norway     Western Europe       7.4880                     0.03483738     7.556281
+## 6  Netherlands     Western Europe       7.4489                     0.02779175     7.503372
+##   lowerwhisker logged_gdp_per_capita social_support healthy_life_expectancy
+## 1     7.747634              10.63927      0.9543297                71.90083
+## 2     7.579955              10.77400      0.9559908                72.40250
+## 3     7.491272              10.97993      0.9428466                74.10245
+## 4     7.387653              10.77256      0.9746696                73.00000
+## 5     7.419719              11.08780      0.9524866                73.20078
+## 6     7.394428              10.81271      0.9391388                72.30092
+##   freedom_to_make_life_choices  generosity perceptions_of_corruption
+## 1                    0.9491722 -0.05948202                 0.1954446
+## 2                    0.9514443  0.06620178                 0.1684895
+## 3                    0.9213367  0.10591104                 0.3037284
+## 4                    0.9488919  0.24694422                 0.7117097
+## 5                    0.9557503  0.13453263                 0.2632182
+## 6                    0.9085478  0.20761244                 0.3647171
+##   ladder_score_in_dystopia explained_by_log_gdp_per_capita explained_by_social_support
+## 1                 1.972317                        1.285190                    1.499526
+## 2                 1.972317                        1.326949                    1.503449
+## 3                 1.972317                        1.390774                    1.472403
+## 4                 1.972317                        1.326502                    1.547567
+## 5                 1.972317                        1.424207                    1.495173
+## 6                 1.972317                        1.338946                    1.463646
+##   explained_by_healthy_life_expectancy explained_by_freedom_to_make_life_choices
+## 1                            0.9612714                                 0.6623167
+## 2                            0.9793326                                 0.6650399
+## 3                            1.0405332                                 0.6289545
+## 4                            1.0008434                                 0.6619807
+## 5                            1.0080719                                 0.6702009
+## 6                            0.9756753                                 0.6136265
+##   explained_by_generosity explained_by_perceptions_of_corruption dystopia_residual
+## 1               0.1596704                              0.4778573          2.762835
+## 2               0.2427934                              0.4952603          2.432741
+## 3               0.2690558                              0.4079459          2.350267
+## 4               0.3623302                              0.1445408          2.460688
+## 5               0.2879851                              0.4341006          2.168266
+## 6               0.3363176                              0.3685698          2.352117
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;data-tidy&quot;&gt;Data Tidy&lt;/h3&gt;
+
+&lt;p&gt;Let’s take a closer look at the data. We want to make sure that the variable types R gives us are correct, variables are appropriately named, and that everything we expected in the dataframe is indeed there. We’ll also do a quick check to make sure the data are in wide format, wherein each observation (in this case, each country) is represented by a row and each variable measured for that observation is given in a column. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;glimpse()&lt;/code&gt; function in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dplyr&lt;/code&gt; is a great simple check for all these things.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;glimpse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## Rows: 153
+## Columns: 20
+## $ country_name                              &amp;lt;fct&amp;gt; Finland, Denmark, Switzerland, Iceland…
+## $ regional_indicator                        &amp;lt;fct&amp;gt; Western Europe, Western Europe, Wester…
+## $ ladder_score                              &amp;lt;dbl&amp;gt; 7.8087, 7.6456, 7.5599, 7.5045, 7.4880…
+## $ standard_error_of_ladder_score            &amp;lt;dbl&amp;gt; 0.03115630, 0.03349229, 0.03501417, 0.…
+## $ upperwhisker                              &amp;lt;dbl&amp;gt; 7.869766, 7.711245, 7.628528, 7.621347…
+## $ lowerwhisker                              &amp;lt;dbl&amp;gt; 7.747634, 7.579955, 7.491272, 7.387653…
+## $ logged_gdp_per_capita                     &amp;lt;dbl&amp;gt; 10.639267, 10.774001, 10.979933, 10.77…
+## $ social_support                            &amp;lt;dbl&amp;gt; 0.9543297, 0.9559908, 0.9428466, 0.974…
+## $ healthy_life_expectancy                   &amp;lt;dbl&amp;gt; 71.90083, 72.40250, 74.10245, 73.00000…
+## $ freedom_to_make_life_choices              &amp;lt;dbl&amp;gt; 0.9491722, 0.9514443, 0.9213367, 0.948…
+## $ generosity                                &amp;lt;dbl&amp;gt; -0.059482019, 0.066201776, 0.105911039…
+## $ perceptions_of_corruption                 &amp;lt;dbl&amp;gt; 0.1954446, 0.1684895, 0.3037284, 0.711…
+## $ ladder_score_in_dystopia                  &amp;lt;dbl&amp;gt; 1.972317, 1.972317, 1.972317, 1.972317…
+## $ explained_by_log_gdp_per_capita           &amp;lt;dbl&amp;gt; 1.2851895, 1.3269485, 1.3907742, 1.326…
+## $ explained_by_social_support               &amp;lt;dbl&amp;gt; 1.499526, 1.503449, 1.472403, 1.547567…
+## $ explained_by_healthy_life_expectancy      &amp;lt;dbl&amp;gt; 0.9612714, 0.9793326, 1.0405332, 1.000…
+## $ explained_by_freedom_to_make_life_choices &amp;lt;dbl&amp;gt; 0.6623167, 0.6650399, 0.6289545, 0.661…
+## $ explained_by_generosity                   &amp;lt;dbl&amp;gt; 0.15967044, 0.24279340, 0.26905575, 0.…
+## $ explained_by_perceptions_of_corruption    &amp;lt;dbl&amp;gt; 0.47785726, 0.49526033, 0.40794590, 0.…
+## $ dystopia_residual                         &amp;lt;dbl&amp;gt; 2.762835, 2.432741, 2.350267, 2.460688…
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Everything looks kosher: we have 153 observations (countries) across 20 variables. The countries and regions are categorical variables, while the happiness outcome measure (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ladder_score&lt;/code&gt;) and all the potentially associated variables (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;social_support&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;perception_of_corruption&lt;/code&gt;, etc) are numerical.&lt;/p&gt;
+
+&lt;p&gt;Next, we will scan for missing values and get a feel for some basic measures of central tendency across our variables of interest. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;skimr::skim()&lt;/code&gt; is a great function that packs a lot of information in one line of code:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;skimr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;skim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Table: Data summary&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt; &lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt; &lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Name&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;happy_df&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Number of rows&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;153&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Number of columns&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;20&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;_____&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Column type frequency:&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;factor&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;numeric&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;18&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Group variables&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;None&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;strong&gt;Variable type: factor&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;skim_variable&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;n_missing&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;complete_rate&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;ordered&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;n_unique&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;top_counts&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;country_name&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;FALSE&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;153&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Afg: 1, Alb: 1, Alg: 1, Arg: 1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;regional_indicator&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;FALSE&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;10&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Sub: 39, Lat: 21, Wes: 21, Cen: 17&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;strong&gt;Variable type: numeric&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;skim_variable&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;n_missing&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;complete_rate&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;mean&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;sd&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;p0&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;p25&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;p50&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;p75&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;p100&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;hist&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;ladder_score&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5.47&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.11&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.57&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.72&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5.51&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;6.23&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;7.81&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▂▃▇▆▃&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;standard_error_of_ladder_score&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.05&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.02&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.03&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.04&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.05&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.06&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.12&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▇▃▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;upperwhisker&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5.58&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.63&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.83&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5.61&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;6.36&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;7.87&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▂▃▇▇▃&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;lowerwhisker&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5.37&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.13&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.51&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.60&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5.43&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;6.14&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;7.75&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▂▅▇▇▃&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;logged_gdp_per_capita&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;9.30&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.20&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;6.49&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;8.35&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;9.46&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;10.27&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;11.45&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▃▅▆▇▅&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;social_support&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.81&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.12&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.32&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.74&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.83&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.91&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.97&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▁▃▆▇&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;healthy_life_expectancy&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;64.45&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;7.06&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;45.20&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;58.96&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;66.31&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;69.29&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;76.80&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▃▃▇▅&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;freedom_to_make_life_choices&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.78&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.12&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.40&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.71&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.80&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.88&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.97&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▂▆▇▇&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;generosity&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.01&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.15&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.30&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.13&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-0.03&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.09&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.56&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▅▇▅▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;perceptions_of_corruption&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.73&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.18&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.11&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.68&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.78&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.85&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.94&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▁▁▅▇&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;ladder_score_in_dystopia&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.97&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.97&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.97&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.97&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.97&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.97&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▁▇▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;explained_by_log_gdp_per_capita&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.87&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.37&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.58&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.92&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.17&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.54&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▃▅▆▇▅&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;explained_by_social_support&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.16&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.29&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.99&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.20&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.39&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.55&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▁▃▆▇&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;explained_by_healthy_life_expectancy&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.69&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.25&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.50&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.76&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.87&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.14&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▃▃▇▅&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;explained_by_freedom_to_make_life_choices&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.46&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.14&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.38&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.48&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.58&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.69&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▂▆▇▇&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;explained_by_generosity&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.19&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.12&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.18&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.26&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.57&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▅▇▅▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;explained_by_perceptions_of_corruption&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.13&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.11&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.06&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.16&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.53&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▅▁▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;dystopia_residual&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.97&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.56&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.26&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.63&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.05&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.35&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;3.44&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▃▇▇▁&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Overall, the dataframe looks healthy. We don’t have any missing values, and the means look reasonable. Let’s take a closer look at the variables and their summary stats and distributions below.&lt;/p&gt;
+
+&lt;h3 id=&quot;variables-used&quot;&gt;Variables Used&lt;/h3&gt;
+
+&lt;p&gt;The variables of interest (as detailed here &lt;a href=&quot;https://worldhappiness.report/ed/2019/changing-world-happiness/&quot;&gt;here&lt;/a&gt;) are:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;country_name&lt;/code&gt;: 153 countries total&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;regional_indicator&lt;/code&gt;: Classification for continental sub-regions, values Central and Eastern Europe, Commonwealth of Independent States, East Asia, Latin America and Caribbean, Middle East and North Africa, North America and ANZ, South Asia, Southeast Asia, Sub-Saharan Africa, Western Europe&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ladder_score&lt;/code&gt;: This is our outcome variable, the happiness ladder score. As we saw above, the mean &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ladder_score&lt;/code&gt; was 5.47 and the values appear normally distributed.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;logged_gdp_per_capita&lt;/code&gt;:  Pretty much what it sounds like, the log of per-capita Gross Domestic Product. Economists like log GDP (and logs of other economic measures) since a vertical move on the log scale corresponds to the same percentage change in the measure (better explanation &lt;a href=&quot;https://econbrowser.com/archives/2014/02/use-of-logarithms-in-economics&quot;&gt;here&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;social_support&lt;/code&gt;: National respondents’ proportion of “yes” answers to the question “If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?” The question is coded binary (0 = no, 1 = yes) and the mean is 0.809 (pleasantly high in my opinion)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;healthy_life_expectancy&lt;/code&gt;: The WHO’s measure of a country’s healthy life expectancy at birth. From the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;skim()&lt;/code&gt; output above, it averages 64.4 years and is somewhat left-skewed, meaning that most countries have a higher than average healthy life expectancy&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;freedom_to_make_life_choices&lt;/code&gt;: National respondents’ proportion of “yes” answers to the question “Are you satisfied or dissatisfied with your freedom to choose what you do with your life?” The question is coded binary (0 = no, 1 = yes) and the mean computed above is 0.783.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;generosity&lt;/code&gt;: The residual of regressing the national average of responses to the question “Have you donated money to a charity in the past month?” on per-capita GDP. Basically, this means that if we ran a regression of GDP (independent variable) vs the proportion of “yes” answers to this question (dependent variable), &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;generosity&lt;/code&gt; would equal the gap between the expected value and the actual value. It’s really just a means of controlling for income. Per our analysis above, the variable range is (-0.301, 0.561) and centers on -0.0146.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;perceptions_of_corruption&lt;/code&gt;: National respondents’ proportion of “yes” answers to the question “Is corruption widespread throughout the government or not?” The question is coded binary (0 = no, 1 = yes) and the mean is 0.733.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;analysis&quot;&gt;Analysis&lt;/h2&gt;
+
+&lt;h3 id=&quot;assumptions&quot;&gt;Assumptions&lt;/h3&gt;
+
+&lt;p&gt;Let’s first get a handle on how our data behave. Remember that to use Pearson, we need normally distributed variables and a linear relationship, and to use Spearman or Kendall, we need a monotonic relationship.&lt;/p&gt;
+
+&lt;p&gt;To get a visual of all the individual relationships, we could generate scatter plots for each variable of interest vs the outcome of interest. This would be cumbersome. We’ll use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chart.Correlation&lt;/code&gt; function in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PerformanceAnalytics&lt;/code&gt; package instead. Spoiler alert: this can actually calculate all three correlation coefficients for you, but for now, just pretend you don’t see any of the numbers on the chart below.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;chart.Correlation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;histogram&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/figs/2020-08-24-correlation-happiness/unnamed-chunk-11-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-11&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Our outcome, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ladder_score&lt;/code&gt; is on the top left, and the left-most column provides the scatter plots for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ladder_score&lt;/code&gt; against all five of the independent variables. The diagonal shows us a histogram for each variable, which helps us decide whether the variable is normally distributed or not.&lt;/p&gt;
+
+&lt;p&gt;Looking at the diagonals, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ladder_score&lt;/code&gt; is normally distributed and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;healthy_life_expectancy&lt;/code&gt; could maybe also pass (we’ll examine this more closely below). The other variables are clearly skewed.&lt;/p&gt;
+
+&lt;p&gt;Looking at the scatter plots for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ladder_score&lt;/code&gt; on the left-most column,  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;social_support&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;healthy_life_expectancy&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;freedom_to_make_life_choices&lt;/code&gt; all appear linearly related to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ladder_score&lt;/code&gt;. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;generosity&lt;/code&gt; is neither linear nor monotonic with respect to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ladder_score&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;perceptions_of_corruption&lt;/code&gt; is not linear but could pass for monotonic.&lt;/p&gt;
+
+&lt;h3 id=&quot;assessing-normality---shapiro-wilk-test&quot;&gt;Assessing Normality - Shapiro Wilk Test&lt;/h3&gt;
+
+&lt;p&gt;Now let’s go back to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;healthy_life_expectancy&lt;/code&gt; and conduct a more formal hypothesis test. Since we couldn’t get a good feel for normality from the distribution, a hypothesis test using the Shapiro-Wilk can help us make a decision before proceeding with analysis. Our hypotheses are:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Null hypothesis: Data &lt;strong&gt;are not&lt;/strong&gt; significantly different from a normal distribution&lt;/li&gt;
+  &lt;li&gt;Alternative hypothesis: Data &lt;strong&gt;are&lt;/strong&gt; significantly different from a normal distribution&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.sthda.com/english/wiki/normality-test-in-r&quot;&gt;Conducting&lt;/a&gt; the Shapiro-Wilk test in R is super simple:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;shapiro.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;healthy_life_expectancy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## 
+## 	Shapiro-Wilk normality test
+## 
+## data:  happy_df$healthy_life_expectancy
+## W = 0.95457, p-value = 6.744e-05
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Since p « 0.05, we reject the null hypothesis and conclude that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;healthy_life_expectancy&lt;/code&gt; does not follow a normal distribution. As such, Spearman and Kendall coefficients are more appropriate. (see caveat below)&lt;sup id=&quot;fnref:3:1&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;computing-correlation-coefficients-using-cor-cortest-and-rcorr&quot;&gt;Computing Correlation Coefficients using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor()&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor.test()&lt;/code&gt;, and ``rcorr()`&lt;/h3&gt;
+
+&lt;h4 id=&quot;cor&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;There are several options in R for computing correlation coefficients. The first is base R’s &lt;a href=&quot;https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/cor&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor&lt;/code&gt;&lt;/a&gt; function, which allows selection of Pearson, Spearman, or Kendall using a method argument. We will first specify Spearman based on our conclusions above.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;spearman&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ladder_score&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;spearman&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spearman&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##      social_support healthy_life_expectancy freedom_to_make_life_choices generosity
+## [1,]      0.8031141               0.7830361                    0.5919578 0.07451114
+##      perceptions_of_corruption
+## [1,]                -0.2774517
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Happiness has a strong positive correlation with social support (r = 0.80), a strong positive correlation with life expectancy (r = 0.78), and a moderate positive correlation with freedom to make life choices (r = 0.59). Happiness has no correlation with generosity (r = 0.07), and a weak negative correlation with perceptions of corruption (r = -0.28).&lt;/p&gt;
+
+&lt;p&gt;Now, let’s compare to Kendall:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;kendall&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ladder_score&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;kendall&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kendall&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##      social_support healthy_life_expectancy freedom_to_make_life_choices generosity
+## [1,]      0.6081871               0.5775102                    0.4248366 0.04317165
+##      perceptions_of_corruption
+## [1,]                -0.1854145
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Just for demonstration, let’s also compute the Pearson coefficients and compare them to Spearman’s rho and Kendall’s tau.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;pearson&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ladder_score&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;pearson&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pearson&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##      social_support healthy_life_expectancy freedom_to_make_life_choices generosity
+## [1,]      0.7650008               0.7703163                    0.5905968 0.06904313
+##      perceptions_of_corruption
+## [1,]                -0.4183051
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Putting everything in a quick table:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;pearson&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as.data.frame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pearson&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row.names&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;pearson&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spearman&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as.data.frame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spearman&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row.names&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;spearman&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kendall&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as.data.frame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kendall&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row.names&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;kendall&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bind_rows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pearson&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spearman&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kendall&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##          social_support healthy_life_expectancy freedom_to_make_life_choices generosity
+## pearson       0.7650008               0.7703163                    0.5905968 0.06904313
+## spearman      0.8031141               0.7830361                    0.5919578 0.07451114
+## kendall       0.6081871               0.5775102                    0.4248366 0.04317165
+##          perceptions_of_corruption
+## pearson                 -0.4183051
+## spearman                -0.2774517
+## kendall                 -0.1854145
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Comparing Pearson vs Spearman, the only big difference with respect to happiness is perception of corruption (Pearson -0.42 vs Spearman -0.28). This isn’t surprising, given that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;perception_of_corruption&lt;/code&gt; appeared to be the most skewed (i.e. the most deviant from normal distribution) in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chart.Correlation&lt;/code&gt; matrix we looked at above.&lt;/p&gt;
+
+&lt;p&gt;Comparing Spearman to Kendall, the magnitude of our coefficients dropped to the null pretty sizably, which aligns with the general behavior of Kendall’s tau vs Spearman’s rho (Fredricks &amp;amp; Nelsen, 2007).&lt;/p&gt;
+
+&lt;h4 id=&quot;cortest-and-rcorr&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor.test&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcorr&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;While &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor&lt;/code&gt; is quick and easy, it does not compute any statistical significance measures. For that, we need &lt;a href=&quot;https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/cor.test&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor.test&lt;/code&gt;&lt;/a&gt; (base) or &lt;a href=&quot;https://www.rdocumentation.org/packages/ggm/versions/2.5/topics/rcorr&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcorr&lt;/code&gt;&lt;/a&gt; (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HMisc&lt;/code&gt; package).&lt;/p&gt;
+
+&lt;p&gt;The disadvantage of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor.test&lt;/code&gt; is that it only computes one coefficient at a time, meaning you can’t create a matrix in one line. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcorr&lt;/code&gt;, on the other hand, will give you a matrix of correlation coefficients and their associated p-values. The disadvantages are a) it doesn’t compute Kendall’s tau and b) you won’t get confidence intervals.&lt;/p&gt;
+
+&lt;p&gt;When we run &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor.test&lt;/code&gt;, we see that it actually doesn’t give a confidence interval for Spearman coefficients either (although it does for Pearson):&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;cor.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ladder_score&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;social_support&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;spearman&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf.level&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.95&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## 
+## 	Spearman's rank correlation rho
+## 
+## data:  happy_df$ladder_score and happy_df$social_support
+## S = 117522, p-value &amp;lt; 2.2e-16
+## alternative hypothesis: true rho is not equal to 0
+## sample estimates:
+##       rho 
+## 0.8031141
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;cor.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ladder_score&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;social_support&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;pearson&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf.level&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.95&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## 
+## 	Pearson's product-moment correlation
+## 
+## data:  happy_df$ladder_score and happy_df$social_support
+## t = 14.596, df = 151, p-value &amp;lt; 2.2e-16
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.6900921 0.8236918
+## sample estimates:
+##       cor 
+## 0.7650008
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;cor.test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ladder_score&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;social_support&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;kendall&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf.level&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.95&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## 
+## 	Kendall's rank correlation tau
+## 
+## data:  happy_df$ladder_score and happy_df$social_support
+## z = 11.157, p-value &amp;lt; 2.2e-16
+## alternative hypothesis: true tau is not equal to 0
+## sample estimates:
+##       tau 
+## 0.6081871
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So basically, in the context of this analysis, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor.test&lt;/code&gt; is weak sauce. Let’s move on to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcorr&lt;/code&gt;, looking only at Spearman. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcorr&lt;/code&gt; does not play with Kendall and won’t give you confidence intervals for any type of coefficient. But unlike &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor.test&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcorr&lt;/code&gt; will give you a matrix of coefficients and a matrix of p-values:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;happy_df_corr&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df_corr&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as.matrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df_corr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rcorr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df_corr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;spearman&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##                              ladder_score social_support healthy_life_expectancy
+## ladder_score                         1.00           0.80                    0.78
+## social_support                       0.80           1.00                    0.73
+## healthy_life_expectancy              0.78           0.73                    1.00
+## freedom_to_make_life_choices         0.59           0.49                    0.45
+## generosity                           0.07           0.00                   -0.04
+## perceptions_of_corruption           -0.28          -0.14                   -0.23
+##                              freedom_to_make_life_choices generosity
+## ladder_score                                         0.59       0.07
+## social_support                                       0.49       0.00
+## healthy_life_expectancy                              0.45      -0.04
+## freedom_to_make_life_choices                         1.00       0.30
+## generosity                                           0.30       1.00
+## perceptions_of_corruption                           -0.37      -0.25
+##                              perceptions_of_corruption
+## ladder_score                                     -0.28
+## social_support                                   -0.14
+## healthy_life_expectancy                          -0.23
+## freedom_to_make_life_choices                     -0.37
+## generosity                                       -0.25
+## perceptions_of_corruption                         1.00
+## 
+## n= 153 
+## 
+## 
+## P
+##                              ladder_score social_support healthy_life_expectancy
+## ladder_score                              0.0000         0.0000                 
+## social_support               0.0000                      0.0000                 
+## healthy_life_expectancy      0.0000       0.0000                                
+## freedom_to_make_life_choices 0.0000       0.0000         0.0000                 
+## generosity                   0.3600       0.9617         0.6244                 
+## perceptions_of_corruption    0.0005       0.0781         0.0051                 
+##                              freedom_to_make_life_choices generosity
+## ladder_score                 0.0000                       0.3600    
+## social_support               0.0000                       0.9617    
+## healthy_life_expectancy      0.0000                       0.6244    
+## freedom_to_make_life_choices                              0.0002    
+## generosity                   0.0002                                 
+## perceptions_of_corruption    0.0000                       0.0022    
+##                              perceptions_of_corruption
+## ladder_score                 0.0005                   
+## social_support               0.0781                   
+## healthy_life_expectancy      0.0051                   
+## freedom_to_make_life_choices 0.0000                   
+## generosity                   0.0022                   
+## perceptions_of_corruption
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So we’ve re-computed the Spearman coefficients from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor&lt;/code&gt; and we’ve learned that, with respect to happiness, all correlations except &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ladder_score&lt;/code&gt; vs &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;generoisty&lt;/code&gt; are statistically significant at an alpha level of 0.05.&lt;/p&gt;
+
+&lt;p&gt;We’ve also learned that all of the correlations functions we computed have gaps and inconveniences. Most likely, if you’re doing a correlation analysis in R, you’ll need to use some combination of these functions.&lt;/p&gt;
+
+&lt;p&gt;Here’s a quick summary of the capabilities of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor&lt;/code&gt; vs &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor.test&lt;/code&gt; vs &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcorr&lt;/code&gt;:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;R-Package&lt;/th&gt;
+      &lt;th&gt;Multiple vs single&lt;/th&gt;
+      &lt;th&gt;Coefficients&lt;/th&gt;
+      &lt;th&gt;p-values&lt;/th&gt;
+      &lt;th&gt;CI’s&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stats&lt;/code&gt;(base)&lt;/td&gt;
+      &lt;td&gt;multiple&lt;/td&gt;
+      &lt;td&gt;P/S/K&lt;/td&gt;
+      &lt;td&gt;x&lt;/td&gt;
+      &lt;td&gt;x&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor.test&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stats&lt;/code&gt;(base)&lt;/td&gt;
+      &lt;td&gt;single&lt;/td&gt;
+      &lt;td&gt;P/S/K&lt;/td&gt;
+      &lt;td&gt;P/S/K&lt;/td&gt;
+      &lt;td&gt;P&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcorr&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hmisc&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;multiple&lt;/td&gt;
+      &lt;td&gt;P/S&lt;/td&gt;
+      &lt;td&gt;P/S&lt;/td&gt;
+      &lt;td&gt;x&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;visualizing-correlation&quot;&gt;Visualizing Correlation&lt;/h3&gt;
+
+&lt;p&gt;You may have noted that pretty much everything we learned from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor.test&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcorr&lt;/code&gt; could have been inferred from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chart.Correlation&lt;/code&gt; above. The only thing we need to change is to adjust the method from default to Spearman.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;chart.Correlation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;histogram&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;spearman&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/figs/2020-08-24-correlation-happiness/unnamed-chunk-16-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-16&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As before, we see the linear and non-linear associations below the diagonal, the univariate distributions along the diagonal, and the actual Spearman coefficients above the diagonal. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chart.Correlation&lt;/code&gt; even does this nice thing of making the font size proportional with the magnitude of the coefficent itself. Finally, it calculates a p-value and displays it as a star above the coefficient:p-values(0, 0.001, 0.01, 0.05, 0.1, 1) &amp;lt;=&amp;gt; symbols(“&lt;em&gt;&lt;strong&gt;”, “&lt;/strong&gt;”, “&lt;/em&gt;”, “.”, “ “).&lt;/p&gt;
+
+&lt;p&gt;There are other options for visualizing correlation matrices. &lt;a href=&quot;http://www.sthda.com/english/wiki/visualize-correlation-matrix-using-correlogram&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;corplot&lt;/code&gt;&lt;/a&gt; and &lt;a href=&quot;http://www.sthda.com/english/wiki/ggcorrplot-visualization-of-a-correlation-matrix-using-ggplot2&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggcorrplot&lt;/code&gt;&lt;/a&gt; are both great for generating customizable correlograms. 
+You can explore a full gallery of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;corplot&lt;/code&gt; visualization options &lt;a href=&quot;http://www.sthda.com/english/wiki/visualize-correlation-matrix-using-correlogram&quot;&gt;here&lt;/a&gt;, but we’ll make one nice one here &lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;. Note, of course, that we’re not really interested in the entire chart. We just want &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ladder_score&lt;/code&gt; vs everything else.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;cor_mat&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;happy_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;spearman&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;corrplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cor_mat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/figs/2020-08-24-correlation-happiness/unnamed-chunk-17-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-17&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Big blue circles mean high correlation in the positive direction, and again, we see that social support and healthy life expectancy are most closely correlated with happiness. This &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;corplot&lt;/code&gt; isn’t bad, but let’s eliminate the mirror image along the diagonal and change the label colors since red labels freak me out:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;corrplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cor_mat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;upper&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tl.col&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;black&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/figs/2020-08-24-correlation-happiness/unnamed-chunk-18-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-18&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Ok, that’s kind of better, but honestly it’s not really that useful in our context. If we were looking at many variables and wanted a quick way to assess which ones most closely went with which ones, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;corplot&lt;/code&gt; is a great visualization tool. For our purposes here, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chart.Correlation&lt;/code&gt; are just fine.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusions&quot;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;After checking assumptions, both visually and by conducting a Shapiro-Wilk test, we concluded that the default Pearson coefficient was not theoretically suitable for our analysis. Working primarily with Spearman’s and Kendall’s rank-order coefficients, we figured out the following:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chart.Correlation&lt;/code&gt; is a great, highly informative function for analyzing correlations in R and allows for analysis using all three coefficients of interest: Pearson, Spearman, and Kendall&lt;/li&gt;
+  &lt;li&gt;Based on the World Happiness Report, country-level happiness is most closely associated with social support and healthy life expectancy for that country.&lt;sup id=&quot;fnref:4&quot;&gt;&lt;a href=&quot;#fn:4&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+  &lt;li&gt;The three functions for computing correlation coefficients in R have their own strengths and weaknesses. If &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chart.Correlation&lt;/code&gt; is not sufficient for the analysis, some combination of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cor.test&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rcorr&lt;/code&gt; should be used.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;further-reading&quot;&gt;Further Reading&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Great &lt;a href=&quot;https://rpubs.com/melike/corrplot&quot;&gt;post&lt;/a&gt; exploring &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;corrplot&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;A wonderfully thorough &lt;a href=&quot;(https://ourworldindata.org/happiness-and-life-satisfaction)&quot;&gt;analysis&lt;/a&gt; of the Gallup World Poll, beyond the World Happiness Report&lt;/li&gt;
+  &lt;li&gt;Another great analysis of the same data [here]((https://rstudio-pubs-static.s3.amazonaws.com/300262_bf921065f92f4abca6c59594e92d547e.html#happiness-data-preview)&lt;/li&gt;
+  &lt;li&gt;More on why Scandinavian countries rank so highly in the report &lt;a href=&quot;https://worldhappiness.report/ed/2020/the-nordic-exceptionalism-what-explains-why-the-nordic-countries-are-constantly-among-the-happiest-in-the-world/&quot;&gt;here&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Great &lt;a href=&quot;https://s3.amazonaws.com/happiness-report/2012/World_Happiness_Report_2012.pdf&quot;&gt;commentary&lt;/a&gt; on the World Happiness Report and happiness in general&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Schober, P., Boer, C., &amp;amp; Schwarte, L. A. (2018). Correlation Coefficients. Anesthesia &amp;amp; Analgesia, 126(5), 1763-1768. doi:10.1213/ane.0000000000002864&lt;/li&gt;
+  &lt;li&gt;Puth, M.-T., Neuhäuser, M., &amp;amp; Ruxton, G. D. (2015). Effective use of Spearman’s and Kendall’s correlation coefficients for association between two measured traits. Animal Behaviour, 102, 77–84. https://doi.org/10.1016/j.anbehav.2015.01.010&lt;/li&gt;
+  &lt;li&gt;Fredricks, G. A., &amp;amp; Nelsen, R. B. (2007). On the relationship between Spearman’s rho and Kendall’s tau for pairs of continuous random variables. Journal of Statistical Planning and Inference, 137(7), 2143–2150. https://doi.org/10.1016/j.jspi.2006.06.045&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:3&quot;&gt;
+      &lt;p&gt;It should be noted that Puth et al (2015) performed a meta-analysis of research that selected rank-order measures over Pearson, and found that in most cases, the rank-order coefficients do not out-perform Pearson. &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt; &lt;a href=&quot;#fnref:3:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
+      &lt;p&gt;Sometimes I imagine Spearman as Pearson’s alter ego. He dropped some assumptions and shuffled around the letters in his name and suddenly he’s a more flexible (yet less “mainstream”) version of his daytime self. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot;&gt;
+      &lt;p&gt;As far as I can tell, the only advantage of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggcorplot&lt;/code&gt; over &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;corplot&lt;/code&gt; is that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ggcorplot&lt;/code&gt; can give you p-values on the correlogram. Personally, I think the visual output of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chart.Correlation&lt;/code&gt; is a bit nicer. &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:4&quot;&gt;
+      &lt;p&gt;This does not tell us anything about happiness on the individual level. These data cannot be used to determine whether an &lt;strong&gt;individual’s&lt;/strong&gt; social support is correlated to their happiness. These are ecologic measures and using them for individual-level inference might lead to &lt;a href=&quot;https://en.wikipedia.org/wiki/Ecological_fallacy&quot;&gt;ecologic fallacy&lt;/a&gt; &lt;a href=&quot;#fnref:4&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>alice</name></author><category term="correlation" /><category term="mental health" /><summary type="html">Don't Worry. Be Happy</summary></entry><entry><title type="html">Summarizing Covid-19 with flexdashboard</title><link href="http://localhost:4000/blog/2020/07/covid_dashboard/" rel="alternate" type="text/html" title="Summarizing Covid-19 with flexdashboard" /><published>2020-08-05T00:00:00-07:00</published><updated>2020-08-05T00:00:00-07:00</updated><id>http://localhost:4000/blog/2020/07/covid-dash</id><content type="html" xml:base="http://localhost:4000/blog/2020/07/covid_dashboard/">&lt;p&gt;Dashboards are fantastic.&lt;/p&gt;
 
 &lt;figure&gt;
     &lt;a href=&quot;/assets/covid_dash&quot;&gt;&lt;img src=&quot;/assets/images/covid.png&quot; /&gt;&lt;/a&gt;

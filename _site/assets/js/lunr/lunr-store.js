@@ -28,4 +28,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/blog/2020/07/covid_dashboard/",
         "teaser": null
+      },{
+        "title": "Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data",
+        "excerpt":"Motivation Although limited in its applications, in the right circumstances, correlation analysis can be a useful skill to have in your tool-box. jump to data analysis Simply put, a correlation coefficient measures the strength of association between two variables. As we will see below, correlation coefficients come in several flavors,...","categories": ["correlation","mental health"],
+        "tags": [],
+        "url": "http://localhost:4000/correlation/mental%20health/correlation-happiness/",
+        "teaser": null
       }]

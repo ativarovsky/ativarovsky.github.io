@@ -1,0 +1,1515 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data | Alice Tivarovsky</title>
+<meta name="description" content="Don’t Worry. Be Happy">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Alice Tivarovsky">
+<meta property="og:title" content="Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data">
+<meta property="og:url" content="http://localhost:4000/correlation/mental%20health/correlation-happiness/">
+
+
+  <meta property="og:description" content="Don’t Worry. Be Happy">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2020-08-24T00:00:00-07:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/correlation/mental%20health/correlation-happiness/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Alice Tivarovsky",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Alice Tivarovsky Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+<!-- add htmlwidgets files -->
+
+<!-- end htmlwidgets files -->
+
+
+    <!-- start custom head snippets -->
+<link href="https://fonts.googleapis.com/css?family=News+Cycle:400,700" rel="stylesheet" type="text/css">
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Alice Tivarovsky
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/_pages/posts">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="/_pages/resume">Resum&eacute;</a>
+            </li><li class="masthead__menu-item">
+              <a href="/_pages/about">About</a>
+            </li><li class="masthead__menu-item">
+              <a href="/_pages/contact">Contact</a>
+            </li><li class="masthead__menu-item">
+              <a href="https://github.com/ativarovsky">Github</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person">
+
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name"></h3>
+    
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data">
+    <meta itemprop="description" content="Don’t Worry. Be Happy">
+    <meta itemprop="datePublished" content="2020-08-24T00:00:00-07:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  23 minute read
+
+</p>
+          
+          
+            <p class="page__date"><strong>Updated:</strong> <time datetime="2020-08-24T00:00:00-07:00">August 24, 2020</time></p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right ">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#motivation">Motivation</a></li>
+  <li><a href="#background">Background</a>
+    <ul>
+      <li><a href="#world-happiness-report">World Happiness Report</a></li>
+      <li><a href="#correlation">Correlation</a>
+        <ul>
+          <li><a href="#pearsons-rho-aka-pearsons-product-moment-correlation-coefficient">Pearson’s Rho (aka Pearson’s Product-Moment Correlation Coefficient)</a></li>
+          <li><a href="#spearmans-rho-aka-spearmans-rank-correlation-coefficient">Spearman’s Rho (aka Spearman’s Rank Correlation Coefficient)</a></li>
+          <li><a href="#kendalls-tau-aka-kendalls-rank-correlation-coefficient">Kendall’s Tau (aka Kendall’s Rank Correlation Coefficient)</a></li>
+          <li><a href="#hypothesis-testing">Hypothesis Testing</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#data-preparation">Data Preparation</a>
+    <ul>
+      <li><a href="#data-source">Data Source</a></li>
+      <li><a href="#libraries">Libraries</a></li>
+      <li><a href="#data-import">Data Import</a></li>
+      <li><a href="#data-tidy">Data Tidy</a></li>
+      <li><a href="#variables-used">Variables Used</a></li>
+    </ul>
+  </li>
+  <li><a href="#analysis">Analysis</a>
+    <ul>
+      <li><a href="#assumptions">Assumptions</a></li>
+      <li><a href="#assessing-normality---shapiro-wilk-test">Assessing Normality - Shapiro Wilk Test</a></li>
+      <li><a href="#computing-correlation-coefficients-using-cor-cortest-and-rcorr">Computing Correlation Coefficients using cor(), cor.test(), and ``rcorr()`</a>
+        <ul>
+          <li><a href="#cor">cor</a></li>
+          <li><a href="#cortest-and-rcorr">cor.test and rcorr</a></li>
+        </ul>
+      </li>
+      <li><a href="#visualizing-correlation">Visualizing Correlation</a></li>
+    </ul>
+  </li>
+  <li><a href="#conclusions">Conclusions</a></li>
+  <li><a href="#further-reading">Further Reading</a></li>
+  <li><a href="#references">References</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <h2 id="motivation">Motivation</h2>
+
+<p>Although limited in its applications, in the right circumstances, correlation analysis can be a useful skill to have in your tool-box. <a href="#Correlation">jump to data analysis</a></p>
+
+<p>Simply put, a correlation coefficient measures the strength of association between two variables. As we will see below, correlation coefficients come in several flavors, but they are all measured on the same scale, ranging from -1 to +1, where +1 means that that the variables are perfectly correlated in the same direction, -1 means they are perfectly correlated in opposite directions, and 0 means the two variables are completely independent (Schober, Boer, and Schwarte, 2018):</p>
+
+<figure>
+    <img src="/assets/images/correlation.png" />
+    <figcaption>picture taken from <a href="https://saylordotorg.github.io/text_introductory-statistics/s14-02-the-linear-correlation-coeffic.html">Introductory Statistics</a></figcaption>
+</figure>
+
+<p>Below, we will conduct correlation analyses using data from the <a href="https://worldhappiness.report">World Happiness Report</a>, an annual survey that seeks to quantify well-being and life satisfaction in over 150 countries. The survey uses a unique methodology to gauge happiness in respondents, and reports happiness, on average, per country, along with GDP, healthy life expectancy, and several subjective measures, including generosity, perceptions of government corruption, and self-perceived autonomy and social support. Using several correlation techniques, we will determine which variables are correlated with happiness around the world.</p>
+
+<p>We’ll be using data compiled from the <a href="https://worldhappiness.report">World Happiness Report</a>, publicly available as a <a href="https://www.kaggle.com/mathurinache/world-happiness-report">Kaggle dataset</a>.</p>
+
+<h2 id="background">Background</h2>
+
+<h3 id="world-happiness-report">World Happiness Report</h3>
+
+<p>It’s no question that the pursuit of happiness is one of the biggest drivers of human behavior. But as anyone who has eaten too many cupcakes in this pursuit knows, happiness is a complicated and, often elusive thing. A lot of research is dedicated dissecting and understanding happiness, its links to mental and physical health, economic freedom, family relationships, social networks, etc. And while there has been enormous progress in understanding the internal drivers of happiness (gratitude, sociability, engagement with life), a particularly interesting topic is the influence of key external and environmental factors, one of which is your country of residence.</p>
+
+<p>You’ve probably <a href="https://www.wired.co.uk/article/worlds-happiest-country-scandinavia">heard</a> that Scandinavian countries boast the highest average levels of happiness and life satisfaction. Statistically speaking, it’s true. The main quantitative data source on the topic is the <a href="https://worldhappiness.report">World Happiness Report</a>, which, in turn, uses data from the <a href="https://www.gallup.com/analytics/232838/world-poll.aspx">Gallup World Poll</a> to compile an annual report on the state of world happiness. Year after year, Finland, Norway, Denmark, Sweden, and Iceland rank in the top 10.</p>
+
+<p>The poll surveys a random sample of respondents and ascertains their happiness by requesting they compare their life to an imaginary dystopia (more details <a href="https://worldhappiness.report/faq/">here</a>). The measurement system used is known as a <a href="https://news.gallup.com/poll/122453/understanding-gallup-uses-cantril-scale.aspx">Cantril ladder</a>, where the dystopian version equates to a 0 and the best possible life you can imagine for yourself equates to a 10. The poll also measures the respondents’ social support, generosity (measured via charitable giving), perceived freedom to choose a life one is satisfied with, and perceived level of government corruption. The World Happiness report takes an average of these results by nation and combines them with every nation’s GDP and healthy life expectancy to create a final dataset. These are the variables we will be analyzing here.</p>
+
+<h3 id="correlation">Correlation</h3>
+
+<p>A correlation coefficient is a quantitative measure of the strength of association between two variables. Several coefficients have been defined, but the most common is Pearson’s correlation coefficient. As we will see, the validity of a Pearson coefficient is based on several assumptions that are not typically observed in the real world. In these instances, two common alternatives are Spearman’s Rank-Order coefficient and Kendall’s tau coefficient <sup id="fnref:3"><a href="#fn:3" class="footnote">1</a></sup>.</p>
+
+<p>Below, we will examine relationships visually, check assumptions, and if all holds, we will determine magnitude of correlation using these coefficients. Each one has certain advantages and disadvantages in terms of application, but all three use the same (-1, 1) scale.</p>
+
+<h4 id="pearsons-rho-aka-pearsons-product-moment-correlation-coefficient"><em>Pearson’s Rho (aka Pearson’s Product-Moment Correlation Coefficient)</em></h4>
+
+<p>Pearson’s coefficient is the default and most commonly used, but its application is limited to situations where a specific set of assumptions is met. A detailed list can be found <a href="https://statistics.laerd.com/statistical-guides/pearson-correlation-coefficient-statistical-guide.php">here</a> but the main ones are:</p>
+<ul>
+  <li>Both variables are measured on a continuous scale</li>
+  <li>Both variables are normally distributed</li>
+  <li>Observations are independent</li>
+  <li>Variables are linearly related</li>
+</ul>
+
+<p>The last assumption might seem odd - isn’t the whole purpose of correlation coefficients to tell us whether there is a linear correlation??? The answer is no. <strong>You must always visually inspect your data first.</strong> If you see a linear relationship, you can then quantify it using a correlation coefficient. Note, also, that the variables must be <strong>linearly</strong> correlated. The emphasis on “linearly” correlated means that if your variables have a parabolic, exponential, sinusoidal, etc. relationship, a correlation coefficient is about as useful as a glass hammer.</p>
+
+<p>The population correlation between two random variables X and Y is defined as: 
+\(\rho_{XY} = \frac {Cov(X,Y)} { \sigma_X  \sigma_Y}\)</p>
+
+<p>and the sample correlation is defined as: 
+\( r_{xy} = \frac {\Sigma_{i=1}^n (x_i - \bar x)(y_i - \bar y)} { \sqrt{\Sigma_{i=1}^n (x_i - \bar x)^2 } \sqrt{\Sigma_{i=1}^n(y_i - \bar y)^2}}\)</p>
+
+<h4 id="spearmans-rho-aka-spearmans-rank-correlation-coefficient"><em>Spearman’s Rho (aka Spearman’s Rank Correlation Coefficient)</em></h4>
+
+<p>In contrast to Pearson’s rho, Spearman’s rho [\rho] is a non-parametric statistic, meaning it can be applied to non normally-distributed data (Puth, Neuhäuser, &amp; Ruxton, 2015).</p>
+
+<p>Spearman’s coefficient also does not stipulate that the two variables must be linearly correlated - rather, they must have a <strong>monotonic</strong> relationship, meaning that when one variable increases, so does the other (not necessarily in a linear fashion.)<sup id="fnref:1"><a href="#fn:1" class="footnote">2</a></sup> This picture is all you need to understand monotonicity:</p>
+
+<figure>
+    <img src="/assets/images/monotonic.png" />
+</figure>
+
+<p>Finally, Spearman’s coefficient does not require that the variables be continuous, so you can use categorical variables, as long as they are ordinal.</p>
+
+<p>The trade-off for this flexibility is that the Spearman coefficient is slightly less interpretable. Essentially, we are not measuring the direct correlation using our exact data values. Instead, we are correlating the <strong>rank</strong> of each value within one variable to the <em>rank</em> of each value in another.</p>
+
+<p>For example, here are the top 6 values of the <code class="language-plaintext highlighter-rouge">healthy_life_expectancy</code> vector:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">c</span><span class="p">(</span><span class="m">76.80458</span><span class="p">,</span><span class="w"> </span><span class="m">76.77171</span><span class="p">,</span><span class="w"> </span><span class="m">75.00097</span><span class="p">,</span><span class="w"> </span><span class="m">74.40271</span><span class="p">,</span><span class="w"> </span><span class="m">74.10245</span><span class="p">,</span><span class="w"> </span><span class="m">73.80193</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 76.80458 76.77171 75.00097 74.40271 74.10245 73.80193
+</code></pre></div></div>
+
+<p>When we compute Spearman’s coefficient, these values are instead ranked, so Spearman’s test would interpret 76.80 as 1, 76.77 as 2, and so on, and then correlate these ranks to the ranks of the second variable.</p>
+
+<p>Because of this adjustment, Spearman’s coefficient is completely tolerant to outliers. But you have to bear in mind that when you compute and interpret a Spearman coefficient, you’re dealing not with direct correlation between two variables but the rank correlation, so ensure you’re interpreting accordingly.</p>
+
+<p>The formula for computing Spearman’s coefficient is the same as Pearson’s, but rather than dealing with X and Y, we’re dealing with the rank of X and Y:</p>
+
+<p>\(\rho_{rank_X, rank_Y} = \frac {Cov(rank_X,rank_Y)} { \sigma_{rank_X}  \sigma_{rank_Y}} \)</p>
+
+<p>If there are no ties, Spearman’s coefficient is computed using this <a href="https://statistics.laerd.com/statistical-guides/spearmans-rank-order-correlation-statistical-guide.php">formula</a>:</p>
+
+<p>\(r_{s} = 1 - \frac {6 \Sigma d_i^2} {n(n^2 -1)} \)
+where \(d = rank_{x_i} - rank_{y_i} \)</p>
+
+<h4 id="kendalls-tau-aka-kendalls-rank-correlation-coefficient">Kendall’s Tau (aka Kendall’s Rank Correlation Coefficient)</h4>
+
+<p>Kendall’s tau is another rank-based, non-parametric statistic. It follows the same assumptions as Spearman’s rank-order correlation coefficient, but it produces more robust standard errors and is therefore [thought]((https://statistics.laerd.com/spss-tutorials/kendalls-tau-b-using-spss-statistics.php) to be more suitable for small sample sizes.</p>
+
+<p>The calculation for Kendall’s Tau is actually pretty simple. You (or your software) will simply rank all the x’s and all the y’s in order, pair them, and count the number of concordant vs discordant pairs. Concordant pairs are ones where (x_i &gt; x_{i+1} ) and (y_i &gt; y_{i+1} ). Discordant pairs are ones where one of those conditions is not met.</p>
+
+<p>\(  \tau = \frac {number\,concordant\,pairs - number\,discordant\,pairs} {\binom n 2}  )\</p>
+
+<p>The trade-off for the increased precision we get with Kendall’s tau is that the estimated correlation coefficients are generally smaller in magnitude than those computed using Spearman’s rho (Fredricks &amp; Nelsen, 2007).</p>
+
+<h4 id="hypothesis-testing">Hypothesis Testing</h4>
+
+<p>Presumably, you want to use the correlation coefficient to make some inferences about the population of interest. To do so, you need to conduct a hypothesis test and report either a p-value or a confidence interval. We will look at several functions for doing this in R below, but all have the following null and alternative hypotheses:</p>
+<ul>
+  <li>\( H_0: \rho = 0 )\ there is no linear (or monotonic, in the case of Spearman and Kendall) association between the two variables in the population</li>
+  <li>\( H_a: \rho \ne 0 )\ there is a linear/monotonic association between the two variables in the population.</li>
+</ul>
+
+<p>You can also conduct a one-sided test, where the alternative hypothesis would be one of the following:</p>
+<ul>
+  <li>\( H_a: \rho &gt; 0 )\</li>
+  <li>\( H_a: \rho &lt; 0 )\</li>
+</ul>
+
+<h2 id="data-preparation">Data Preparation</h2>
+
+<h3 id="data-source">Data Source</h3>
+
+<p>These data were taken from the <a href="https://worldhappiness.report">World Happiness Report</a>, publicly available as a <a href="https://www.kaggle.com/mathurinache/world-happiness-report">Kaggle dataset</a>. We will be restricting analysis to 2020 data.</p>
+
+<h3 id="libraries">Libraries</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">skimr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">PerformanceAnalytics</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">Hmisc</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">corrplot</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">ggcorrplot</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="data-import">Data Import</h3>
+
+<p>The Kaggle <a href="https://www.kaggle.com/mathurinache/world-happiness-report">dataset</a> loads in a zip file containing a separate .csv for every year from 2015 to 2020. We will use the 2020 data here.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">happy_df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read.csv</span><span class="p">(</span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../data/2020.csv"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">janitor</span><span class="o">::</span><span class="n">clean_names</span><span class="p">()</span><span class="w"> 
+
+</span><span class="n">head</span><span class="p">(</span><span class="n">happy_df</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##   country_name regional_indicator ladder_score standard_error_of_ladder_score upperwhisker
+## 1      Finland     Western Europe       7.8087                     0.03115630     7.869766
+## 2      Denmark     Western Europe       7.6456                     0.03349229     7.711245
+## 3  Switzerland     Western Europe       7.5599                     0.03501417     7.628528
+## 4      Iceland     Western Europe       7.5045                     0.05961586     7.621347
+## 5       Norway     Western Europe       7.4880                     0.03483738     7.556281
+## 6  Netherlands     Western Europe       7.4489                     0.02779175     7.503372
+##   lowerwhisker logged_gdp_per_capita social_support healthy_life_expectancy
+## 1     7.747634              10.63927      0.9543297                71.90083
+## 2     7.579955              10.77400      0.9559908                72.40250
+## 3     7.491272              10.97993      0.9428466                74.10245
+## 4     7.387653              10.77256      0.9746696                73.00000
+## 5     7.419719              11.08780      0.9524866                73.20078
+## 6     7.394428              10.81271      0.9391388                72.30092
+##   freedom_to_make_life_choices  generosity perceptions_of_corruption
+## 1                    0.9491722 -0.05948202                 0.1954446
+## 2                    0.9514443  0.06620178                 0.1684895
+## 3                    0.9213367  0.10591104                 0.3037284
+## 4                    0.9488919  0.24694422                 0.7117097
+## 5                    0.9557503  0.13453263                 0.2632182
+## 6                    0.9085478  0.20761244                 0.3647171
+##   ladder_score_in_dystopia explained_by_log_gdp_per_capita explained_by_social_support
+## 1                 1.972317                        1.285190                    1.499526
+## 2                 1.972317                        1.326949                    1.503449
+## 3                 1.972317                        1.390774                    1.472403
+## 4                 1.972317                        1.326502                    1.547567
+## 5                 1.972317                        1.424207                    1.495173
+## 6                 1.972317                        1.338946                    1.463646
+##   explained_by_healthy_life_expectancy explained_by_freedom_to_make_life_choices
+## 1                            0.9612714                                 0.6623167
+## 2                            0.9793326                                 0.6650399
+## 3                            1.0405332                                 0.6289545
+## 4                            1.0008434                                 0.6619807
+## 5                            1.0080719                                 0.6702009
+## 6                            0.9756753                                 0.6136265
+##   explained_by_generosity explained_by_perceptions_of_corruption dystopia_residual
+## 1               0.1596704                              0.4778573          2.762835
+## 2               0.2427934                              0.4952603          2.432741
+## 3               0.2690558                              0.4079459          2.350267
+## 4               0.3623302                              0.1445408          2.460688
+## 5               0.2879851                              0.4341006          2.168266
+## 6               0.3363176                              0.3685698          2.352117
+</code></pre></div></div>
+
+<h3 id="data-tidy">Data Tidy</h3>
+
+<p>Let’s take a closer look at the data. We want to make sure that the variable types R gives us are correct, variables are appropriately named, and that everything we expected in the dataframe is indeed there. We’ll also do a quick check to make sure the data are in wide format, wherein each observation (in this case, each country) is represented by a row and each variable measured for that observation is given in a column. The <code class="language-plaintext highlighter-rouge">glimpse()</code> function in <code class="language-plaintext highlighter-rouge">dplyr</code> is a great simple check for all these things.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">glimpse</span><span class="p">(</span><span class="n">happy_df</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Rows: 153
+## Columns: 20
+## $ country_name                              &lt;fct&gt; Finland, Denmark, Switzerland, Iceland…
+## $ regional_indicator                        &lt;fct&gt; Western Europe, Western Europe, Wester…
+## $ ladder_score                              &lt;dbl&gt; 7.8087, 7.6456, 7.5599, 7.5045, 7.4880…
+## $ standard_error_of_ladder_score            &lt;dbl&gt; 0.03115630, 0.03349229, 0.03501417, 0.…
+## $ upperwhisker                              &lt;dbl&gt; 7.869766, 7.711245, 7.628528, 7.621347…
+## $ lowerwhisker                              &lt;dbl&gt; 7.747634, 7.579955, 7.491272, 7.387653…
+## $ logged_gdp_per_capita                     &lt;dbl&gt; 10.639267, 10.774001, 10.979933, 10.77…
+## $ social_support                            &lt;dbl&gt; 0.9543297, 0.9559908, 0.9428466, 0.974…
+## $ healthy_life_expectancy                   &lt;dbl&gt; 71.90083, 72.40250, 74.10245, 73.00000…
+## $ freedom_to_make_life_choices              &lt;dbl&gt; 0.9491722, 0.9514443, 0.9213367, 0.948…
+## $ generosity                                &lt;dbl&gt; -0.059482019, 0.066201776, 0.105911039…
+## $ perceptions_of_corruption                 &lt;dbl&gt; 0.1954446, 0.1684895, 0.3037284, 0.711…
+## $ ladder_score_in_dystopia                  &lt;dbl&gt; 1.972317, 1.972317, 1.972317, 1.972317…
+## $ explained_by_log_gdp_per_capita           &lt;dbl&gt; 1.2851895, 1.3269485, 1.3907742, 1.326…
+## $ explained_by_social_support               &lt;dbl&gt; 1.499526, 1.503449, 1.472403, 1.547567…
+## $ explained_by_healthy_life_expectancy      &lt;dbl&gt; 0.9612714, 0.9793326, 1.0405332, 1.000…
+## $ explained_by_freedom_to_make_life_choices &lt;dbl&gt; 0.6623167, 0.6650399, 0.6289545, 0.661…
+## $ explained_by_generosity                   &lt;dbl&gt; 0.15967044, 0.24279340, 0.26905575, 0.…
+## $ explained_by_perceptions_of_corruption    &lt;dbl&gt; 0.47785726, 0.49526033, 0.40794590, 0.…
+## $ dystopia_residual                         &lt;dbl&gt; 2.762835, 2.432741, 2.350267, 2.460688…
+</code></pre></div></div>
+
+<p>Everything looks kosher: we have 153 observations (countries) across 20 variables. The countries and regions are categorical variables, while the happiness outcome measure (<code class="language-plaintext highlighter-rouge">ladder_score</code>) and all the potentially associated variables (<code class="language-plaintext highlighter-rouge">social_support</code>, <code class="language-plaintext highlighter-rouge">perception_of_corruption</code>, etc) are numerical.</p>
+
+<p>Next, we will scan for missing values and get a feel for some basic measures of central tendency across our variables of interest. <code class="language-plaintext highlighter-rouge">skimr::skim()</code> is a great function that packs a lot of information in one line of code:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">skimr</span><span class="o">::</span><span class="n">skim</span><span class="p">(</span><span class="n">happy_df</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Table: Data summary</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left"> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Name</td>
+      <td style="text-align: left">happy_df</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Number of rows</td>
+      <td style="text-align: left">153</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Number of columns</td>
+      <td style="text-align: left">20</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>__</strong><strong>__</strong><strong>__</strong>_____</td>
+      <td style="text-align: left"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Column type frequency:</td>
+      <td style="text-align: left"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">factor</td>
+      <td style="text-align: left">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">numeric</td>
+      <td style="text-align: left">18</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>__</strong><strong>__</strong><strong>__</strong><strong>__</strong></td>
+      <td style="text-align: left"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Group variables</td>
+      <td style="text-align: left">None</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Variable type: factor</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">skim_variable</th>
+      <th style="text-align: right">n_missing</th>
+      <th style="text-align: right">complete_rate</th>
+      <th style="text-align: left">ordered</th>
+      <th style="text-align: right">n_unique</th>
+      <th style="text-align: left">top_counts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">country_name</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: left">FALSE</td>
+      <td style="text-align: right">153</td>
+      <td style="text-align: left">Afg: 1, Alb: 1, Alg: 1, Arg: 1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">regional_indicator</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: left">FALSE</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: left">Sub: 39, Lat: 21, Wes: 21, Cen: 17</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Variable type: numeric</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">skim_variable</th>
+      <th style="text-align: right">n_missing</th>
+      <th style="text-align: right">complete_rate</th>
+      <th style="text-align: right">mean</th>
+      <th style="text-align: right">sd</th>
+      <th style="text-align: right">p0</th>
+      <th style="text-align: right">p25</th>
+      <th style="text-align: right">p50</th>
+      <th style="text-align: right">p75</th>
+      <th style="text-align: right">p100</th>
+      <th style="text-align: left">hist</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">ladder_score</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">5.47</td>
+      <td style="text-align: right">1.11</td>
+      <td style="text-align: right">2.57</td>
+      <td style="text-align: right">4.72</td>
+      <td style="text-align: right">5.51</td>
+      <td style="text-align: right">6.23</td>
+      <td style="text-align: right">7.81</td>
+      <td style="text-align: left">▂▃▇▆▃</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">standard_error_of_ladder_score</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0.05</td>
+      <td style="text-align: right">0.02</td>
+      <td style="text-align: right">0.03</td>
+      <td style="text-align: right">0.04</td>
+      <td style="text-align: right">0.05</td>
+      <td style="text-align: right">0.06</td>
+      <td style="text-align: right">0.12</td>
+      <td style="text-align: left">▇▇▃▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">upperwhisker</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">5.58</td>
+      <td style="text-align: right">1.10</td>
+      <td style="text-align: right">2.63</td>
+      <td style="text-align: right">4.83</td>
+      <td style="text-align: right">5.61</td>
+      <td style="text-align: right">6.36</td>
+      <td style="text-align: right">7.87</td>
+      <td style="text-align: left">▂▃▇▇▃</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">lowerwhisker</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">5.37</td>
+      <td style="text-align: right">1.13</td>
+      <td style="text-align: right">2.51</td>
+      <td style="text-align: right">4.60</td>
+      <td style="text-align: right">5.43</td>
+      <td style="text-align: right">6.14</td>
+      <td style="text-align: right">7.75</td>
+      <td style="text-align: left">▂▅▇▇▃</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">logged_gdp_per_capita</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">9.30</td>
+      <td style="text-align: right">1.20</td>
+      <td style="text-align: right">6.49</td>
+      <td style="text-align: right">8.35</td>
+      <td style="text-align: right">9.46</td>
+      <td style="text-align: right">10.27</td>
+      <td style="text-align: right">11.45</td>
+      <td style="text-align: left">▃▅▆▇▅</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">social_support</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0.81</td>
+      <td style="text-align: right">0.12</td>
+      <td style="text-align: right">0.32</td>
+      <td style="text-align: right">0.74</td>
+      <td style="text-align: right">0.83</td>
+      <td style="text-align: right">0.91</td>
+      <td style="text-align: right">0.97</td>
+      <td style="text-align: left">▁▁▃▆▇</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">healthy_life_expectancy</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">64.45</td>
+      <td style="text-align: right">7.06</td>
+      <td style="text-align: right">45.20</td>
+      <td style="text-align: right">58.96</td>
+      <td style="text-align: right">66.31</td>
+      <td style="text-align: right">69.29</td>
+      <td style="text-align: right">76.80</td>
+      <td style="text-align: left">▁▃▃▇▅</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">freedom_to_make_life_choices</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0.78</td>
+      <td style="text-align: right">0.12</td>
+      <td style="text-align: right">0.40</td>
+      <td style="text-align: right">0.71</td>
+      <td style="text-align: right">0.80</td>
+      <td style="text-align: right">0.88</td>
+      <td style="text-align: right">0.97</td>
+      <td style="text-align: left">▁▂▆▇▇</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">generosity</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">-0.01</td>
+      <td style="text-align: right">0.15</td>
+      <td style="text-align: right">-0.30</td>
+      <td style="text-align: right">-0.13</td>
+      <td style="text-align: right">-0.03</td>
+      <td style="text-align: right">0.09</td>
+      <td style="text-align: right">0.56</td>
+      <td style="text-align: left">▅▇▅▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">perceptions_of_corruption</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0.73</td>
+      <td style="text-align: right">0.18</td>
+      <td style="text-align: right">0.11</td>
+      <td style="text-align: right">0.68</td>
+      <td style="text-align: right">0.78</td>
+      <td style="text-align: right">0.85</td>
+      <td style="text-align: right">0.94</td>
+      <td style="text-align: left">▁▁▁▅▇</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ladder_score_in_dystopia</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1.97</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">1.97</td>
+      <td style="text-align: right">1.97</td>
+      <td style="text-align: right">1.97</td>
+      <td style="text-align: right">1.97</td>
+      <td style="text-align: right">1.97</td>
+      <td style="text-align: left">▁▁▇▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">explained_by_log_gdp_per_capita</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0.87</td>
+      <td style="text-align: right">0.37</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">0.58</td>
+      <td style="text-align: right">0.92</td>
+      <td style="text-align: right">1.17</td>
+      <td style="text-align: right">1.54</td>
+      <td style="text-align: left">▃▅▆▇▅</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">explained_by_social_support</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1.16</td>
+      <td style="text-align: right">0.29</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">0.99</td>
+      <td style="text-align: right">1.20</td>
+      <td style="text-align: right">1.39</td>
+      <td style="text-align: right">1.55</td>
+      <td style="text-align: left">▁▁▃▆▇</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">explained_by_healthy_life_expectancy</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0.69</td>
+      <td style="text-align: right">0.25</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">0.50</td>
+      <td style="text-align: right">0.76</td>
+      <td style="text-align: right">0.87</td>
+      <td style="text-align: right">1.14</td>
+      <td style="text-align: left">▁▃▃▇▅</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">explained_by_freedom_to_make_life_choices</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0.46</td>
+      <td style="text-align: right">0.14</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">0.38</td>
+      <td style="text-align: right">0.48</td>
+      <td style="text-align: right">0.58</td>
+      <td style="text-align: right">0.69</td>
+      <td style="text-align: left">▁▂▆▇▇</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">explained_by_generosity</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0.19</td>
+      <td style="text-align: right">0.10</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">0.12</td>
+      <td style="text-align: right">0.18</td>
+      <td style="text-align: right">0.26</td>
+      <td style="text-align: right">0.57</td>
+      <td style="text-align: left">▅▇▅▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">explained_by_perceptions_of_corruption</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0.13</td>
+      <td style="text-align: right">0.11</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">0.06</td>
+      <td style="text-align: right">0.10</td>
+      <td style="text-align: right">0.16</td>
+      <td style="text-align: right">0.53</td>
+      <td style="text-align: left">▇▅▁▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">dystopia_residual</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1.97</td>
+      <td style="text-align: right">0.56</td>
+      <td style="text-align: right">0.26</td>
+      <td style="text-align: right">1.63</td>
+      <td style="text-align: right">2.05</td>
+      <td style="text-align: right">2.35</td>
+      <td style="text-align: right">3.44</td>
+      <td style="text-align: left">▁▃▇▇▁</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Overall, the dataframe looks healthy. We don’t have any missing values, and the means look reasonable. Let’s take a closer look at the variables and their summary stats and distributions below.</p>
+
+<h3 id="variables-used">Variables Used</h3>
+
+<p>The variables of interest (as detailed here <a href="https://worldhappiness.report/ed/2019/changing-world-happiness/">here</a>) are:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">country_name</code>: 153 countries total</li>
+  <li><code class="language-plaintext highlighter-rouge">regional_indicator</code>: Classification for continental sub-regions, values Central and Eastern Europe, Commonwealth of Independent States, East Asia, Latin America and Caribbean, Middle East and North Africa, North America and ANZ, South Asia, Southeast Asia, Sub-Saharan Africa, Western Europe</li>
+  <li><code class="language-plaintext highlighter-rouge">ladder_score</code>: This is our outcome variable, the happiness ladder score. As we saw above, the mean <code class="language-plaintext highlighter-rouge">ladder_score</code> was 5.47 and the values appear normally distributed.</li>
+  <li><code class="language-plaintext highlighter-rouge">logged_gdp_per_capita</code>:  Pretty much what it sounds like, the log of per-capita Gross Domestic Product. Economists like log GDP (and logs of other economic measures) since a vertical move on the log scale corresponds to the same percentage change in the measure (better explanation <a href="https://econbrowser.com/archives/2014/02/use-of-logarithms-in-economics">here</a>)</li>
+  <li><code class="language-plaintext highlighter-rouge">social_support</code>: National respondents’ proportion of “yes” answers to the question “If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?” The question is coded binary (0 = no, 1 = yes) and the mean is 0.809 (pleasantly high in my opinion)</li>
+  <li><code class="language-plaintext highlighter-rouge">healthy_life_expectancy</code>: The WHO’s measure of a country’s healthy life expectancy at birth. From the <code class="language-plaintext highlighter-rouge">skim()</code> output above, it averages 64.4 years and is somewhat left-skewed, meaning that most countries have a higher than average healthy life expectancy</li>
+  <li><code class="language-plaintext highlighter-rouge">freedom_to_make_life_choices</code>: National respondents’ proportion of “yes” answers to the question “Are you satisfied or dissatisfied with your freedom to choose what you do with your life?” The question is coded binary (0 = no, 1 = yes) and the mean computed above is 0.783.</li>
+  <li><code class="language-plaintext highlighter-rouge">generosity</code>: The residual of regressing the national average of responses to the question “Have you donated money to a charity in the past month?” on per-capita GDP. Basically, this means that if we ran a regression of GDP (independent variable) vs the proportion of “yes” answers to this question (dependent variable), <code class="language-plaintext highlighter-rouge">generosity</code> would equal the gap between the expected value and the actual value. It’s really just a means of controlling for income. Per our analysis above, the variable range is (-0.301, 0.561) and centers on -0.0146.</li>
+  <li><code class="language-plaintext highlighter-rouge">perceptions_of_corruption</code>: National respondents’ proportion of “yes” answers to the question “Is corruption widespread throughout the government or not?” The question is coded binary (0 = no, 1 = yes) and the mean is 0.733.</li>
+</ul>
+
+<h2 id="analysis">Analysis</h2>
+
+<h3 id="assumptions">Assumptions</h3>
+
+<p>Let’s first get a handle on how our data behave. Remember that to use Pearson, we need normally distributed variables and a linear relationship, and to use Spearman or Kendall, we need a monotonic relationship.</p>
+
+<p>To get a visual of all the individual relationships, we could generate scatter plots for each variable of interest vs the outcome of interest. This would be cumbersome. We’ll use the <code class="language-plaintext highlighter-rouge">chart.Correlation</code> function in the <code class="language-plaintext highlighter-rouge">PerformanceAnalytics</code> package instead. Spoiler alert: this can actually calculate all three correlation coefficients for you, but for now, just pretend you don’t see any of the numbers on the chart below.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">chart.Correlation</span><span class="p">(</span><span class="n">happy_df</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="m">8</span><span class="o">:</span><span class="m">12</span><span class="p">)],</span><span class="w"> </span><span class="n">histogram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/figs/2020-08-24-correlation-happiness/unnamed-chunk-11-1.png" alt="plot of chunk unnamed-chunk-11" /></p>
+
+<p>Our outcome, <code class="language-plaintext highlighter-rouge">ladder_score</code> is on the top left, and the left-most column provides the scatter plots for <code class="language-plaintext highlighter-rouge">ladder_score</code> against all five of the independent variables. The diagonal shows us a histogram for each variable, which helps us decide whether the variable is normally distributed or not.</p>
+
+<p>Looking at the diagonals, <code class="language-plaintext highlighter-rouge">ladder_score</code> is normally distributed and <code class="language-plaintext highlighter-rouge">healthy_life_expectancy</code> could maybe also pass (we’ll examine this more closely below). The other variables are clearly skewed.</p>
+
+<p>Looking at the scatter plots for <code class="language-plaintext highlighter-rouge">ladder_score</code> on the left-most column,  <code class="language-plaintext highlighter-rouge">social_support</code>, <code class="language-plaintext highlighter-rouge">healthy_life_expectancy</code>, <code class="language-plaintext highlighter-rouge">freedom_to_make_life_choices</code> all appear linearly related to <code class="language-plaintext highlighter-rouge">ladder_score</code>. <code class="language-plaintext highlighter-rouge">generosity</code> is neither linear nor monotonic with respect to <code class="language-plaintext highlighter-rouge">ladder_score</code>, and <code class="language-plaintext highlighter-rouge">perceptions_of_corruption</code> is not linear but could pass for monotonic.</p>
+
+<h3 id="assessing-normality---shapiro-wilk-test">Assessing Normality - Shapiro Wilk Test</h3>
+
+<p>Now let’s go back to <code class="language-plaintext highlighter-rouge">healthy_life_expectancy</code> and conduct a more formal hypothesis test. Since we couldn’t get a good feel for normality from the distribution, a hypothesis test using the Shapiro-Wilk can help us make a decision before proceeding with analysis. Our hypotheses are:</p>
+<ul>
+  <li>Null hypothesis: Data <strong>are not</strong> significantly different from a normal distribution</li>
+  <li>Alternative hypothesis: Data <strong>are</strong> significantly different from a normal distribution</li>
+</ul>
+
+<p><a href="http://www.sthda.com/english/wiki/normality-test-in-r">Conducting</a> the Shapiro-Wilk test in R is super simple:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">shapiro.test</span><span class="p">(</span><span class="n">happy_df</span><span class="o">$</span><span class="n">healthy_life_expectancy</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 
+## 	Shapiro-Wilk normality test
+## 
+## data:  happy_df$healthy_life_expectancy
+## W = 0.95457, p-value = 6.744e-05
+</code></pre></div></div>
+
+<p>Since p « 0.05, we reject the null hypothesis and conclude that <code class="language-plaintext highlighter-rouge">healthy_life_expectancy</code> does not follow a normal distribution. As such, Spearman and Kendall coefficients are more appropriate. (see caveat below)<sup id="fnref:3:1"><a href="#fn:3" class="footnote">1</a></sup></p>
+
+<h3 id="computing-correlation-coefficients-using-cor-cortest-and-rcorr">Computing Correlation Coefficients using <code class="language-plaintext highlighter-rouge">cor()</code>, <code class="language-plaintext highlighter-rouge">cor.test()</code>, and ``rcorr()`</h3>
+
+<h4 id="cor"><code class="language-plaintext highlighter-rouge">cor</code></h4>
+
+<p>There are several options in R for computing correlation coefficients. The first is base R’s <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/cor"><code class="language-plaintext highlighter-rouge">cor</code></a> function, which allows selection of Pearson, Spearman, or Kendall using a method argument. We will first specify Spearman based on our conclusions above.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">spearman</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cor</span><span class="p">(</span><span class="n">happy_df</span><span class="o">$</span><span class="n">ladder_score</span><span class="p">,</span><span class="w"> </span><span class="n">happy_df</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">8</span><span class="o">:</span><span class="m">12</span><span class="p">)],</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"spearman"</span><span class="p">)</span><span class="w">
+</span><span class="n">spearman</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##      social_support healthy_life_expectancy freedom_to_make_life_choices generosity
+## [1,]      0.8031141               0.7830361                    0.5919578 0.07451114
+##      perceptions_of_corruption
+## [1,]                -0.2774517
+</code></pre></div></div>
+
+<p>Happiness has a strong positive correlation with social support (r = 0.80), a strong positive correlation with life expectancy (r = 0.78), and a moderate positive correlation with freedom to make life choices (r = 0.59). Happiness has no correlation with generosity (r = 0.07), and a weak negative correlation with perceptions of corruption (r = -0.28).</p>
+
+<p>Now, let’s compare to Kendall:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">kendall</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cor</span><span class="p">(</span><span class="n">happy_df</span><span class="o">$</span><span class="n">ladder_score</span><span class="p">,</span><span class="w"> </span><span class="n">happy_df</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">8</span><span class="o">:</span><span class="m">12</span><span class="p">)],</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kendall"</span><span class="p">)</span><span class="w">
+</span><span class="n">kendall</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##      social_support healthy_life_expectancy freedom_to_make_life_choices generosity
+## [1,]      0.6081871               0.5775102                    0.4248366 0.04317165
+##      perceptions_of_corruption
+## [1,]                -0.1854145
+</code></pre></div></div>
+
+<p>Just for demonstration, let’s also compute the Pearson coefficients and compare them to Spearman’s rho and Kendall’s tau.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pearson</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cor</span><span class="p">(</span><span class="n">happy_df</span><span class="o">$</span><span class="n">ladder_score</span><span class="p">,</span><span class="w"> </span><span class="n">happy_df</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">8</span><span class="o">:</span><span class="m">12</span><span class="p">)],</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"pearson"</span><span class="p">)</span><span class="w">
+</span><span class="n">pearson</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##      social_support healthy_life_expectancy freedom_to_make_life_choices generosity
+## [1,]      0.7650008               0.7703163                    0.5905968 0.06904313
+##      perceptions_of_corruption
+## [1,]                -0.4183051
+</code></pre></div></div>
+
+<p>Putting everything in a quick table:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pearson</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">pearson</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"pearson"</span><span class="p">)</span><span class="w">
+</span><span class="n">spearman</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">spearman</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"spearman"</span><span class="p">)</span><span class="w">
+</span><span class="n">kendall</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">kendall</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kendall"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">bind_rows</span><span class="p">(</span><span class="n">pearson</span><span class="p">,</span><span class="w"> </span><span class="n">spearman</span><span class="p">,</span><span class="w"> </span><span class="n">kendall</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##          social_support healthy_life_expectancy freedom_to_make_life_choices generosity
+## pearson       0.7650008               0.7703163                    0.5905968 0.06904313
+## spearman      0.8031141               0.7830361                    0.5919578 0.07451114
+## kendall       0.6081871               0.5775102                    0.4248366 0.04317165
+##          perceptions_of_corruption
+## pearson                 -0.4183051
+## spearman                -0.2774517
+## kendall                 -0.1854145
+</code></pre></div></div>
+
+<p>Comparing Pearson vs Spearman, the only big difference with respect to happiness is perception of corruption (Pearson -0.42 vs Spearman -0.28). This isn’t surprising, given that <code class="language-plaintext highlighter-rouge">perception_of_corruption</code> appeared to be the most skewed (i.e. the most deviant from normal distribution) in the <code class="language-plaintext highlighter-rouge">chart.Correlation</code> matrix we looked at above.</p>
+
+<p>Comparing Spearman to Kendall, the magnitude of our coefficients dropped to the null pretty sizably, which aligns with the general behavior of Kendall’s tau vs Spearman’s rho (Fredricks &amp; Nelsen, 2007).</p>
+
+<h4 id="cortest-and-rcorr"><code class="language-plaintext highlighter-rouge">cor.test</code> and <code class="language-plaintext highlighter-rouge">rcorr</code></h4>
+
+<p>While <code class="language-plaintext highlighter-rouge">cor</code> is quick and easy, it does not compute any statistical significance measures. For that, we need <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/cor.test"><code class="language-plaintext highlighter-rouge">cor.test</code></a> (base) or <a href="https://www.rdocumentation.org/packages/ggm/versions/2.5/topics/rcorr"><code class="language-plaintext highlighter-rouge">rcorr</code></a> (<code class="language-plaintext highlighter-rouge">HMisc</code> package).</p>
+
+<p>The disadvantage of <code class="language-plaintext highlighter-rouge">cor.test</code> is that it only computes one coefficient at a time, meaning you can’t create a matrix in one line. <code class="language-plaintext highlighter-rouge">rcorr</code>, on the other hand, will give you a matrix of correlation coefficients and their associated p-values. The disadvantages are a) it doesn’t compute Kendall’s tau and b) you won’t get confidence intervals.</p>
+
+<p>When we run <code class="language-plaintext highlighter-rouge">cor.test</code>, we see that it actually doesn’t give a confidence interval for Spearman coefficients either (although it does for Pearson):</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cor.test</span><span class="p">(</span><span class="n">happy_df</span><span class="o">$</span><span class="n">ladder_score</span><span class="p">,</span><span class="w"> </span><span class="n">happy_df</span><span class="o">$</span><span class="n">social_support</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"spearman"</span><span class="p">,</span><span class="w"> </span><span class="n">conf.level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.95</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 
+## 	Spearman's rank correlation rho
+## 
+## data:  happy_df$ladder_score and happy_df$social_support
+## S = 117522, p-value &lt; 2.2e-16
+## alternative hypothesis: true rho is not equal to 0
+## sample estimates:
+##       rho 
+## 0.8031141
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cor.test</span><span class="p">(</span><span class="n">happy_df</span><span class="o">$</span><span class="n">ladder_score</span><span class="p">,</span><span class="w"> </span><span class="n">happy_df</span><span class="o">$</span><span class="n">social_support</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"pearson"</span><span class="p">,</span><span class="w"> </span><span class="n">conf.level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.95</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 
+## 	Pearson's product-moment correlation
+## 
+## data:  happy_df$ladder_score and happy_df$social_support
+## t = 14.596, df = 151, p-value &lt; 2.2e-16
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.6900921 0.8236918
+## sample estimates:
+##       cor 
+## 0.7650008
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cor.test</span><span class="p">(</span><span class="n">happy_df</span><span class="o">$</span><span class="n">ladder_score</span><span class="p">,</span><span class="w"> </span><span class="n">happy_df</span><span class="o">$</span><span class="n">social_support</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"kendall"</span><span class="p">,</span><span class="w"> </span><span class="n">conf.level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.95</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 
+## 	Kendall's rank correlation tau
+## 
+## data:  happy_df$ladder_score and happy_df$social_support
+## z = 11.157, p-value &lt; 2.2e-16
+## alternative hypothesis: true tau is not equal to 0
+## sample estimates:
+##       tau 
+## 0.6081871
+</code></pre></div></div>
+
+<p>So basically, in the context of this analysis, <code class="language-plaintext highlighter-rouge">cor.test</code> is weak sauce. Let’s move on to <code class="language-plaintext highlighter-rouge">rcorr</code>, looking only at Spearman. <code class="language-plaintext highlighter-rouge">rcorr</code> does not play with Kendall and won’t give you confidence intervals for any type of coefficient. But unlike <code class="language-plaintext highlighter-rouge">cor.test</code>, <code class="language-plaintext highlighter-rouge">rcorr</code> will give you a matrix of coefficients and a matrix of p-values:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">happy_df_corr</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">happy_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">select</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="m">8</span><span class="o">:</span><span class="m">12</span><span class="p">))</span><span class="w"> 
+
+</span><span class="n">happy_df_corr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.matrix</span><span class="p">(</span><span class="n">happy_df_corr</span><span class="p">)</span><span class="w">
+</span><span class="n">rcorr</span><span class="p">(</span><span class="n">happy_df_corr</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"spearman"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##                              ladder_score social_support healthy_life_expectancy
+## ladder_score                         1.00           0.80                    0.78
+## social_support                       0.80           1.00                    0.73
+## healthy_life_expectancy              0.78           0.73                    1.00
+## freedom_to_make_life_choices         0.59           0.49                    0.45
+## generosity                           0.07           0.00                   -0.04
+## perceptions_of_corruption           -0.28          -0.14                   -0.23
+##                              freedom_to_make_life_choices generosity
+## ladder_score                                         0.59       0.07
+## social_support                                       0.49       0.00
+## healthy_life_expectancy                              0.45      -0.04
+## freedom_to_make_life_choices                         1.00       0.30
+## generosity                                           0.30       1.00
+## perceptions_of_corruption                           -0.37      -0.25
+##                              perceptions_of_corruption
+## ladder_score                                     -0.28
+## social_support                                   -0.14
+## healthy_life_expectancy                          -0.23
+## freedom_to_make_life_choices                     -0.37
+## generosity                                       -0.25
+## perceptions_of_corruption                         1.00
+## 
+## n= 153 
+## 
+## 
+## P
+##                              ladder_score social_support healthy_life_expectancy
+## ladder_score                              0.0000         0.0000                 
+## social_support               0.0000                      0.0000                 
+## healthy_life_expectancy      0.0000       0.0000                                
+## freedom_to_make_life_choices 0.0000       0.0000         0.0000                 
+## generosity                   0.3600       0.9617         0.6244                 
+## perceptions_of_corruption    0.0005       0.0781         0.0051                 
+##                              freedom_to_make_life_choices generosity
+## ladder_score                 0.0000                       0.3600    
+## social_support               0.0000                       0.9617    
+## healthy_life_expectancy      0.0000                       0.6244    
+## freedom_to_make_life_choices                              0.0002    
+## generosity                   0.0002                                 
+## perceptions_of_corruption    0.0000                       0.0022    
+##                              perceptions_of_corruption
+## ladder_score                 0.0005                   
+## social_support               0.0781                   
+## healthy_life_expectancy      0.0051                   
+## freedom_to_make_life_choices 0.0000                   
+## generosity                   0.0022                   
+## perceptions_of_corruption
+</code></pre></div></div>
+
+<p>So we’ve re-computed the Spearman coefficients from <code class="language-plaintext highlighter-rouge">cor</code> and we’ve learned that, with respect to happiness, all correlations except <code class="language-plaintext highlighter-rouge">ladder_score</code> vs <code class="language-plaintext highlighter-rouge">generoisty</code> are statistically significant at an alpha level of 0.05.</p>
+
+<p>We’ve also learned that all of the correlations functions we computed have gaps and inconveniences. Most likely, if you’re doing a correlation analysis in R, you’ll need to use some combination of these functions.</p>
+
+<p>Here’s a quick summary of the capabilities of <code class="language-plaintext highlighter-rouge">cor</code> vs <code class="language-plaintext highlighter-rouge">cor.test</code> vs <code class="language-plaintext highlighter-rouge">rcorr</code>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>R-Package</th>
+      <th>Multiple vs single</th>
+      <th>Coefficients</th>
+      <th>p-values</th>
+      <th>CI’s</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">cor</code></td>
+      <td><code class="language-plaintext highlighter-rouge">stats</code>(base)</td>
+      <td>multiple</td>
+      <td>P/S/K</td>
+      <td>x</td>
+      <td>x</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">cor.test</code></td>
+      <td><code class="language-plaintext highlighter-rouge">stats</code>(base)</td>
+      <td>single</td>
+      <td>P/S/K</td>
+      <td>P/S/K</td>
+      <td>P</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">rcorr</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Hmisc</code></td>
+      <td>multiple</td>
+      <td>P/S</td>
+      <td>P/S</td>
+      <td>x</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="visualizing-correlation">Visualizing Correlation</h3>
+
+<p>You may have noted that pretty much everything we learned from <code class="language-plaintext highlighter-rouge">cor</code>, <code class="language-plaintext highlighter-rouge">cor.test</code>, and <code class="language-plaintext highlighter-rouge">rcorr</code> could have been inferred from the <code class="language-plaintext highlighter-rouge">chart.Correlation</code> above. The only thing we need to change is to adjust the method from default to Spearman.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">chart.Correlation</span><span class="p">(</span><span class="n">happy_df</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="m">8</span><span class="o">:</span><span class="m">12</span><span class="p">)],</span><span class="w"> </span><span class="n">histogram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"spearman"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/figs/2020-08-24-correlation-happiness/unnamed-chunk-16-1.png" alt="plot of chunk unnamed-chunk-16" /></p>
+
+<p>As before, we see the linear and non-linear associations below the diagonal, the univariate distributions along the diagonal, and the actual Spearman coefficients above the diagonal. <code class="language-plaintext highlighter-rouge">chart.Correlation</code> even does this nice thing of making the font size proportional with the magnitude of the coefficent itself. Finally, it calculates a p-value and displays it as a star above the coefficient:p-values(0, 0.001, 0.01, 0.05, 0.1, 1) &lt;=&gt; symbols(“<em><strong>”, “</strong>”, “</em>”, “.”, “ “).</p>
+
+<p>There are other options for visualizing correlation matrices. <a href="http://www.sthda.com/english/wiki/visualize-correlation-matrix-using-correlogram"><code class="language-plaintext highlighter-rouge">corplot</code></a> and <a href="http://www.sthda.com/english/wiki/ggcorrplot-visualization-of-a-correlation-matrix-using-ggplot2"><code class="language-plaintext highlighter-rouge">ggcorrplot</code></a> are both great for generating customizable correlograms. 
+You can explore a full gallery of <code class="language-plaintext highlighter-rouge">corplot</code> visualization options <a href="http://www.sthda.com/english/wiki/visualize-correlation-matrix-using-correlogram">here</a>, but we’ll make one nice one here <sup id="fnref:2"><a href="#fn:2" class="footnote">3</a></sup>. Note, of course, that we’re not really interested in the entire chart. We just want <code class="language-plaintext highlighter-rouge">ladder_score</code> vs everything else.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cor_mat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cor</span><span class="p">(</span><span class="n">happy_df</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="m">8</span><span class="o">:</span><span class="m">12</span><span class="p">)],</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"spearman"</span><span class="p">)</span><span class="w">
+</span><span class="n">corrplot</span><span class="p">(</span><span class="n">cor_mat</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/figs/2020-08-24-correlation-happiness/unnamed-chunk-17-1.png" alt="plot of chunk unnamed-chunk-17" /></p>
+
+<p>Big blue circles mean high correlation in the positive direction, and again, we see that social support and healthy life expectancy are most closely correlated with happiness. This <code class="language-plaintext highlighter-rouge">corplot</code> isn’t bad, but let’s eliminate the mirror image along the diagonal and change the label colors since red labels freak me out:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">corrplot</span><span class="p">(</span><span class="n">cor_mat</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"upper"</span><span class="p">,</span><span class="w"> </span><span class="n">tl.col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"black"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/figs/2020-08-24-correlation-happiness/unnamed-chunk-18-1.png" alt="plot of chunk unnamed-chunk-18" /></p>
+
+<p>Ok, that’s kind of better, but honestly it’s not really that useful in our context. If we were looking at many variables and wanted a quick way to assess which ones most closely went with which ones, <code class="language-plaintext highlighter-rouge">corplot</code> is a great visualization tool. For our purposes here, <code class="language-plaintext highlighter-rouge">cor</code> and <code class="language-plaintext highlighter-rouge">chart.Correlation</code> are just fine.</p>
+
+<h2 id="conclusions">Conclusions</h2>
+
+<p>After checking assumptions, both visually and by conducting a Shapiro-Wilk test, we concluded that the default Pearson coefficient was not theoretically suitable for our analysis. Working primarily with Spearman’s and Kendall’s rank-order coefficients, we figured out the following:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">chart.Correlation</code> is a great, highly informative function for analyzing correlations in R and allows for analysis using all three coefficients of interest: Pearson, Spearman, and Kendall</li>
+  <li>Based on the World Happiness Report, country-level happiness is most closely associated with social support and healthy life expectancy for that country.<sup id="fnref:4"><a href="#fn:4" class="footnote">4</a></sup></li>
+  <li>The three functions for computing correlation coefficients in R have their own strengths and weaknesses. If <code class="language-plaintext highlighter-rouge">chart.Correlation</code> is not sufficient for the analysis, some combination of <code class="language-plaintext highlighter-rouge">cor</code>, <code class="language-plaintext highlighter-rouge">cor.test</code>, and <code class="language-plaintext highlighter-rouge">rcorr</code> should be used.</li>
+</ul>
+
+<h2 id="further-reading">Further Reading</h2>
+
+<ul>
+  <li>Great <a href="https://rpubs.com/melike/corrplot">post</a> exploring <code class="language-plaintext highlighter-rouge">corrplot</code></li>
+  <li>A wonderfully thorough <a href="(https://ourworldindata.org/happiness-and-life-satisfaction)">analysis</a> of the Gallup World Poll, beyond the World Happiness Report</li>
+  <li>Another great analysis of the same data [here]((https://rstudio-pubs-static.s3.amazonaws.com/300262_bf921065f92f4abca6c59594e92d547e.html#happiness-data-preview)</li>
+  <li>More on why Scandinavian countries rank so highly in the report <a href="https://worldhappiness.report/ed/2020/the-nordic-exceptionalism-what-explains-why-the-nordic-countries-are-constantly-among-the-happiest-in-the-world/">here</a></li>
+  <li>Great <a href="https://s3.amazonaws.com/happiness-report/2012/World_Happiness_Report_2012.pdf">commentary</a> on the World Happiness Report and happiness in general</li>
+</ul>
+
+<h2 id="references">References</h2>
+
+<ul>
+  <li>Schober, P., Boer, C., &amp; Schwarte, L. A. (2018). Correlation Coefficients. Anesthesia &amp; Analgesia, 126(5), 1763-1768. doi:10.1213/ane.0000000000002864</li>
+  <li>Puth, M.-T., Neuhäuser, M., &amp; Ruxton, G. D. (2015). Effective use of Spearman’s and Kendall’s correlation coefficients for association between two measured traits. Animal Behaviour, 102, 77–84. https://doi.org/10.1016/j.anbehav.2015.01.010</li>
+  <li>Fredricks, G. A., &amp; Nelsen, R. B. (2007). On the relationship between Spearman’s rho and Kendall’s tau for pairs of continuous random variables. Journal of Statistical Planning and Inference, 137(7), 2143–2150. https://doi.org/10.1016/j.jspi.2006.06.045</li>
+</ul>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:3">
+      <p>It should be noted that Puth et al (2015) performed a meta-analysis of research that selected rank-order measures over Pearson, and found that in most cases, the rank-order coefficients do not out-perform Pearson. <a href="#fnref:3" class="reversefootnote">&#8617;</a> <a href="#fnref:3:1" class="reversefootnote">&#8617;<sup>2</sup></a></p>
+    </li>
+    <li id="fn:1">
+      <p>Sometimes I imagine Spearman as Pearson’s alter ego. He dropped some assumptions and shuffled around the letters in his name and suddenly he’s a more flexible (yet less “mainstream”) version of his daytime self. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:2">
+      <p>As far as I can tell, the only advantage of <code class="language-plaintext highlighter-rouge">ggcorplot</code> over <code class="language-plaintext highlighter-rouge">corplot</code> is that <code class="language-plaintext highlighter-rouge">ggcorplot</code> can give you p-values on the correlogram. Personally, I think the visual output of <code class="language-plaintext highlighter-rouge">chart.Correlation</code> is a bit nicer. <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:4">
+      <p>This does not tell us anything about happiness on the individual level. These data cannot be used to determine whether an <strong>individual’s</strong> social support is correlated to their happiness. These are ecologic measures and using them for individual-level inference might lead to <a href="https://en.wikipedia.org/wiki/Ecological_fallacy">ecologic fallacy</a> <a href="#fnref:4" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#correlation" class="page__taxonomy-item" rel="tag">correlation</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/categories/#mental-health" class="page__taxonomy-item" rel="tag">mental health</a>
+    
+    </span>
+  </p>
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2020-08-24T00:00:00-07:00">August 24, 2020</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Correlation+Analysis+%28Pearson%2C+Spearman%2C+and+Kendall%29+using+World+Happiness+Data%20http%3A%2F%2Flocalhost%3A4000%2Fcorrelation%2Fmental%2520health%2Fcorrelation-happiness%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fcorrelation%2Fmental%2520health%2Fcorrelation-happiness%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fcorrelation%2Fmental%2520health%2Fcorrelation-happiness%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/blog/2020/07/covid_dashboard/" class="pagination--pager" title="Summarizing Covid-19 with flexdashboard
+">Previous</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You may also enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/blog/2020/07/covid_dashboard/" rel="permalink">Summarizing Covid-19 with flexdashboard
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  less than 1 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">Dashboards are fantastic.
+
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/data%20visualization/ggplot2/injuries/car-crashes/" rel="permalink">Visualizing Motor Vehicle Fatalities with ggplot2
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  24 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">An analysis of car fatalities by state using data from the Big Cities Health Initiative.
+
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/phthalates-II/" rel="permalink">Phthalate Exposure in U.S. Women of Reproductive Age - an NHANES Review, Part II
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  16 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">More fun with phthalates.
+
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/phthalates/" rel="permalink">Phthalate Exposure in U.S. Women of Reproductive Age - an NHANES Review, Part I
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  19 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">Wrangling NHANES to explore socioeconomic factors associated with phthalate exposure.
+
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <!--other footer stuff I don't want
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+--> 
+
+<div class="page__footer-copyright">&copy; 2020 Alice Tivarovsky. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <script src="https://kit.fontawesome.com/4eee35f757.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" defer
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+
+  </body>
+</html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.19.3 by Michael Rose
+  Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
