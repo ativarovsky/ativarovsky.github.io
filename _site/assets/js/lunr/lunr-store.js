@@ -18,9 +18,9 @@ var store = [{
         "teaser": null
       },{
         "title": "Visualizing Motor Vehicle Fatalities with ggplot2",
-        "excerpt":"An analysis of car fatalities by state using data from the Big Cities Health Initiative. “This is my favorite part about analytics: Taking boring flat data and bringing it to life through visualization.” – John Tukey Motivation The last two posts were a bit dense so we’ll try to keep...","categories": ["data visualization","ggplot2","injuries"],
-        "tags": [],
-        "url": "http://localhost:4000/data%20visualization/ggplot2/injuries/car-crashes/",
+        "excerpt":"An analysis of car fatalities by state using data from the Big Cities Health Initiative. “This is my favorite part about analytics: Taking boring flat data and bringing it to life through visualization.” – John Tukey Motivation The last two posts were a bit dense so we’ll try to keep...","categories": [],
+        "tags": ["data visualization","ggplot2","injuries"],
+        "url": "http://localhost:4000/car-crashes/",
         "teaser": null
       },{
         "title": "Summarizing Covid-19 with flexdashboard",

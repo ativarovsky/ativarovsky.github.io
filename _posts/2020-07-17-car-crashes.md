@@ -5,7 +5,7 @@ date: '2020-07-17'
 layout: single
 htmlwidgets: true
 toc: true
-categories:
+tags:
   - data visualization
   - ggplot2
   - injuries
