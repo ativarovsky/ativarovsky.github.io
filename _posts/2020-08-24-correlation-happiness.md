@@ -4,6 +4,7 @@ author: "alice"
 date: '2020-08-24'
 excerpt: "Don't Worry. Be Happy"
 layout: single
+classes: wide
 toc: true
 categories:
   - correlation
