@@ -63,7 +63,7 @@ library(plotly)
 According to the website, this dataset was updated in March 2019. As loaded, the dataset contains 34,492 rows and 15 variables. We filter for only the motor vehicle fatality portion, which leaves us with 880 observations. 
 
 ```{r import}
-drive_df = read.csv(file = "../data/BCHI_dataset.csv") %>% 
+drive_df = read.csv(file = "../data/car-crashes/BCHI_dataset.csv") %>% 
   janitor::clean_names() %>% 
   filter(indicator == "Motor Vehicle Mortality Rate (Age-Adjusted; Per 100,000 people)")
 

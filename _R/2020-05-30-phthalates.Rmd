@@ -65,33 +65,33 @@ First, we read in NHANES cycles 2003 - 2004, 2005 - 2006, 2007 - 2008, 2009 - 20
 
 ```{r import}
 # reading in 2003 - 2004 data
-demo_03_04 = read.xport("../data/2003_2004_DEMO_C.XPT")
-phthalate_03_04 = read.xport("../data/2003_2004_PHTHTE_C.XPT.txt")
+demo_03_04 = read.xport("../data/phthalates/2003_2004_DEMO_C.XPT")
+phthalate_03_04 = read.xport("../data/phthalates/2003_2004_PHTHTE_C.XPT.txt")
 
 # reading in 2005 - 2006 data
-demo_05_06 = read.xport("../data/2005_2006_DEMO_D.XPT")
-phthalate_05_06 = read.xport("../data/2005_2006_PHTHTE_D.XPT.txt")
+demo_05_06 = read.xport("../data/phthalates/2005_2006_DEMO_D.XPT")
+phthalate_05_06 = read.xport("../data/phthalates/2005_2006_PHTHTE_D.XPT.txt")
 
 # reading in 2007 - 2008 data
-demo_07_08 = read.xport("../data/2007_2008_DEMO_E.XPT")
-phthalate_07_08 = read.xport("../data/2007_2008_PHTHTE_E.XPT.txt")
+demo_07_08 = read.xport("../data/phthalates/2007_2008_DEMO_E.XPT")
+phthalate_07_08 = read.xport("../data/phthalates/2007_2008_PHTHTE_E.XPT.txt")
 
 # reading in 2009 - 2010 data
-demo_09_10 = read.xport("../data/2009_2010_DEMO_F.XPT")
-phthalate_09_10 = read.xport("../data/2009_2010_PHTHTE_F.XPT.txt")
+demo_09_10 = read.xport("../data/phthalates/2009_2010_DEMO_F.XPT")
+phthalate_09_10 = read.xport("../data/phthalates/2009_2010_PHTHTE_F.XPT.txt")
 
 # reading in 2011 - 2012 data
-demo_11_12 = read.xport("../data/2011_2012_DEMO_G.XPT.txt")
-phthalate_11_12 = read.xport("../data/2011_2012_PHTHTE_G.XPT.txt")
+demo_11_12 = read.xport("../data/phthalates/2011_2012_DEMO_G.XPT.txt")
+phthalate_11_12 = read.xport("../phthalates/data/2011_2012_PHTHTE_G.XPT.txt")
 
 # reading in 2013 - 2014 data
-demo_13_14 = read.xport("../data/2013_2014_DEMO_H.XPT.txt")
-phthalate_13_14 = read.xport("../data/2013_2014_PHTHTE_H.XPT.txt")
+demo_13_14 = read.xport("../data/phthalates/2013_2014_DEMO_H.XPT.txt")
+phthalate_13_14 = read.xport("../data/phthalates/2013_2014_PHTHTE_H.XPT.txt")
 
 # reading in 2015 - 2016 data (note change in creatinine source file for this cycle)
-demo_15_16 = read.xport("../data/2015_2016_DEMO_I.XPT.txt")
-phthalate_15_16 = read.xport("../data/2015_2016_PHTHTE_I.XPT.txt")
-creat_15_16 = read.xport("../data/2015_2016_ALB_CR_I.XPT.txt")
+demo_15_16 = read.xport("../data/phthalates/2015_2016_DEMO_I.XPT.txt")
+phthalate_15_16 = read.xport("../phthalates/data/2015_2016_PHTHTE_I.XPT.txt")
+creat_15_16 = read.xport("../phthalates/data/2015_2016_ALB_CR_I.XPT.txt")
 
 ```
 

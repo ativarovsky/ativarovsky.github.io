@@ -142,7 +142,7 @@ library(ggcorrplot)
 The Kaggle [dataset](https://www.kaggle.com/mathurinache/world-happiness-report) loads in a zip file containing a separate .csv for every year from 2015 to 2020. We will use the 2020 data here. 
 
 ```{r import}
-happy_df = read.csv(file = "../data/2020.csv") %>% 
+happy_df = read.csv(file = "../data/correlation/2020.csv") %>% 
   janitor::clean_names() 
 
 head(happy_df)
