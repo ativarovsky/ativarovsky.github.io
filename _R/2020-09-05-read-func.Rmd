@@ -1,0 +1,79 @@
+---
+title: Importing Data Files using `purrr` and `stringr`  
+author: "alice"
+date: '2020-09-05'
+excerpt: "One, two, three times a function"
+layout: single
+toc: true
+categories:
+  - functions
+  - NHANES
+  - R
+---
+
+## Motivation
+
+It's a well-known [tenet](https://en.wikipedia.org/wiki/Rule_of_three_(computer_programming)) of computer programming that if you have to copy and paste code more than twice, you should write a function.  
+
+In my <a href="../phthalates/">phthalate exposure project</a>, I imported 21 text files for tidying and analysis. This is clearly a task well-suited for a function, but instead, I tediously copied and pasted code 21 times. Why? Honestly, I just didn't have much experience writing functions and I was too eager to get data into R to actually sit down and figure out how to automate it. 
+
+I knew, though, that one day, I'd sit down and figure out how to write that function. Today was that day. 
+
+A few things to note: 
+1. I'm working with two file types here, and neither one is in a common .csv format. I downloaded these files from [NHANES](https://wwwn.cdc.gov/nchs/nhanes/default.aspx), which plays nicely with SAS, but less nicely with R. Some of the raw data they provide is in .txt format and some of it is in the SAS-ready .xport format. I'm using the `read.xport` function in the `foreign` library to import both types, but the function can easily be extended to more common file types. 
+2. The function below is specific to the situation, wherein the files are downloaded not only in .xport/.txt format, but they are named using the years first and survey type second. This led to error messages when I tried to save the imported dataframes using their original filenames (R doesn't like objects named with numbers first), so I did some character re-shuffling using a few `stringr` functions. If your files are named more appropriately, you won't need this feature.  
+
+## Code
+
+As mentioned above, we'll need the `foreign` library to read the xport files. We'll also need `stringr` for some of the naming manipulations we'll be doing within the function. 
+```{r}
+library(tidyverse)
+library(foreign)
+library(stringr)
+
+```
+
+First, we create a vector of filenames from the data folder and check its length.
+```{r}
+files = list.files("../data/phthalates")
+files
+length(files)
+
+```
+
+Next, we write a function that does the following: 
+1. Reads in a vector of names and concatenates it with the folder path, resulting in a vector of file path names called `y`
+2. Reads in the dataset represented by filepath `y`
+3. Removes the file extensions from y, since we'll want these strings to name our imported dataframes
+4. Extracts the years, which originally come first in our filenames vector - otherwise, R will throw errors when we try to access the dataframes
+5. Rearranges the strings so that the years are at the end
+6. Stores the imported datasets, assigning a name using the resulting string from steps 3-5. 
+```{r function}
+mult_import = function(x){
+  y = str_c("../data/phthalates/", x) 
+  z = as.data.frame(read.xport(y))
+  name_1 = str_replace_all(x, ".txt|.XPT", "")
+  years = str_sub(x, 1, 9)
+  name_2 = str_sub(name_1, 11, 20)
+  new_name = str_c(name_2, years, sep = "_")
+  assign(new_name, z, envir = .GlobalEnv)
+}
+
+```
+
+Next, we use `purrr` to apply `mult_import` to our datafiles. And voila! We have 21 neat dataframes to work with. I'm only going to print 3 of them here (just to prove that it worked). 
+```{r purrr}
+data_sets = map(files, mult_import)
+
+DEMO_C_2003_2004
+DBQ_G_2011_2012
+PHTHTE_C_2003_2004
+
+```
+
+## Conclusion
+
+Writing these 10 lines definitely took me about 5 hours and a lot of debugging. Quite frankly, it would have taken me about 10 minutes to just copy and paste slightly modified version of the same code 21 times. But then I wouldn't have had the experience of the happy dance that resulted from the function running. 
+
+And I guess this is really a testament to the process of automation, which usually follows the so-called [flywheel effect](https://www.jimcollins.com/concepts/the-flywheel.html). It takes a lot of effort to get the thing spinning, but once it picks up enough momentum, you get tons of movement with minimal addition effort. 
+
