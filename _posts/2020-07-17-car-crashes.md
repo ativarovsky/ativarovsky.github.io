@@ -5,7 +5,9 @@ date: '2020-07-17'
 layout: single
 htmlwidgets: true
 toc: true
+permalink: /car-crashes/
 tags:
+  - R
   - data visualization
   - ggplot2
   - injuries

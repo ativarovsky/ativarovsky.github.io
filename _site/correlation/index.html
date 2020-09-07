@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data | Alice Tivarovsky</title>
-<meta name="description" content="Don’t Worry. Be Happy">
+<meta name="description" content="What makes some countries happier than others?">
 
 
 
@@ -12,10 +12,10 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="Alice Tivarovsky">
 <meta property="og:title" content="Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data">
-<meta property="og:url" content="http://localhost:4000/correlation/mental%20health/correlation-happiness/">
+<meta property="og:url" content="http://localhost:4000/correlation/">
 
 
-  <meta property="og:description" content="Don’t Worry. Be Happy">
+  <meta property="og:description" content="What makes some countries happier than others?">
 
 
 
@@ -34,7 +34,7 @@
   
 
 
-<link rel="canonical" href="http://localhost:4000/correlation/mental%20health/correlation-happiness/">
+<link rel="canonical" href="http://localhost:4000/correlation/">
 
 
 
@@ -250,7 +250,7 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data">
-    <meta itemprop="description" content="Don’t Worry. Be Happy">
+    <meta itemprop="description" content="What makes some countries happier than others?">
     <meta itemprop="datePublished" content="2020-08-24T00:00:00-07:00">
     
 
@@ -285,7 +285,7 @@
   <li><a href="#background">Background</a>
     <ul>
       <li><a href="#world-happiness-report">World Happiness Report</a></li>
-      <li><a href="#correlation">Correlation</a>
+      <li><a href="#correlation-measures">Correlation Measures</a>
         <ul>
           <li><a href="#pearsons-rho-aka-pearsons-product-moment-correlation-coefficient">Pearson’s Rho (aka Pearson’s Product-Moment Correlation Coefficient)</a></li>
           <li><a href="#spearmans-rho-aka-spearmans-rank-correlation-coefficient">Spearman’s Rho (aka Spearman’s Rank Correlation Coefficient)</a></li>
@@ -327,7 +327,7 @@
         
         <h2 id="motivation">Motivation</h2>
 
-<p>Although limited in its applications, in the right circumstances, correlation analysis can be a useful skill to have in your tool-box. <a href="#Correlation">jump to data analysis</a></p>
+<p>Although limited in its applications, in the right circumstances, correlation analysis can be a useful skill to have in your tool-box. <a href="#correlation">Correlation</a></p>
 
 <p>Simply put, a correlation coefficient measures the strength of association between two variables. As we will see below, correlation coefficients come in several flavors, but they are all measured on the same scale, ranging from -1 to +1, where +1 means that that the variables are perfectly correlated in the same direction, -1 means they are perfectly correlated in opposite directions, and 0 means the two variables are completely independent (Schober, Boer, and Schwarte, 2018):</p>
 
@@ -336,9 +336,9 @@
     <figcaption>source: <a href="https://saylordotorg.github.io/text_introductory-statistics/s14-02-the-linear-correlation-coeffic.html">Introductory Statistics</a></figcaption>
 </figure>
 
-<p>Below, we will conduct correlation analyses using data from the <a href="https://worldhappiness.report">World Happiness Report</a>, an annual survey that seeks to quantify well-being and life satisfaction in over 150 countries. The survey uses a unique methodology to gauge happiness in respondents, and reports happiness, on average, per country, along with GDP, healthy life expectancy, and several subjective measures, including generosity, perceptions of government corruption, and self-perceived autonomy and social support. Using several correlation techniques, we will determine which variables are correlated with happiness around the world.</p>
+<p>Below, we will conduct correlation analyses using data from the <a href="https://worldhappiness.report">World Happiness Report</a>, an annual survey that seeks to quantify well-being and life satisfaction in over 150 countries. The survey uses a unique methodology to gauge happiness in respondents, and reports happiness, as an average value by nation, along with GDP, healthy life expectancy, and several subjective measures: generosity, perceptions of government corruption, and self-perceived autonomy and social support.</p>
 
-<p>We’ll be using data compiled from the <a href="https://worldhappiness.report">World Happiness Report</a>, publicly available as a <a href="https://www.kaggle.com/mathurinache/world-happiness-report">Kaggle dataset</a>.</p>
+<p>Using several correlation techniques, we will determine which variables are correlated with happiness around the world. We’ll be using data compiled from the <a href="https://worldhappiness.report">World Happiness Report</a>, publicly available as a <a href="https://www.kaggle.com/mathurinache/world-happiness-report">Kaggle dataset</a>.</p>
 
 <h2 id="background">Background</h2>
 
@@ -346,11 +346,11 @@
 
 <p>It’s no question that the pursuit of happiness is one of the biggest drivers of human behavior. But as anyone who has eaten too many cupcakes in this pursuit knows, happiness is a complicated and, often elusive thing. A lot of research is dedicated dissecting and understanding happiness, its links to mental and physical health, economic freedom, family relationships, social networks, etc. And while there has been enormous progress in understanding the internal drivers of happiness (gratitude, sociability, engagement with life), a particularly interesting topic is the influence of key external and environmental factors, one of which is your country of residence.</p>
 
-<p>You’ve probably <a href="https://www.wired.co.uk/article/worlds-happiest-country-scandinavia">heard</a> that Scandinavian countries boast the highest average levels of happiness and life satisfaction. Statistically speaking, it’s true. The main quantitative data source on the topic is the <a href="https://worldhappiness.report">World Happiness Report</a>, which, in turn, uses data from the <a href="https://www.gallup.com/analytics/232838/world-poll.aspx">Gallup World Poll</a> to compile an annual report on the state of world happiness. Year after year, Finland, Norway, Denmark, Sweden, and Iceland rank in the top 10.</p>
+<p>You’ve probably heard that Scandinavian countries boast the highest average levels of happiness and life satisfaction. Statistically speaking, it’s true. The main quantitative data source on the topic is the <a href="https://worldhappiness.report">World Happiness Report</a>, which, in turn, uses data from the <a href="https://www.gallup.com/analytics/232838/world-poll.aspx">Gallup World Poll</a> to compile an annual report on the state of world happiness. Year after year, Finland, Norway, Denmark, Sweden, and Iceland rank in the top 10.</p>
 
 <p>The poll surveys a random sample of respondents and ascertains their happiness by requesting they compare their life to an imaginary dystopia (more details <a href="https://worldhappiness.report/faq/">here</a>). The measurement system used is known as a <a href="https://news.gallup.com/poll/122453/understanding-gallup-uses-cantril-scale.aspx">Cantril ladder</a>, where the dystopian version equates to a 0 and the best possible life you can imagine for yourself equates to a 10. The poll also measures the respondents’ social support, generosity (measured via charitable giving), perceived freedom to choose a life one is satisfied with, and perceived level of government corruption. The World Happiness report takes an average of these results by nation and combines them with every nation’s GDP and healthy life expectancy to create a final dataset. These are the variables we will be analyzing here.</p>
 
-<h3 id="correlation">Correlation</h3>
+<h3 id="correlation-measures">Correlation Measures</h3>
 
 <p>A correlation coefficient is a quantitative measure of the strength of association between two variables. Several coefficients have been defined, but the most common is Pearson’s correlation coefficient. As we will see, the validity of a Pearson coefficient is based on several assumptions that are not typically observed in the real world. In these instances, two common alternatives are Spearman’s Rank-Order<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup> coefficient and Kendall’s tau coefficient.</p>
 
@@ -1283,7 +1283,11 @@ You can explore a full gallery of <code class="language-plaintext highlighter-ro
     
       
       
-      <a href="/categories/#mental-health" class="page__taxonomy-item" rel="tag">mental health</a>
+      <a href="/categories/#mental-health" class="page__taxonomy-item" rel="tag">mental health</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/categories/#r" class="page__taxonomy-item" rel="tag">R</a>
     
     </span>
   </p>
@@ -1300,11 +1304,11 @@ You can explore a full gallery of <code class="language-plaintext highlighter-ro
     <h4 class="page__share-title">Share on</h4>
   
 
-  <a href="https://twitter.com/intent/tweet?text=Correlation+Analysis+%28Pearson%2C+Spearman%2C+and+Kendall%29+using+World+Happiness+Data%20http%3A%2F%2Flocalhost%3A4000%2Fcorrelation%2Fmental%2520health%2Fcorrelation-happiness%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+  <a href="https://twitter.com/intent/tweet?text=Correlation+Analysis+%28Pearson%2C+Spearman%2C+and+Kendall%29+using+World+Happiness+Data%20http%3A%2F%2Flocalhost%3A4000%2Fcorrelation%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
 
-  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fcorrelation%2Fmental%2520health%2Fcorrelation-happiness%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fcorrelation%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
 
-  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fcorrelation%2Fmental%2520health%2Fcorrelation-happiness%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fcorrelation%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
 </section>
 
 
@@ -1315,7 +1319,8 @@ You can explore a full gallery of <code class="language-plaintext highlighter-ro
 ">Previous</a>
     
     
-      <a href="#" class="pagination--pager disabled">Next</a>
+      <a href="/import-function/" class="pagination--pager" title="Importing Data Files using purrr and stringr
+">Next</a>
     
   </nav>
 
@@ -1329,6 +1334,35 @@ You can explore a full gallery of <code class="language-plaintext highlighter-ro
     <div class="page__related">
       <h4 class="page__related-title">You may also enjoy</h4>
       <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/import-function/" rel="permalink">Importing Data Files using <code class="language-plaintext highlighter-rouge">purrr</code> and <code class="language-plaintext highlighter-rouge">stringr</code>
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  22 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">One, two, three times a function
+</p>
+  </article>
+</div>
+
         
           
 
@@ -1399,7 +1433,7 @@ You can explore a full gallery of <code class="language-plaintext highlighter-ro
     
     <h2 class="archive__item-title" itemprop="headline">
       
-        <a href="/phthalates-II/" rel="permalink">Phthalate Exposure in U.S. Women of Reproductive Age - an NHANES Review, Part II
+        <a href="/phthalatesII/" rel="permalink">Phthalate Exposure in U.S. Women of Reproductive Age - an NHANES Review, Part II
 </a>
       
     </h2>
@@ -1414,36 +1448,6 @@ You can explore a full gallery of <code class="language-plaintext highlighter-ro
 </p>
     
     <p class="archive__item-excerpt" itemprop="description">More fun with phthalates.
-
-</p>
-  </article>
-</div>
-
-        
-          
-
-
-
-<div class="grid__item">
-  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
-    
-    <h2 class="archive__item-title" itemprop="headline">
-      
-        <a href="/phthalates/" rel="permalink">Phthalate Exposure in U.S. Women of Reproductive Age - an NHANES Review, Part I
-</a>
-      
-    </h2>
-    
-      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
-
-
-
-
-  19 minute read
-
-</p>
-    
-    <p class="archive__item-excerpt" itemprop="description">Wrangling NHANES to explore socioeconomic factors associated with phthalate exposure.
 
 </p>
   </article>

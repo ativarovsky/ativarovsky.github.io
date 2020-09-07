@@ -4,6 +4,10 @@ author: "Alice Tivarovsky"
 layout: single
 date: '2020-08-05'
 permalink: /blog/2020/07/covid_dashboard/
+tags: 
+  - R
+  - flexdashboard
+  - data visualization
 ---
 
 Dashboards are fantastic. 

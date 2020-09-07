@@ -3,7 +3,10 @@ layout: single
 title: Hello (blog)World
 summary: First Post
 date: '2020-07-06'
-permalink: /blog/2020/07/hello-blogworld/
+permalink: /blog/hello-blogworld/
+tags: 
+  - blogging
+  - data science journey
 ---
 
 ## Why I created this blog...

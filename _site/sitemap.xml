@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>http://localhost:4000/blog/2020/07/hello-blogworld/</loc>
+<loc>http://localhost:4000/blog/hello-blogworld/</loc>
 <lastmod>2020-07-06T00:00:00-07:00</lastmod>
 </url>
 <url>
@@ -9,7 +9,7 @@
 <lastmod>2020-07-11T00:00:00-07:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/phthalates-II/</loc>
+<loc>http://localhost:4000/phthalatesII/</loc>
 <lastmod>2020-07-12T00:00:00-07:00</lastmod>
 </url>
 <url>
@@ -21,8 +21,12 @@
 <lastmod>2020-08-05T00:00:00-07:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/correlation/mental%20health/correlation-happiness/</loc>
+<loc>http://localhost:4000/correlation/</loc>
 <lastmod>2020-08-24T00:00:00-07:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/import-function/</loc>
+<lastmod>2020-09-05T00:00:00-07:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/_pages/about/</loc>

@@ -4,15 +4,17 @@ author: "alice"
 date: '2020-07-12'
 layout: single
 toc: true
+permalink: /phthalatesII/
 tags:
-  - Environment
+  - R
+  - environment
   - NHANES
 ---
 More fun with phthalates. 
 
 # Motivation
 
-In <a href="../phthalates">Part I</a> of this post, we looked at what phthalates are, how humans interact with them, how much we have in our bodies, and how those levels have changed over time. 
+In <a href="../phthalates/">Part I</a> of this post, we looked at what phthalates are, how humans interact with them, how much we have in our bodies, and how those levels have changed over time. 
 
 Here, we'll attempt to answer Question 2: 
 * Are phthalate levels disproportionately distributed through the population? Namely, is there an association with phthalates and socioeconomic status? 

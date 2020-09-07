@@ -2,17 +2,19 @@
 title: Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data
 author: "alice"
 date: '2020-08-24'
-excerpt: "Don't Worry. Be Happy"
+excerpt: "What makes some countries happier than others?"
 layout: single
+permalink: /correlation/
 toc: true
 categories:
   - correlation
   - mental health
+  - R
 ---
 
 ## Motivation
 
-Although limited in its applications, in the right circumstances, correlation analysis can be a useful skill to have in your tool-box. [jump to data analysis](#Correlation)
+Although limited in its applications, in the right circumstances, correlation analysis can be a useful skill to have in your tool-box. <a href = "#correlation">Correlation</a>
 
 Simply put, a correlation coefficient measures the strength of association between two variables. As we will see below, correlation coefficients come in several flavors, but they are all measured on the same scale, ranging from -1 to +1, where +1 means that that the variables are perfectly correlated in the same direction, -1 means they are perfectly correlated in opposite directions, and 0 means the two variables are completely independent (Schober, Boer, and Schwarte, 2018):
 
@@ -21,9 +23,9 @@ Simply put, a correlation coefficient measures the strength of association betwe
     <figcaption>source: <a href= "https://saylordotorg.github.io/text_introductory-statistics/s14-02-the-linear-correlation-coeffic.html">Introductory Statistics</a></figcaption>
 </figure> 
 
-Below, we will conduct correlation analyses using data from the [World Happiness Report](https://worldhappiness.report), an annual survey that seeks to quantify well-being and life satisfaction in over 150 countries. The survey uses a unique methodology to gauge happiness in respondents, and reports happiness, on average, per country, along with GDP, healthy life expectancy, and several subjective measures, including generosity, perceptions of government corruption, and self-perceived autonomy and social support. Using several correlation techniques, we will determine which variables are correlated with happiness around the world.
+Below, we will conduct correlation analyses using data from the [World Happiness Report](https://worldhappiness.report), an annual survey that seeks to quantify well-being and life satisfaction in over 150 countries. The survey uses a unique methodology to gauge happiness in respondents, and reports happiness, as an average value by nation, along with GDP, healthy life expectancy, and several subjective measures: generosity, perceptions of government corruption, and self-perceived autonomy and social support. 
 
-We'll be using data compiled from the [World Happiness Report](https://worldhappiness.report), publicly available as a [Kaggle dataset](https://www.kaggle.com/mathurinache/world-happiness-report). 
+Using several correlation techniques, we will determine which variables are correlated with happiness around the world. We'll be using data compiled from the [World Happiness Report](https://worldhappiness.report), publicly available as a [Kaggle dataset](https://www.kaggle.com/mathurinache/world-happiness-report). 
 
 ## Background
 
@@ -31,11 +33,11 @@ We'll be using data compiled from the [World Happiness Report](https://worldhapp
 
 It's no question that the pursuit of happiness is one of the biggest drivers of human behavior. But as anyone who has eaten too many cupcakes in this pursuit knows, happiness is a complicated and, often elusive thing. A lot of research is dedicated dissecting and understanding happiness, its links to mental and physical health, economic freedom, family relationships, social networks, etc. And while there has been enormous progress in understanding the internal drivers of happiness (gratitude, sociability, engagement with life), a particularly interesting topic is the influence of key external and environmental factors, one of which is your country of residence.   
 
-You've probably [heard](https://www.wired.co.uk/article/worlds-happiest-country-scandinavia) that Scandinavian countries boast the highest average levels of happiness and life satisfaction. Statistically speaking, it's true. The main quantitative data source on the topic is the [World Happiness Report](https://worldhappiness.report), which, in turn, uses data from the [Gallup World Poll](https://www.gallup.com/analytics/232838/world-poll.aspx) to compile an annual report on the state of world happiness. Year after year, Finland, Norway, Denmark, Sweden, and Iceland rank in the top 10. 
+You've probably heard that Scandinavian countries boast the highest average levels of happiness and life satisfaction. Statistically speaking, it's true. The main quantitative data source on the topic is the [World Happiness Report](https://worldhappiness.report), which, in turn, uses data from the [Gallup World Poll](https://www.gallup.com/analytics/232838/world-poll.aspx) to compile an annual report on the state of world happiness. Year after year, Finland, Norway, Denmark, Sweden, and Iceland rank in the top 10. 
 
 The poll surveys a random sample of respondents and ascertains their happiness by requesting they compare their life to an imaginary dystopia (more details [here](https://worldhappiness.report/faq/)). The measurement system used is known as a [Cantril ladder](https://news.gallup.com/poll/122453/understanding-gallup-uses-cantril-scale.aspx), where the dystopian version equates to a 0 and the best possible life you can imagine for yourself equates to a 10. The poll also measures the respondents' social support, generosity (measured via charitable giving), perceived freedom to choose a life one is satisfied with, and perceived level of government corruption. The World Happiness report takes an average of these results by nation and combines them with every nation's GDP and healthy life expectancy to create a final dataset. These are the variables we will be analyzing here. 
 
-### Correlation
+### Correlation Measures
 
 A correlation coefficient is a quantitative measure of the strength of association between two variables. Several coefficients have been defined, but the most common is Pearson's correlation coefficient. As we will see, the validity of a Pearson coefficient is based on several assumptions that are not typically observed in the real world. In these instances, two common alternatives are Spearman's Rank-Order[^1] coefficient and Kendall's tau coefficient. 
 
@@ -116,7 +118,6 @@ Presumably, you want to use the correlation coefficient to make some inferences 
 You can also conduct a one-sided test, where the alternative hypothesis would be one of the following: 
 * \\( H_a: \rho > 0 \\)
 * \\( H_a: \rho < 0 \\)
-
 
 
 ## Data Preparation
