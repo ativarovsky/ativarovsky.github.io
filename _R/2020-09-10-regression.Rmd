@@ -1,0 +1,77 @@
+---
+title: OLS Post
+author: "alice"
+date: '2020-09-10'
+excerpt: "regression..."
+layout: single
+toc: true
+categories:
+  - modeling
+  - regression
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Motivation
+OLS = cool + simple
+
+## Background
+
+
+## Data Preparation
+
+### Data Source
+
+We'll be using the US Health Insurance Dataset from Kaggle, found [here](https://www.kaggle.com/teertha/ushealthinsurancedataset). 
+
+### Libraries
+
+```{r libraries}
+library(tidyverse)
+library(skimr)
+
+```
+
+
+### Data Import and Tidy
+
+```{r import}
+insurance_df = read.csv(file = "../data/regression/insurance.csv") %>% 
+  janitor::clean_names() 
+
+insurance_df
+
+glimpse(insurance_df)
+
+skim(insurance_df)
+
+```
+The dataset has 1338 rows spanning 7 variables. 
+
+
+
+### Variables Used
+
+
+## Analysis
+
+### Assumptions
+
+
+
+## Conclusions
+
+
+
+## Further Reading 
+
+
+
+## References
+
+-
+
+
+[^1]:

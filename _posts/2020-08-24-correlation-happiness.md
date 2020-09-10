@@ -2,7 +2,7 @@
 title: Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data
 author: "alice"
 date: '2020-08-24'
-excerpt: "What makes some countries happier than others?"
+excerpt: "What factors are most closely correlated with nation-level happiness?"
 layout: single
 permalink: /correlation/
 toc: true
