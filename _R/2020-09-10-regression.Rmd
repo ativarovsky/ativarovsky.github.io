@@ -15,47 +15,72 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
 ## Motivation
-OLS = cool + simple
 
-## Background
+I realize that it’s not 1974, and that no serious data person spends any amount of time thinking about simple linear regression. Even calling it “ordinary” least squares regression implies that it’s mundane and uninteresting. But honestly, when I first learned the mechanics of OLS in an introductory Stats class, I found it incredibly insightful. It was like learning a little universe of information in one week. It blew my mind that there is so much data being collected and analyzed by super powerful computers and being passed into fancy machine learning models that can literally predict the future. And yet, when you really dig down and get to the fundamentals, the true beginning, all it really comes from is the distances between points. 
 
+In this post, we'll explore the mechanics of ordinary least squares regression, both single- and multi-variable, using global data on life expectancy collected by the World Health Organization. We'll get down to some bare-bones concepts of regression modeling, analyze model diagnostics, compare two models, and attempt to validate the assumptions for performing linear regression in the first place. 
+
+## Background 
+- Mechanics of OLS
+  - sums of squares
+  - cross validation 
+- Diagnostics
+  - Accuracy, F test, R^2, RMSE, t-test for every individual predictor
+- Assumptions
 
 ## Data Preparation
 
 ### Data Source
 
-We'll be using the US Health Insurance Dataset from Kaggle, found [here](https://www.kaggle.com/teertha/ushealthinsurancedataset). 
+We'll be using the WHO's life expectancy dataset, found on Kaggle [here](https://www.kaggle.com/kumarajarshi/life-expectancy-who). 
 
 ### Libraries
 
 ```{r libraries}
 library(tidyverse)
 library(skimr)
+library(broom)
 
 ```
 
 
 ### Data Import and Tidy
-
+ 
+Reading in and having a quick look at the [dataset](https://www.kaggle.com/kumarajarshi/life-expectancy-who): 
 ```{r import}
-insurance_df = read.csv(file = "../data/regression/insurance.csv") %>% 
+lifexp_df = read.csv(file = "../data/regression/who_life_expectancy.csv") %>% 
   janitor::clean_names() 
 
-insurance_df
+glimpse(lifexp_df)
 
-glimpse(insurance_df)
-
-skim(insurance_df)
+skim(lifexp_df)
 
 ```
-The dataset has 1338 rows spanning 7 variables. 
+The dataset contains 2938 rows, spanning 22 variables. Every row represents a country and year combination - a total of 193 unique countries for every year from 2000 to 2015. We're going to limit the analysis to one year since having the same country repeated as a new row constitutes a repeated measure, which requires more sophisticated analysis than what we're doing here. I'm going to (arbitrarily) choose 2012. 
 
+We also notice from the `glimpse()` output that we have quite a few missing values across many variables. Of the 22 variables available, we're really only going to focus on life expectancy (`life_expectancy`) and education (`schooling`), with `life_expectancy` as the outcome. Both are continuous, which is what we want for a linear regression model. We'll also keep `status`, a binary variable coded "Developed" or "Developing", since it will allow for some interesting stratification later on. We will ignore the remainder of the variables since they don't pertain to the research question.
 
+Thus, our final dataset is as follows: 
+```{r}
+final_df = 
+  lifexp_df %>% 
+  filter(year == "2012") %>% 
+  drop_na(life_expectancy, schooling, status)
 
-### Variables Used
+```
 
 
 ## Analysis
+
+We're going to jump right in and fit a linear model. Regression is different from other statistical methods in that you check assumptions after running the analysis. So that's what we're going to do. 
+
+```{r}
+model_1 = 
+  lm(data = final_df, life_expectancy ~ schooling)
+
+```
+
+
 
 ### Assumptions
 
