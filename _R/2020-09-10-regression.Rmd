@@ -77,8 +77,9 @@ final_df =
 
 ## Analysis
 
+### Step 1: Fit and Interpret Model(s)
 
-### Ordinary Least Squares Regression
+#### Ordinary Least Squares Regression - Single Variable 
 
 To visualize the math behind OLS, let's take a look at a scatterplot of life expectancy vs schooling. 
 
@@ -98,10 +99,20 @@ We have a pretty linear relationship with potentially some heteroskedasticity, w
 model_1 = 
   lm(data = final_df, life_expectancy ~ schooling)
 
-```
-The coefficients are the "beta" terms, i.e. the parameters of the regression line: the intercept, \\(b_0 \\), estimated as 41.821 years, represents the average life expectancy in a theoretical nation where the average years of schooling was 0 years. This value is meaningless because there are no nations with this average education level and to interpret a regression line beyond the scope of the data that generated it is a cardinal sin in stats world. The slope, \\(b_1 \\), is estimated as 2.293, and represents the rate of change in life expectancy per additional year of schooling. So on average, countries with one additional year of schooling add 2.293 years their average life expectancy. 
+summary(model_1)
 
-To visualize our model:
+```
+The coefficients are the "beta" terms, i.e. the parameters of the regression line: the intercept, \\(b_0 \\), estimated as 41.821 years, represents the average life expectancy in a theoretical nation where the average years of schooling was 0. This value is meaningless because there are no nations with this average education level and to interpret a regression line beyond the scope of the data that generated it is a cardinal sin. The slope, \\(b_1 \\), is estimated as 2.293, and represents the rate of change in life expectancy per additional year of schooling. So on average, countries with one additional year of schooling add 2.293 years their average life expectancy. 
+
+Thus, from the general population model statement: 
+
+
+we get our fitted model:
+
+
+
+
+To visualize, we use `geom_smooth` with a method = "lm" argument:
 ```{r}
 final_df %>% 
   ggplot(aes(x = schooling, y = life_expectancy)) + 
@@ -113,7 +124,7 @@ final_df %>%
 
 ```
 
-To dissect this model, we'll need to know more about it than what`lm()` gave us, and, importantly, we want to output to be in tidy dataframe. This is where the `broom` package comes in handy. Specifically, the `augment()` function allows us to build a dataframe with all kinds of good information.
+To further analyze the model, we want to output its predictions and errors to a tidy dataframe. This is where the `broom` package comes in handy. Specifically, the `augment()` function allows us to build a dataframe with all kinds of useful information.
 
 ```{r}
 model_1_df = 
@@ -122,7 +133,7 @@ model_1_df
 
 ```
 
-The critical column here is the __residuals__ vector, `.resid`, i.e. the vertical distances between the points and the fitted line. If we were to look at just the data points, close one eye, and draw a line through them, we'd probably come with something close to what R came up with. But while we would use the complex machinery of our brain's pattern-recognition systems, the actual math behind the blue line is fairly straightforward. It all comes down to these residuals, which form the basis of least squares regression. In fact, when we say "least squares", we're referring to minimizing the squares of these values. Let's visualize them here using `geom_segment()`: 
+The critical column here is the __residuals__ vector, `.resid`, i.e. the vertical distances between the observed points and the fitted line. If we were to look at just the data points, close one eye, and draw a line through them, we'd probably come with something close to what R came up with. But while we would be using the complex machinery of our brain's pattern-recognition capacity, the actual math behind the blue line is fairly straightforward. It all comes down to these residuals, which form the basis of least squares regression. In fact, when we say "least squares", we're referring to minimizing the squares of these values. Let's visualize them here using `geom_segment()`: 
 
 ```{r}
 model_1_df %>% 
@@ -137,34 +148,104 @@ model_1_df %>%
 ```
 The red lines are the residuals and the way R computes the fitted model is by minimizing the squares of these red lines. The lines are squared to avoid...
 
-We hardly ever are interested in just one predictor. The beauty of regression modeling is in its flexibility - we can add as many predictors to the right side of the equation as we want, and they don't need to be continuous variables. We can add categorical variables using "dummy variables" (explained [here](https://sphweb.bumc.bu.edu/otlt/MPH-Modules/PH717-QuantCore/PH717_MultipleVariableRegression/PH717_MultipleVariableRegression4.html)). There is of course a trade-off in flexibility if you add tons of predictors, and generally speaking, you should only add predictors that make theoretical sense and keep your model as simple as possible. 
+#### OLS - Multi-variable Modeling
 
-It should also be clear that when you add a second predictor, you're no longer working in two-dimensional space. You need a third dimension to describe the relationship and you will no longer be fitting a regression line, but a regression plane: 
+In the real world, we're hardly ever working with just one predictor. The beauty of regression modeling lies in its flexibility - we can add as many predictors to the right side of the equation as we want, and they don't need to be continuous variables. We can add categorical predictors using "dummy variables" (explained [here](https://sphweb.bumc.bu.edu/otlt/MPH-Modules/PH717-QuantCore/PH717_MultipleVariableRegression/PH717_MultipleVariableRegression4.html)). There is of course a trade-off in flexibility if you add tons of predictors, and generally speaking, you should only add predictors that make theoretical sense and keep your model parsimonious. 
 
-PUT PIC
+It should also be clear that when you add a second predictor, you're no longer working in two-dimensional space. You need a third dimension to describe the relationship between the dependent and independent variables. You will also no longer be fitting a regression line, but a regression plane. We won't make a 3D graphic here, but you can find an example [here](https://data-se.netlify.app/2018/12/13/visualizing-a-regression-plane-two-predictors/). 
 
-### Model Diagnostics
+Let's take a look at our third variable, `status`, indicating whether the observation (nation) is considered developed or developing by the WHO's definition. First, let's do some visualization: 
 
+DO THIS BETTER
+```{r}
+final_df %>% 
+  ggplot(aes(x = country, y = schooling, group = status)) + 
+  geom_point(aes(color = status))
 
+```
 
+It's clear that, in general, countries in the developed world have higher average education and life expectancy. But the question we want to answer is whether the relationship between schooling and life expectancy changes between developed and developing countries. In other words, if we fit a line using just the green points, and another using just the red points, would the slopes of those lines be different, adn if so, how different? Regression modeling gives us an easy way to do that - all we need to do is add `status` as another predictor term: 
 
+```{r}
+model_2 = 
+  lm(data = final_df, life_expectancy ~ schooling + status)
+summary(model_2)
 
-going to jump right in and fit a linear model. Regression is different from other statistical methods in that you check assumptions after running the analysis, so we'll come back to those later. 
+```
 
+Now, our model statement becomes: 
 
+WRITE OUT AND INTERPRET MODEL STATEMENT
+
+The p-value for the status predictor is 0.08 (p > 0.05), meaning that if we control for the effects of education, a nation's status as either developing or developed is __not__ a significant predictor of life expectancy. This does not mean that status alone is not a significant predictor of life expectancy. To illustrate: 
+
+```{r}
+model_3 = lm(data = final_df, life_expectancy ~ status)
+summary(model_3)
+
+```
+Clearly, status is a highly significant factor in life expectancy. This is even clearer in a plot:  
+
+```{r}
+final_df %>% 
+  ggplot(aes(x = status, y = life_expectancy)) + 
+  geom_point() + 
+  stat_smooth(method = "lm", se = FALSE)
+
+```
+What the p-value for `status1 in `model_2` __does__ tell us is that the relationship between schooling and life expectancy does not change significantly between developed and developing countries. This can be shown visually as follows: 
+
+```{r}
+final_df %>% 
+  ggplot(aes(x = schooling, y = life_expectancy, group = status)) + 
+  geom_point(aes(color = status))
+
+```
+The point is that even though we have two distinct clusters, the regression line is more or less the same among them. For our purposes, we're going to take all of this to mean that we should get rid of the `status` term in our model. This is not to say that all predictors with p-values < 0.05 don't belong in your model. We're not going to go down that rabbit hole, but you can find people arguing the matter at length on [stackexchange](https://stackexchange.com/). This is just a decision I'm making since this is my blog and I can do that. 
+
+So now that we've settled on `model_1`, how to figure out how "good" - that is to say, how accurate of a model it is? That's where we need regression diagnostics. 
+
+### Step 2: Figure out how "good" your model is
+
+After fitting our model, we should spend some time analyzing its performance, i.e its predictive power. There are many different constructs and measures to help answer this question, but they can be summarized in two categories: 
+1. Measures of error
+2. Measures of outliers and influential observations
+
+The first includes \\( R^2 \\), Root Mean Square Error (RMSE), AIC, and BIC:
+* __Coefficient of determination__, \\( R^2 \\): This is perhaps the most common regression performance measure. It is calculated as follows: 
+\\[ R^2 = \frac {\Sigma_{i=1}^n (y_i - \hat y_i)^2} {\Sigma_{i=1}^n (y_i - \bar y_i)^2} \\]
+\\( R^2 \\) is powerful because it's completely intuitive - it equals the percentage of variance in the outcome explained by the predictor(s). This is part of the `summary()` output:
 ```{r}
 summary(model_1)
 
 ```
+For the single-variable model, \\( R^2 = 0.6386 \\), so 63.86% of the variance in a nation's life expectancy can be explained by its linear relationship to education. For a single variable model, this is a pretty high \\( R^2 \\). Note that when we fitted `model_2`, the \\( R^2 \\) only went up to 64.48%, all while taking away a degree of freedom from the model - further evidence that `status` is not a worthwhile predictor in this context. 
 
-From the summary function, we 
+* RMSE is another highly common metric to assess model performance. It is defined as:
+\\[ RMSE = \sqrt \frac {\Sigma_{i=1}^n (\hat y_i - y_i)^2}  {n}\\]
+ and as you'd probably intuit from the formula, RMSE is a measure of the standard deviation of residuals. RMSE can be computed using the `metrics` package, or just using a quick manual calculation:
 ```{r}
-broom::glance(model_1)
-
+sqrt(mean(model_1_df$.resid^2))
 
 ```
 
-### Assumptions
+Our calculated RMSE of 4.974 indicates that actual life expectancy deviates from life expectancy predicted by the model by about 5 years, on average. 
+
+Another way to assess model performance is to figure out whether it was influenced by a small set of influential observations. Perhaps our model started out as a perfectly nice model, chugging along, predicting stuff with few mistakes. But then it came across some highly influential outliers - data points that don't hang with the pack, non-conformers, and our model was swayed off course. 
+
+In truth, the study of outliers and influential observation is a whole thing and is worthy of its own project. For now, let's do two things. First, let's look at FIGURE 1 and acknowledge that there's not much evidence for outliers. Second, let's do a quick check using [Cook's distance](https://www.mathworks.com/help/stats/cooks-distance.html#:~:text=Cook's%20distance%20is%20the%20scaled,on%20the%20fitted%20response%20values.), `.cooksd` in our `augment()` dataframe. 
+
+Cook's distance is a metric based on deleted residuals and is calculated for each data point in the set. It is a measure of the difference that would occur in our predicted values if we were to re-run the regression model without that point. Looking at the Cook's distances in `model_1`: 
+```{r}
+model_1_df %>% 
+  arrange(desc(.cooksd)) %>% 
+  inner_join(lifexp_df, on = life_expectancy) %>% 
+  head()
+```
+We can see that our top five most influential observations are Eritrea, Niger, Sierra Leone, Bangladesh, and Lesotho. 
+
+
+### Step 3: Validate Regression Assumptions
 
 
 
@@ -174,8 +255,9 @@ broom::glance(model_1)
 
 ## Further Reading 
 - https://drsimonj.svbtle.com/visualising-residuals
-
-
+- https://quantdev.ssri.psu.edu/sites/qdev/files/02_RegressionReview_Continuous%2C_Ordinal%2C_and_Binary_Outcomes__2018_0.html
+- Model selection: https://uc-r.github.io/model_selection
+- Explanation of differences between RMSE, \\( R^2 \\), and other measures of model error
 
 ## References
 

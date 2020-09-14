@@ -14,7 +14,7 @@ categories:
 
 ## Motivation
 
-Although limited in its applications, in the right circumstances, correlation analysis can be a useful skill to have in your tool-box. <a href = "#correlation">Correlation</a>
+Although limited in its applications, in the right circumstances, correlation analysis can be a useful skill to have in your tool-box. 
 
 Simply put, a correlation coefficient measures the strength of association between two variables. As we will see below, correlation coefficients come in several flavors, but they are all measured on the same scale, ranging from -1 to +1, where +1 means that that the variables are perfectly correlated in the same direction, -1 means they are perfectly correlated in opposite directions, and 0 means the two variables are completely independent (Schober, Boer, and Schwarte, 2018):
 
