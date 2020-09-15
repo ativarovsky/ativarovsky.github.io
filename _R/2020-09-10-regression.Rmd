@@ -1,8 +1,8 @@
 ---
-title: OLS Post
+title: Modeling Life Expectancy vs Education Using Ordinary Least Squares Regression 
 author: "alice"
 date: '2020-09-10'
-excerpt: "regression..."
+excerpt: "Life expectancy, simple least squares regression, model diagnostics, outliers, asssumptions, and a bit of unsolicited philosphizing"
 layout: single
 toc: true
 categories:
@@ -22,14 +22,20 @@ In this post, we'll explore the mechanics of ordinary least squares regression, 
 
 ## Background 
 
-
 - Mechanics of OLS
   - sums of squares
   - more than one predictor
   - cross validation 
 - Diagnostics
-  - Accuracy, F test, R^2, RMSE, t-test for every individual predictor
+  - Accuracy, F test, R^2, RMSE, t-test for every individual predictor, outliers and influential observations
 - Assumptions
+  - LINE
+
+To fix 
+- add figure labels
+- add F-statistic somewhere
+- actually say what residuals are in formula 
+- clarify residual vs error
 
 ## Data Preparation
 
@@ -231,23 +237,59 @@ sqrt(mean(model_1_df$.resid^2))
 
 Our calculated RMSE of 4.974 indicates that actual life expectancy deviates from life expectancy predicted by the model by about 5 years, on average. 
 
-Another way to assess model performance is to figure out whether it was influenced by a small set of influential observations. Perhaps our model started out as a perfectly nice model, chugging along, predicting stuff with few mistakes. But then it came across some highly influential outliers - data points that don't hang with the pack, non-conformers, and our model was swayed off course. 
+Another way to assess model performance is to figure out whether it was influenced by a small set of influential observations. Perhaps our model started out as a perfectly nice model, chugging along, predicting stuff with few mistakes. But then it came across some highly influential characters - data points that don't hang with the pack, non-conformers, and they applied heavy influence and ultimately swayed our model off its course. 
 
 In truth, the study of outliers and influential observation is a whole thing and is worthy of its own project. For now, let's do two things. First, let's look at FIGURE 1 and acknowledge that there's not much evidence for outliers. Second, let's do a quick check using [Cook's distance](https://www.mathworks.com/help/stats/cooks-distance.html#:~:text=Cook's%20distance%20is%20the%20scaled,on%20the%20fitted%20response%20values.), `.cooksd` in our `augment()` dataframe. 
 
-Cook's distance is a metric based on deleted residuals and is calculated for each data point in the set. It is a measure of the difference that would occur in our predicted values if we were to re-run the regression model without that point. Looking at the Cook's distances in `model_1`: 
+Cook's distance is a metric based on deleted residuals and is calculated for each data point in the set. It is a measure of the difference that would occur in our predicted values if we were to re-run the regression model without that point. Let's look at the Cook's distances in `model_1`: 
 ```{r}
 model_1_df %>% 
   arrange(desc(.cooksd)) %>% 
   inner_join(lifexp_df, on = life_expectancy) %>% 
   head()
+
 ```
-We can see that our top five most influential observations are Eritrea, Niger, Sierra Leone, Bangladesh, and Lesotho. 
+We can see that our top five most influential observations are Eritrea, Niger, Sierra Leone, Bangladesh, and Lesotho. Let's do a quick visualization: 
+```{r}
+model_1_df %>% 
+  mutate(id = row_number()) %>% 
+  ggplot(aes(x = id, y = .cooksd)) +
+  geom_point() + 
+  theme_bw()
+
+```
+We see three guys (Eritrea, Niger, Sierra Leone) that stand out from the pack. These observations are not just outliers, but influential outliers, meaning they swayed our model, compromising its predictive capability. 
+
+So what do we do with them? You can find lots of different "rules of thumb" online, dictating which Cook's distance might prompt removal of a data point from your set, but what makes most sense to me is to accept the data as they are. We don't have any super high leverage points here, and even if we did, we would need justification for removing data points. As you can probably intuit, few natural processes are simple enough to be explained by a linear model. Hence the discovery of more sophisticated probabilistic models and machine learning. But suffice it to say, we're leaving Eritrea [where it is](https://en.wikipedia.org/wiki/Eritrea). 
 
 
 ### Step 3: Validate Regression Assumptions
 
-
+Now that we've done all this work, we need to figure out whether any of it was justified. This is a bit of a nuisance with linear regression - you can't really check the assumptions before you fit the model. You'll often see the assumptions summarized as follows: 
+1. Linearity: If the data aren't linear, don't fit a linear model. We looked at the scatterplot in step 1 and found it was pretty linear. 
+2. Independence: Observations shouldn't be clustered or have any influence on other observations. It's hard to say this is the case in our situation, since it's pretty clear that developing countries and developed countries cluster together and through political and economic means influence their neighbors' policies and practices. 
+3. Normality of residuals: If you look at the residuals plot in FIGURE X AND superimpose little sideways bell curves along the regression line, you should see that the residuals are normally distributed. Basically, the majority of the residuals are clustered close to the line and a few are found further away. This is best explained visually: 
+<figure>
+    <img src="/assets/images/residuals.png">
+    <figcaption>source: <a href= "https://bookdown.org/ripberjt/qrmbook/ols-assumptions-and-simple-regression-diagnostics.html"></a></figcaption>
+</figure> 
+It looks like this is generally the case for our model, using the trusty eyeball method. 
+4. Homoscedasticity [^1]: Homoscedasticity means that the variance of the residual terms is somewhat constant. If your data are heteroscedastic, linear regression modeling is probably not a good choice. Again, this is better visualized:
+<figure>
+    <img src="/assets/images/heteroscedasticity.png">
+    <figcaption>Heteroscedasticity, source: <a href= "https://www.statisticshowto.com/homoscedasticity/"></a></figcaption>
+</figure> 
+When we first looked at our data in scatterplot form <a href = "#ordinary-least-squares-regression-single-variable">above</a>, we noted some definite heteroscedasticity. Let's look at it again: 
+```{r}
+final_df %>% 
+  ggplot(aes(x = schooling, y = life_expectancy)) + 
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "Life Expectancy vs Schooling"
+  )
+```
+Below 10 years of schooling, our residuals are much wider than on the other side of 10. 
 
 ## Conclusions
 
@@ -257,11 +299,13 @@ We can see that our top five most influential observations are Eritrea, Niger, S
 - https://drsimonj.svbtle.com/visualising-residuals
 - https://quantdev.ssri.psu.edu/sites/qdev/files/02_RegressionReview_Continuous%2C_Ordinal%2C_and_Binary_Outcomes__2018_0.html
 - Model selection: https://uc-r.github.io/model_selection
-- Explanation of differences between RMSE, \\( R^2 \\), and other measures of model error
+- Explanation of differences between RMSE, \\( R^2 \\), and other measures of model error: https://medium.com/@amanbamrah/how-to-evaluate-the-accuracy-of-regression-results-b38e5512afd3
+- a nice interactive post: https://setosa.io/ev/ordinary-least-squares-regression/
+- Everything you ever wanted to know about residuals: https://drsimonj.svbtle.com/visualising-residuals
 
 ## References
 
 -
 
 
-[^1]:
+[^1]: If you're a spelling bee organizer, I recommend adding this word (mostly because I still misspell it almost every time I write it).
