@@ -321,9 +321,9 @@ summary(model_2)
 Again, the p-value on our F-statistic is significant, meaning that there is a statistically significant relationship between the outcome and the combination of predictors. 
 
 Our new model statement is: 
-\\[ life\,expectancy = 45.4937 + 2.1420*schooling - 2.1010*status \\]
+\\[y = 45.4937 + 2.142schooling - 2.101status  \\]
 
-where the coefficient of the `status` variable indicates that, on average, after we control for schooling, there is a difference in life expectancy of 2.1 years between developing and developed countries. However, note that the p-value for the status predictor is 0.08 (p > 0.05), meaning that controlling for education, status is __not__ a significant predictor of life expectancy. This does not mean that status __alone__ is not a significant predictor of life expectancy. It just means that after we control for education by putting it in the model, the effect of status mostly washes away. 
+The coefficient of the `status` variable indicates that, on average, after we control for schooling, there is a difference in life expectancy of 2.1 years between developing and developed countries. However, note that the p-value for the status predictor is 0.08 (p > 0.05), meaning that controlling for education, status is __not__ a significant predictor of life expectancy. This does not mean that status __alone__ is not a significant predictor of life expectancy. It just means that after we control for education by putting it in the model, the effect of status mostly washes away. 
 
 To illustrate: 
 
@@ -376,7 +376,10 @@ Again, to visualize:
 ```r
 final_df %>% 
   ggplot(aes(x = schooling, y = life_expectancy, group = status)) + 
-  geom_point(aes(color = status))
+  geom_point(aes(color = status)) + 
+  labs(
+  title = "Figure 6: Schooling vs Life Expectancy by Status"
+  )
 ```
 
 ![plot of chunk unnamed-chunk-11](/figs/2020-09-10-regression/unnamed-chunk-11-1.png)
@@ -499,11 +502,11 @@ Now that we've done all this work, we need to figure out whether any of it was w
 You'll often see regression assumptions summarized as follows: 
 1. __Linearity__: If the data aren't linear, don't fit a linear model. We looked at the scatterplot in <a href="#step-1-fit-and-interpret-models">step 1</a> and found it was pretty linear. 
 2. __Independence__: Observations shouldn't be clustered or have any influence on other observations. It's hard to say this is the case in our situation, since it's pretty clear that developing countries and developed countries cluster together and through political and economic means influence their neighbors' policies and practices. 
-3. __Normality of residuals__: If you look at the residuals in Figure 3 and superimpose little sideways bell curves along the regression line, you should see that the residuals are normally distributed. Basically, the majority of the residuals are located close to the line and a few are found further away. This is best explained visually: <figure> <img src="/assets/images/residuals.png"> <figcaption> <a href= "https://bookdown.org/ripberjt/qrmbook/ols-assumptions-and-simple-regression-diagnostics.html">Source</a> </figcaption> </figure> It looks like this is generally the case for our model, using the trusty eyeball method. 
+3. __Normality of residuals__: If you look at the residuals in Figure 3 and superimpose little sideways bell curves along the regression line, you should see that the residuals are normally distributed. Basically, the majority of the residuals are located close to the line and a few are found further away. This is best explained visually: <figure> <img src="/assets/images/residuals.png">  <a href= "https://bookdown.org/ripberjt/qrmbook/ols-assumptions-and-simple-regression-diagnostics.html">Source</a>  </figure> It looks like this is generally the case for our model, using the trusty eyeball method. 
 4. __Homoscedasticity__ [^1]: Homoscedasticity means that the variance of the residual terms is somewhat constant. If your data are heteroscedastic, linear regression modeling is probably not a good choice. Here's an example of heteroscedasticity: 
 <figure>
     <img src="/assets/images/heteroscedasticity.png">
-    <figcaption><a href= "https://www.statisticshowto.com/homoscedasticity/">Source</a></figcaption>
+    <a href= "https://www.statisticshowto.com/homoscedasticity/">Source</a>
 </figure> 
 
 When we first looked at our data in scatterplot form, we noted some definite heteroscedasticity. Let's look at it again: 
