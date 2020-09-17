@@ -29,6 +29,10 @@
 <lastmod>2020-09-05T00:00:00-07:00</lastmod>
 </url>
 <url>
+<loc>http://localhost:4000/modeling/regression/global%20health/regression/</loc>
+<lastmod>2020-09-10T00:00:00-07:00</lastmod>
+</url>
+<url>
 <loc>http://localhost:4000/_pages/about/</loc>
 </url>
 <url>
@@ -58,5 +62,9 @@
 <url>
 <loc>http://localhost:4000/assets/covid_dash.html</loc>
 <lastmod>2020-08-05T17:02:46-07:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/google4b4e129838bc766c.html</loc>
+<lastmod>2020-09-11T20:12:10-07:00</lastmod>
 </url>
 </urlset>

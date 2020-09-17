@@ -30,7 +30,7 @@ var store = [{
         "teaser": null
       },{
         "title": "Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data",
-        "excerpt":"Motivation Although limited in its applications, in the right circumstances, correlation analysis can be a useful skill to have in your tool-box. Correlation Simply put, a correlation coefficient measures the strength of association between two variables. As we will see below, correlation coefficients come in several flavors, but they are...","categories": ["correlation","mental health","R"],
+        "excerpt":"Motivation Although limited in its applications, in the right circumstances, correlation analysis can be a useful skill to have in your tool-box. Simply put, a correlation coefficient measures the strength of association between two variables. As we will see below, correlation coefficients come in several flavors, but they are all...","categories": ["correlation","mental health","R"],
         "tags": [],
         "url": "http://localhost:4000/correlation/",
         "teaser": null
@@ -39,5 +39,11 @@ var store = [{
         "excerpt":"Motivation It’s a well-known [tenet](https://en.wikipedia.org/wiki/Rule_of_three_(computer_programming) of computer programming that if you have to copy and paste code more than twice, you should write a function. In my phthalates exposure project, I imported 21 text files for tidying and analysis. This is clearly a task well-suited for a function, but instead,...","categories": [],
         "tags": ["functions","NHANES","R"],
         "url": "http://localhost:4000/import-function/",
+        "teaser": null
+      },{
+        "title": "Modeling Global Life Expectancy vs Education  using  Least Squares Regression",
+        "excerpt":"Motivation I realize that it’s not 1774, and that no serious data person spends any amount of time thinking about ordinary least squares regression. Even calling it “ordinary” implies that it’s mundane and uninteresting. But honestly, when I first learned the mechanics of OLS in an intro stats class, I...","categories": ["modeling","regression","global health"],
+        "tags": [],
+        "url": "http://localhost:4000/modeling/regression/global%20health/regression/",
         "teaser": null
       }]

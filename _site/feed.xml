@@ -1,4 +1,832 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-07T12:58:52-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Alice Tivarovsky</title><author><name>Alice Tivarovsky</name></author><entry><title type="html">Importing Data Files using `purrr` and `stringr`</title><link href="http://localhost:4000/import-function/" rel="alternate" type="text/html" title="Importing Data Files using `purrr` and `stringr`" /><published>2020-09-05T00:00:00-07:00</published><updated>2020-09-05T00:00:00-07:00</updated><id>http://localhost:4000/read-func</id><content type="html" xml:base="http://localhost:4000/import-function/">&lt;h2 id=&quot;motivation&quot;&gt;Motivation&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T17:54:44-07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Alice Tivarovsky</title><author><name>Alice Tivarovsky</name></author><entry><title type="html">Modeling Global Life Expectancy vs Education using Least Squares Regression</title><link href="http://localhost:4000/modeling/regression/global%20health/regression/" rel="alternate" type="text/html" title="Modeling Global Life Expectancy vs Education using Least Squares Regression" /><published>2020-09-10T00:00:00-07:00</published><updated>2020-09-10T00:00:00-07:00</updated><id>http://localhost:4000/modeling/regression/global%20health/regression</id><content type="html" xml:base="http://localhost:4000/modeling/regression/global%20health/regression/">&lt;h2 id=&quot;motivation&quot;&gt;Motivation&lt;/h2&gt;
+
+&lt;p&gt;I realize that it’s not 1774, and that no serious data person spends any amount of time thinking about ordinary least squares regression. Even calling it “ordinary” implies that it’s mundane and uninteresting.&lt;/p&gt;
+
+&lt;p&gt;But honestly, when I first learned the mechanics of OLS in an intro stats class, I found it incredibly insightful. It blew my mind that there is so much data being collected and analyzed by super powerful computers and being passed into fancy machine learning models that can literally predict the future. And yet, when you really dig down and get to the fundamentals, all of it came from simple equations for distances between points.&lt;/p&gt;
+
+&lt;p&gt;In this post, we’ll explore the mechanics of ordinary least squares regression using global data on life expectancy collected by the World Health Organization. We’ll get down to some bare-bones concepts of regression modeling, analyze model diagnostics, compare two models, and attempt to validate the assumptions for performing linear regression in the first place.&lt;/p&gt;
+
+&lt;h2 id=&quot;data-preparation&quot;&gt;Data Preparation&lt;/h2&gt;
+
+&lt;h3 id=&quot;data-source&quot;&gt;Data Source&lt;/h3&gt;
+
+&lt;p&gt;We’ll be using the WHO’s life expectancy dataset, found on Kaggle &lt;a href=&quot;https://www.kaggle.com/kumarajarshi/life-expectancy-who&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;libraries&quot;&gt;Libraries&lt;/h3&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;knitr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;opts_chunk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;echo&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;warning&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tidyverse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;skimr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;broom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;theme_set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;theme_bw&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;data-import-and-tidy&quot;&gt;Data Import and Tidy&lt;/h3&gt;
+
+&lt;p&gt;Reading in and having a quick look at the dataset:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;lifexp_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read.csv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;../data/regression/who_life_expectancy.csv&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;janitor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;clean_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;glimpse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lifexp_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## Rows: 2,938
+## Columns: 22
+## $ country                         &amp;lt;fct&amp;gt; Afghanistan, Afghanistan, Afghanistan, Afghani…
+## $ year                            &amp;lt;int&amp;gt; 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008…
+## $ status                          &amp;lt;fct&amp;gt; Developing, Developing, Developing, Developing…
+## $ life_expectancy                 &amp;lt;dbl&amp;gt; 65.0, 59.9, 59.9, 59.5, 59.2, 58.8, 58.6, 58.1…
+## $ adult_mortality                 &amp;lt;int&amp;gt; 263, 271, 268, 272, 275, 279, 281, 287, 295, 2…
+## $ infant_deaths                   &amp;lt;int&amp;gt; 62, 64, 66, 69, 71, 74, 77, 80, 82, 84, 85, 87…
+## $ alcohol                         &amp;lt;dbl&amp;gt; 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.03…
+## $ percentage_expenditure          &amp;lt;dbl&amp;gt; 71.279624, 73.523582, 73.219243, 78.184215, 7.…
+## $ hepatitis_b                     &amp;lt;int&amp;gt; 65, 62, 64, 67, 68, 66, 63, 64, 63, 64, 66, 67…
+## $ measles                         &amp;lt;int&amp;gt; 1154, 492, 430, 2787, 3013, 1989, 2861, 1599, …
+## $ bmi                             &amp;lt;dbl&amp;gt; 19.1, 18.6, 18.1, 17.6, 17.2, 16.7, 16.2, 15.7…
+## $ under_five_deaths               &amp;lt;int&amp;gt; 83, 86, 89, 93, 97, 102, 106, 110, 113, 116, 1…
+## $ polio                           &amp;lt;int&amp;gt; 6, 58, 62, 67, 68, 66, 63, 64, 63, 58, 58, 5, …
+## $ total_expenditure               &amp;lt;dbl&amp;gt; 8.16, 8.18, 8.13, 8.52, 7.87, 9.20, 9.42, 8.33…
+## $ diphtheria                      &amp;lt;int&amp;gt; 65, 62, 64, 67, 68, 66, 63, 64, 63, 58, 58, 5,…
+## $ hiv_aids                        &amp;lt;dbl&amp;gt; 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0…
+## $ gdp                             &amp;lt;dbl&amp;gt; 584.25921, 612.69651, 631.74498, 669.95900, 63…
+## $ population                      &amp;lt;dbl&amp;gt; 33736494, 327582, 31731688, 3696958, 2978599, …
+## $ thinness_1_19_years             &amp;lt;dbl&amp;gt; 17.2, 17.5, 17.7, 17.9, 18.2, 18.4, 18.6, 18.8…
+## $ thinness_5_9_years              &amp;lt;dbl&amp;gt; 17.3, 17.5, 17.7, 18.0, 18.2, 18.4, 18.7, 18.9…
+## $ income_composition_of_resources &amp;lt;dbl&amp;gt; 0.479, 0.476, 0.470, 0.463, 0.454, 0.448, 0.43…
+## $ schooling                       &amp;lt;dbl&amp;gt; 10.1, 10.0, 9.9, 9.8, 9.5, 9.2, 8.9, 8.7, 8.4,…
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;skim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lifexp_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Table: Data summary&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt; &lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt; &lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Name&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;lifexp_df&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Number of rows&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;2938&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Number of columns&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;22&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;_____&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Column type frequency:&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;factor&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;numeric&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;20&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;strong&gt;__&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Group variables&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;None&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;strong&gt;Variable type: factor&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;skim_variable&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;n_missing&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;complete_rate&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;ordered&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;n_unique&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;top_counts&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;country&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;FALSE&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;193&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Afg: 16, Alb: 16, Alg: 16, Ang: 16&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;status&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;FALSE&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Dev: 2426, Dev: 512&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;strong&gt;Variable type: numeric&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;skim_variable&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;n_missing&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;complete_rate&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;mean&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;sd&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;p0&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;p25&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;p50&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;p75&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;p100&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;hist&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;year&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2007.52&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.61&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2000.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2004.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2008.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2012.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.015000e+03&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▆▆▆▆&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;life_expectancy&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;69.22&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;9.52&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;36.30&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;63.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;72.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;75.70&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;8.900000e+01&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▂▃▇▂&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;adult_mortality&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;164.80&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;124.29&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;74.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;144.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;228.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;7.230000e+02&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▆▂▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;infant_deaths&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;30.30&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;117.93&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;3.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;22.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.800000e+03&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▁▁▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;alcohol&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;194&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.93&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.60&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.05&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.01&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.88&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;3.75&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;7.70&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.787000e+01&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▃▃▂▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;percentage_expenditure&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;738.25&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1987.91&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.69&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;64.91&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;441.53&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.947991e+04&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▁▁▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;hepatitis_b&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;553&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.81&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;80.94&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.07&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;77.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;92.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;97.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;9.900000e+01&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▁▁▂▇&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;measles&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2419.59&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;11467.27&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;17.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;360.25&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.121830e+05&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▁▁▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;bmi&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;34&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.99&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;38.32&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;20.04&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;19.30&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;43.50&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;56.20&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;8.730000e+01&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▅▅▅▇▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;under_five_deaths&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;42.04&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;160.45&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;28.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.500000e+03&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▁▁▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;polio&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;19&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.99&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;82.55&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;23.43&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;3.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;78.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;93.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;97.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;9.900000e+01&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▁▁▂▇&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;total_expenditure&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;226&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.92&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5.94&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.50&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.37&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.26&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5.75&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;7.49&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.760000e+01&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▃▇▃▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;diphtheria&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;19&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.99&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;82.32&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;23.72&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;78.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;93.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;97.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;9.900000e+01&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▁▁▂▇&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;hiv_aids&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.74&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5.08&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.80&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5.060000e+01&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▁▁▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;gdp&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;448&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.85&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;7483.16&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;14270.17&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.68&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;463.94&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1766.95&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5910.81&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.191727e+05&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▁▁▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;population&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;652&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.78&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;12753375.12&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;61012096.51&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;34.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;195793.25&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1386542.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;7420359.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.293859e+09&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▁▁▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;thinness_1_19_years&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;34&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.99&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.84&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.42&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.60&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;3.30&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;7.20&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.770000e+01&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▃▁▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;thinness_5_9_years&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;34&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.99&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.87&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4.51&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.50&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;3.30&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;7.20&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.860000e+01&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▇▃▁▁▁&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;income_composition_of_resources&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;167&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.94&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.63&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.21&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.49&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.68&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.78&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;9.500000e-01&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▁▅▇▆&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;schooling&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;163&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.94&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;11.99&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;3.36&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;10.10&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;12.30&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;14.30&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2.070000e+01&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;▁▂▇▇▁&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;The dataset contains 2938 rows, spanning 22 variables. Every row represents a country and year combination - a total of 193 unique countries for every year from 2000 to 2015. We’ll limit the analysis to one year since having the same country repeated as a new row constitutes a repeated measure, which requires more sophisticated analysis than what we’re doing here. I’m going to (arbitrarily) choose 2012.&lt;/p&gt;
+
+&lt;p&gt;We also notice from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;glimpse()&lt;/code&gt; output that we have quite a few missing values, so we’ll need to drop them from our analysis. Of the 22 variables available, we’re really only going to focus on the following variables:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;life_expectancy&lt;/code&gt;: average life expectancy at birth, measured in years&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;schooling&lt;/code&gt;: national average of years of formal education&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;status&lt;/code&gt;: binary variable coded “Developed” or “Developing” (this will allow for some interesting stratification later on)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We will ignore the other variables for this analysis. Thus, our final dataset is as follows:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;final_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lifexp_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;year&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2012&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drop_na&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;life_expectancy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schooling&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;analysis&quot;&gt;Analysis&lt;/h2&gt;
+
+&lt;h3 id=&quot;step-1-fit-and-interpret-models&quot;&gt;Step 1: Fit and Interpret Model(s)&lt;/h3&gt;
+
+&lt;h4 id=&quot;ordinary-least-squares-regression---single-variable&quot;&gt;Ordinary Least Squares Regression - Single Variable&lt;/h4&gt;
+
+&lt;p&gt;To visualize the math behind OLS, let’s take a look at a scatterplot of life expectancy vs schooling.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;final_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schooling&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;life_expectancy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geom_point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;labs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Figure 1: Life Expectancy vs Schooling&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/figs/2020-09-10-regression/unnamed-chunk-2-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We have a pretty linear relationship with potentially some heteroscedasticity, which we’ll talk about in the assumptions &lt;a href=&quot;#step-3-validate-regression-assumptions&quot;&gt;section&lt;/a&gt; below. We’re going to ask R to fit a line through these data points and then we’ll break down how R came up with this line.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;model_1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;final_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;life_expectancy&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schooling&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;model_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## 
+## Call:
+## lm(formula = life_expectancy ~ schooling, data = final_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -14.8459  -2.5066   0.3488   3.2111  12.4766 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## (Intercept)  41.8211     1.7213   24.30   &amp;lt;2e-16 ***
+## schooling     2.2932     0.1319   17.38   &amp;lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.003 on 171 degrees of freedom
+## Multiple R-squared:  0.6386,	Adjusted R-squared:  0.6365 
+## F-statistic: 302.1 on 1 and 171 DF,  p-value: &amp;lt; 2.2e-16
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;The coefficients, also known as the &lt;strong&gt;beta terms&lt;/strong&gt;, are our regression parameters: the intercept, \(b_0\), estimated as 41.821 years, represents the average life expectancy in a theoretical nation where the average years of schooling was 0. This value is meaningless because there are no nations with this average education level and to interpret a regression line beyond the scope of the data that generated it is an epic no-no of cardinal sin magnitude. The slope, \(b_1 \), is estimated as 2.293, and represents the rate of change in life expectancy per additional year of schooling, give or take an error term, \(\epsilon_i \). So on average, countries with one additional year of schooling add 2.293 years their average life expectancy.&lt;/p&gt;
+
+&lt;p&gt;Thus, from the “true” population model: 
+\[y_i = \beta_0 + \beta_1*x_i + \epsilon_i \]&lt;/p&gt;
+
+&lt;p&gt;we get our fitted model:
+\[y = 41.821 + 2.293*x  \]&lt;/p&gt;
+
+&lt;p&gt;Note that the F-statistic has a very small p-value  (F = 302.1 on 1 and 171 DF,  p-value: &amp;lt; 2.2e-16). This means that our model is statistically significant. But since we only have one predictor term, the statistical significance of the model is same as the significance of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;schooling&lt;/code&gt; predictor.&lt;/p&gt;
+
+&lt;p&gt;To visualize the line, we use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;geom_smooth&lt;/code&gt; with a method = “lm” argument:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;final_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schooling&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;life_expectancy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geom_point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geom_smooth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lm&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;se&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;labs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Figure 2: Fitted Model&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/figs/2020-09-10-regression/unnamed-chunk-4-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-4&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We want to look closely at the distances between the datapoints and the line. Unfortunately, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;lm()&lt;/code&gt; doesn’t give us a dataframe output we can work with. This is where the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;broom&lt;/code&gt; package comes in handy. Specifically, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;augment()&lt;/code&gt; function within &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;broom&lt;/code&gt; allows us to build a dataframe with all kinds of useful information:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;model_1_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;broom&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;augment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;model_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;model_1_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## # A tibble: 173 x 9
+##    life_expectancy schooling .fitted .se.fit .resid    .hat .sigma   .cooksd .std.resid
+##              &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;
+##  1            59.5       9.8    64.3   0.542 -4.79  0.0117    5.00 0.00551      -0.964 
+##  2            76.9      14.2    74.4   0.427  2.52  0.00729   5.01 0.000936      0.505 
+##  3            75.1      14.4    74.8   0.440  0.257 0.00773   5.02 0.0000104     0.0516
+##  4            56        10.3    65.4   0.497 -9.44  0.00987   4.96 0.0179       -1.90  
+##  5            75.9      13.8    73.5   0.406  2.43  0.00658   5.01 0.000789      0.488 
+##  6            75.9      17.2    81.3   0.702 -5.36  0.0197    5.00 0.0118       -1.08  
+##  7            74.4      12.7    70.9   0.380  3.46  0.00578   5.01 0.00139       0.693 
+##  8            82.3      20.1    87.9   1.04  -5.61  0.0436    5.00 0.0300       -1.15  
+##  9            88        15.7    77.8   0.547 10.2   0.0119    4.96 0.0253        2.05  
+## 10            71.9      11.8    68.9   0.399  3.02  0.00637   5.01 0.00118       0.605 
+## # … with 163 more rows
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The critical column here is the &lt;strong&gt;residuals&lt;/strong&gt; vector, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.resid&lt;/code&gt;, i.e. the vertical distances between the observed points and the fitted line. These values form the basis of regression modeling. To formalize, the residual (also known as the error term) is given as: 
+\[ \epsilon_i = Y_i - \hat{Y_i} \]
+where the little hat on the Y indicates that it’s the model estimate, meaning the y-value of the point on the blue line.&lt;/p&gt;
+
+&lt;p&gt;If we were to look at just the data points, close one eye, and draw a line through them, we’d probably come with something close to the blue line R gave us. But while we would be using the complex machinery of our brain’s pattern-recognition capacity, the actual math behind the blue line is fairly straightforward. It all comes down to finding a line that optimizes these residuals. In fact, when we say “least squares”, we’re referring to minimizing the squares of these values. Let’s visualize them here using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;geom_segment()&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;model_1_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schooling&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;life_expectancy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geom_point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geom_segment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xend&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schooling&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yend&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;.fitted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;red&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geom_smooth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lm&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;se&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;labs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Figure 3: Model Residuals&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/figs/2020-09-10-regression/unnamed-chunk-6-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-6&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The red lines are the residuals and the way R computes the fitted model is by minimizing the squares of these red lines. The residuals  are squared to avoid cancellation when adding positive and negative values.&lt;/p&gt;
+
+&lt;h4 id=&quot;ols---multi-variable-modeling&quot;&gt;OLS - Multi-variable Modeling&lt;/h4&gt;
+
+&lt;p&gt;In the real world, we’re hardly ever working with just one predictor. The beauty of regression modeling lies in its flexibility - we can add as many predictors to the right side of the equation as we want, and they don’t need to be continuous variables. We can add categorical predictors using “dummy variables” (explained &lt;a href=&quot;https://sphweb.bumc.bu.edu/otlt/MPH-Modules/PH717-QuantCore/PH717_MultipleVariableRegression/PH717_MultipleVariableRegression4.html&quot;&gt;here&lt;/a&gt;). There is of course a trade-off in flexibility if you add tons of predictors, and generally speaking, you should only add predictors that make theoretical sense and keep your model parsimonious.&lt;/p&gt;
+
+&lt;p&gt;It should also be clear that when you add a second predictor, you’re no longer working in two-dimensional space. You need a third dimension to describe the relationship between the dependent and independent variables. You will also no longer be fitting a regression line, but a regression plane, which is very cool. We won’t make a plane here, but you can find an example &lt;a href=&quot;https://data-se.netlify.app/2018/12/13/visualizing-a-regression-plane-two-predictors/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Let’s take a look at our third variable, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;status&lt;/code&gt;, indicating whether the observation (nation) is considered developed or developing by the WHO’s definition. First, let’s do some visualization:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;final_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mutate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row_number&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;life_expectancy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;group&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geom_point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;labs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Figure 4: Life Expectancy Difference by Status &quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/figs/2020-09-10-regression/unnamed-chunk-7-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-7&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Clearly, countries in the developed world have higher life expectancy. But the question we want to answer is whether the relationship between schooling and life expectancy &lt;strong&gt;changes&lt;/strong&gt; between developed and developing countries. In other words, if we fit a line using just the green points, and another using just the red points, would the slopes of those lines be different? And if so, how different? Regression modeling gives us an easy way to find out - all we need to do is add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;status&lt;/code&gt; as a predictor term:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;model_2&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;final_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;life_expectancy&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schooling&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;model_2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## 
+## Call:
+## lm(formula = life_expectancy ~ schooling + status, data = final_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -14.7545  -3.1520   0.5462   3.5773  12.4017 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## (Intercept)       45.4937     2.7312  16.657   &amp;lt;2e-16 ***
+## schooling          2.1420     0.1578  13.578   &amp;lt;2e-16 ***
+## statusDeveloping  -2.1010     1.2176  -1.725   0.0863 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 4.975 on 170 degrees of freedom
+## Multiple R-squared:  0.6448,	Adjusted R-squared:  0.6406 
+## F-statistic: 154.3 on 2 and 170 DF,  p-value: &amp;lt; 2.2e-16
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Again, the p-value on our F-statistic is significant, meaning that there is a statistically significant relationship between the outcome and the combination of predictors.&lt;/p&gt;
+
+&lt;p&gt;Our new model statement is: 
+\[ life\,expectancy = 45.4937 + 2.1420&lt;em&gt;schooling - 2.1010&lt;/em&gt;status \]&lt;/p&gt;
+
+&lt;p&gt;where the coefficient of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;status&lt;/code&gt; variable indicates that, on average, after we control for schooling, there is a difference in life expectancy of 2.1 years between developing and developed countries. However, note that the p-value for the status predictor is 0.08 (p &amp;gt; 0.05), meaning that controlling for education, status is &lt;strong&gt;not&lt;/strong&gt; a significant predictor of life expectancy. This does not mean that status &lt;strong&gt;alone&lt;/strong&gt; is not a significant predictor of life expectancy. It just means that after we control for education by putting it in the model, the effect of status mostly washes away.&lt;/p&gt;
+
+&lt;p&gt;To illustrate:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;model_3&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;final_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;life_expectancy&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;model_3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## 
+## Call:
+## lm(formula = life_expectancy ~ status, data = final_df)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -19.408  -5.408   1.307   5.592  14.892 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## (Intercept)        80.393      1.330  60.456  &amp;lt; 2e-16 ***
+## statusDeveloping  -11.285      1.458  -7.742 8.17e-13 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 7.161 on 171 degrees of freedom
+## Multiple R-squared:  0.2596,	Adjusted R-squared:  0.2552 
+## F-statistic: 59.94 on 1 and 171 DF,  p-value: 8.169e-13
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Clearly, status is a highly significant factor in life expectancy when considered by itself. This is even clearer in a plot:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;final_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;life_expectancy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geom_point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stat_smooth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lm&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;se&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;labs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Figure 5: Status vs Life Expectancy&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/figs/2020-09-10-regression/unnamed-chunk-10-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-10&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;What the p-value for status in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;model_2&lt;/code&gt; &lt;strong&gt;does&lt;/strong&gt; tell us is that the relationship between schooling and life expectancy does not change significantly between developed and developing countries.&lt;/p&gt;
+
+&lt;p&gt;Again, to visualize:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;final_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schooling&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;life_expectancy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;group&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geom_point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/figs/2020-09-10-regression/unnamed-chunk-11-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-11&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The point is that even though we have two distinct clusters, the regression line is more or less the same between them.&lt;/p&gt;
+
+&lt;p&gt;For our purposes, we’re going to take all of this to mean that we should get rid of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;status&lt;/code&gt; term in our model. This is not to say that all predictors with p-values &amp;lt; 0.05 don’t belong in your model. We’re not going to go down that rabbit hole, but you can find people arguing the matter at length on &lt;a href=&quot;https://stackexchange.com/&quot;&gt;stackexchange&lt;/a&gt;. This is just a decision I’m making based on the evidence.&lt;/p&gt;
+
+&lt;p&gt;So now that we’ve settled on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;model_1&lt;/code&gt;, how do we figure out how “good” it is? That’s where regression diagnostics come in.&lt;/p&gt;
+
+&lt;h3 id=&quot;step-2-figure-out-how-good-your-model-is&quot;&gt;Step 2: Figure out how “good” your model is&lt;/h3&gt;
+
+&lt;p&gt;Smith et al (2017) describe regression diagnostics as an art, referring to the absence of a structured process for model evaluation. After looking through a digital bushel of papers, I would have to agree. If you spend any time looking at scientific work employing linear regression models, you’ll be hard-pressed to find any consistency in the measures scientists use to evaluate their models (if they use such measures at all).&lt;/p&gt;
+
+&lt;p&gt;However, it’s clear that simply fitting a linear model is not enough. While there are many different constructs and measures to evaluate model performance, I would like to, at minimum, understand the magnitude of a model’s error, its predictive capacity, the impact of outliers and influential observations, and whether it meets the assumptions for linear modeling in the first place. We’ll look at this last topic in the &lt;a href=&quot;#step-3-validate-regression-assumptions&quot;&gt;next section&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;First, let’s look at perhaps the most common model diagnostic, \(R^2\), or, more formally, the coefficient of determination. For a single-variable model, \(R^2\), is just the square of our friend, the Pearson correlation coefficient. It turns out that this is actually a much more useful quantity:&lt;/p&gt;
+
+&lt;p&gt;\[ R^2 = \frac {\Sigma_{i=1}^n (y_i - \hat y_i)^2} {\Sigma_{i=1}^n (y_i - \bar y_i)^2} \]&lt;/p&gt;
+
+&lt;p&gt;\( R^2 \) is powerful because it’s completely intuitive - it equals the percentage of variance in the outcome explained by the predictor(s). This is part of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;summary()&lt;/code&gt; output:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;model_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## 
+## Call:
+## lm(formula = life_expectancy ~ schooling, data = final_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -14.8459  -2.5066   0.3488   3.2111  12.4766 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## (Intercept)  41.8211     1.7213   24.30   &amp;lt;2e-16 ***
+## schooling     2.2932     0.1319   17.38   &amp;lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.003 on 171 degrees of freedom
+## Multiple R-squared:  0.6386,	Adjusted R-squared:  0.6365 
+## F-statistic: 302.1 on 1 and 171 DF,  p-value: &amp;lt; 2.2e-16
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;For the single-variable model, \( R^2 = 0.6386 \), so 63.86% of the variance in a nation’s life expectancy can be explained by its linear relationship to education. For a single variable model, this is a pretty high \( R^2 \). Note that when we fit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;model_2&lt;/code&gt;, the \( R^2 \) only went up to 64.48%, all while taking away a degree of freedom from the model - further evidence that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;status&lt;/code&gt; is not a worthwhile predictor in this context.&lt;/p&gt;
+
+&lt;p&gt;To quantify the model’s error, which, again, comes down to residuals, we can look at Root Mean Square Error (&lt;strong&gt;RMSE&lt;/strong&gt;), another highly common regression diagnostic. It is defined as:
+\[ RMSE = \sqrt \frac {\Sigma_{i=1}^n (\hat y_i - y_i)^2}  {n}\]&lt;/p&gt;
+
+&lt;p&gt;and as you might intuit from the formula, RMSE is a measure of the standard deviation of residuals. RMSE can be computed using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metrics&lt;/code&gt; package, or just using a quick manual calculation:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;sqrt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;model_1_df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;.resid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;^&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## [1] 4.97418
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Our calculated RMSE of 4.974 indicates that actual life expectancy deviates from life expectancy predicted by the model by about 5 years, on average.&lt;/p&gt;
+
+&lt;h4 id=&quot;outliers--influential-observations&quot;&gt;Outliers &amp;amp; Influential Observations&lt;/h4&gt;
+
+&lt;p&gt;Another way to assess model performance is to figure out whether it was influenced by a small set of influential observations. Perhaps our model started out as a perfectly nice model, chugging along, predicting stuff with few mistakes. But then it came across some highly influential characters - data points that don’t hang with the pack, non-conformers, and they applied heavy influence and ultimately swayed our model off its course.&lt;/p&gt;
+
+&lt;p&gt;In truth, the study of outliers and influential observation is a whole thing and worthy of its own project. For now, let’s do two things. First, let’s look at Figure 2 and acknowledge that there’s not much visual evidence of outliers. Second, let’s do a quick check using &lt;a href=&quot;https://www.mathworks.com/help/stats/cooks-distance.html#:~:text=Cook's%20distance%20is%20the%20scaled,on%20the%20fitted%20response%20values.&quot;&gt;Cook’s distance&lt;/a&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.cooksd&lt;/code&gt; in our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;augment()&lt;/code&gt; dataframe.&lt;/p&gt;
+
+&lt;p&gt;Cook’s distance is a metric based on &lt;a href=&quot;https://online.stat.psu.edu/stat501/lesson/11/11.4&quot;&gt;deleted residuals&lt;/a&gt; and is calculated for each data point in the set. It is a measure of the difference that would occur in our predicted values if we were to re-run the regression model without that point. Let’s look at the Cook’s distances in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;model_1&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;model_1_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;desc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;.cooksd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;inner_join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lifexp_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;life_expectancy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;head&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## # A tibble: 6 x 29
+##   life_expectancy schooling .fitted .se.fit .resid    .hat .sigma .cooksd .std.resid
+##             &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;
+## 1            63.6       5      53.3   1.09   10.3  0.0473    4.95  0.111        2.11
+## 2            63         5.1    53.5   1.08    9.48 0.0462    4.96  0.0912       1.94
+## 3            49.7       9.1    62.7   0.611 -13.0  0.0149    4.92  0.0518      -2.62
+## 4            77         9.9    64.5   0.532  12.5  0.0113    4.92  0.0360       2.51
+## 5            52.2      11      67.0   0.443 -14.8  0.00785   4.89  0.0351      -2.98
+## 6            52.7       9.7    64.1   0.551 -11.4  0.0121    4.94  0.0321      -2.29
+## # … with 20 more variables: country &amp;lt;fct&amp;gt;, year &amp;lt;int&amp;gt;, status &amp;lt;fct&amp;gt;,
+## #   adult_mortality &amp;lt;int&amp;gt;, infant_deaths &amp;lt;int&amp;gt;, alcohol &amp;lt;dbl&amp;gt;,
+## #   percentage_expenditure &amp;lt;dbl&amp;gt;, hepatitis_b &amp;lt;int&amp;gt;, measles &amp;lt;int&amp;gt;, bmi &amp;lt;dbl&amp;gt;,
+## #   under_five_deaths &amp;lt;int&amp;gt;, polio &amp;lt;int&amp;gt;, total_expenditure &amp;lt;dbl&amp;gt;, diphtheria &amp;lt;int&amp;gt;,
+## #   hiv_aids &amp;lt;dbl&amp;gt;, gdp &amp;lt;dbl&amp;gt;, population &amp;lt;dbl&amp;gt;, thinness_1_19_years &amp;lt;dbl&amp;gt;,
+## #   thinness_5_9_years &amp;lt;dbl&amp;gt;, income_composition_of_resources &amp;lt;dbl&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We can see that our top five most influential observations are Eritrea, Niger, Sierra Leone, Bangladesh, and Lesotho. To complement using a quick visualization:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;model_1_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mutate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row_number&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;.cooksd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geom_point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;theme_bw&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/figs/2020-09-10-regression/unnamed-chunk-15-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-15&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We see three points (Eritrea, Niger, Sierra Leone) that stand out from the pack. These observations are not just outliers, but &lt;strong&gt;influential outliers&lt;/strong&gt;, meaning they swayed our model towards themselves, compromising its predictive capability.&lt;/p&gt;
+
+&lt;p&gt;So what do we do with them? You can find lots of different “rules of thumb” online, dictating which Cook’s distance might prompt removal of a data point from your set, but what makes most sense to me in this situation is to accept the data as they are. We don’t have any super high leverage points here, and even if we did, we would need justification for removing them. As you can probably intuit, few natural processes are simple enough to be accurately explained by a linear model. Hence the discovery/invention of more sophisticated probabilistic models and machine learning. But suffice it to say, we’re leaving Eritrea &lt;a href=&quot;https://en.wikipedia.org/wiki/Eritrea&quot;&gt;where it is&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;step-3-validate-regression-assumptions&quot;&gt;Step 3: Validate Regression Assumptions&lt;/h3&gt;
+
+&lt;p&gt;Now that we’ve done all this work, we need to figure out whether any of it was worthwhile. This is a bit of a nuisance with linear regression - you can’t really check the assumptions before you fit the model because you need the model to know if the assumptions were satisfied.&lt;/p&gt;
+
+&lt;p&gt;You’ll often see regression assumptions summarized as follows:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Linearity&lt;/strong&gt;: If the data aren’t linear, don’t fit a linear model. We looked at the scatterplot in &lt;a href=&quot;#step-1-fit-and-interpret-models&quot;&gt;step 1&lt;/a&gt; and found it was pretty linear.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Independence&lt;/strong&gt;: Observations shouldn’t be clustered or have any influence on other observations. It’s hard to say this is the case in our situation, since it’s pretty clear that developing countries and developed countries cluster together and through political and economic means influence their neighbors’ policies and practices.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Normality of residuals&lt;/strong&gt;: If you look at the residuals in Figure 3 and superimpose little sideways bell curves along the regression line, you should see that the residuals are normally distributed. Basically, the majority of the residuals are located close to the line and a few are found further away. This is best explained visually: &lt;figure&gt; &lt;img src=&quot;/assets/images/residuals.png&quot; /&gt; &amp;lt;figcaption&amp;gt; &lt;a href=&quot;https://bookdown.org/ripberjt/qrmbook/ols-assumptions-and-simple-regression-diagnostics.html&quot;&gt;Source&lt;/a&gt; &amp;lt;/figcaption&amp;gt; &lt;/figure&gt; It looks like this is generally the case for our model, using the trusty eyeball method.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Homoscedasticity&lt;/strong&gt; &lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;: Homoscedasticity means that the variance of the residual terms is somewhat constant. If your data are heteroscedastic, linear regression modeling is probably not a good choice. Here’s an example of heteroscedasticity:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure&gt;
+    &lt;img src=&quot;/assets/images/heteroscedasticity.png&quot; /&gt;
+    &lt;figcaption&gt;&lt;a href=&quot;https://www.statisticshowto.com/homoscedasticity/&quot;&gt;Source&lt;/a&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;When we first looked at our data in scatterplot form, we noted some definite heteroscedasticity. Let’s look at it again:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;final_df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ggplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schooling&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;life_expectancy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geom_point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geom_smooth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lm&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;se&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;labs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Life Expectancy vs Schooling&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/figs/2020-09-10-regression/unnamed-chunk-16-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-16&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Below 10 years of schooling, our residuals are much wider than on the other side of 10. There might be some intuitive explanation for this observation. For instance, it’s possible that there’s a distinction between countries where a majority of the population finishes what is considered high school in the US and countries where that isn’t the case. In these countries, years of schooling doesn’t matter as much as other factors - like access to clean water and nutritious foods.&lt;/p&gt;
+
+&lt;p&gt;All in all, checking regression assumptions convinced me that linear regression might not be the best choice here. Or at least not on its own. But we did learn some good fundamental principles about how statistical modeling works.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusions&quot;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;After going through a fairly brief analysis, we learned that:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Globally, the relationship between life expectancy and education based on WHO data is fairly linear, with a simple model resulting in an  \( R^2 \) of 0.64.&lt;/li&gt;
+  &lt;li&gt;Few influential outliers were present in the data.&lt;/li&gt;
+  &lt;li&gt;In order to build a more robust model, data should be limited to a range where the linear regression assumptions (namely, homoscedasticity) are met. Otherwise, a more robust modeling strategy should be used.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;further-reading&quot;&gt;Further Reading&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;In-depth &lt;a href=&quot;https://quantdev.ssri.psu.edu/sites/qdev/files/02_RegressionReview_Continuous%2C_Ordinal%2C_and_Binary_Outcomes__2018_0.html&quot;&gt;overview&lt;/a&gt; of regression modeling with different types of predictor variables&lt;/li&gt;
+  &lt;li&gt;Good intro to &lt;a href=&quot;https://uc-r.github.io/model_selection&quot;&gt;model selection&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://medium.com/@amanbamrah/how-to-evaluate-the-accuracy-of-regression-results-b38e5512afd3&quot;&gt;Explanation&lt;/a&gt; of differences between RMSE, \( R^2 \), and other measures of model error&lt;/li&gt;
+  &lt;li&gt;A nice interactive OLS &lt;a href=&quot;https://setosa.io/ev/ordinary-least-squares-regression/&quot;&gt;explainer&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Everything you ever wanted to know about residuals &lt;a href=&quot;https://drsimonj.svbtle.com/visualising-residuals&quot;&gt;here&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Great &lt;a href=&quot;http://www.stat.cmu.edu/~cshalizi/mreg/15/lectures/20/lecture-20.pdf&quot;&gt;lecture&lt;/a&gt; on outliers&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Jenkins-Smith, H. C. (2017). Quantitative Research Methods for Political Science, Public Policy and Public Administration (With Applications in R): 3rd Edition. University of Oklahoma&lt;/li&gt;
+  &lt;li&gt;Field, A. P., Miles, J., &amp;amp; Field, Z. (2012). Discovering statistics using R. Thousand Oaks, CA.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
+      &lt;p&gt;If you’re a spelling bee organizer, I recommend adding this word (mostly because I still misspell it almost every time I write it). &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>alice</name></author><category term="modeling" /><category term="regression" /><category term="global health" /><summary type="html">Life expectancy, simple least squares regression, residuals, model diagnostics, outliers, asssumptions, and a bit of unsolicited philosphizing</summary></entry><entry><title type="html">Importing Data Files using `purrr` and `stringr`</title><link href="http://localhost:4000/import-function/" rel="alternate" type="text/html" title="Importing Data Files using `purrr` and `stringr`" /><published>2020-09-05T00:00:00-07:00</published><updated>2020-09-05T00:00:00-07:00</updated><id>http://localhost:4000/read-func</id><content type="html" xml:base="http://localhost:4000/import-function/">&lt;h2 id=&quot;motivation&quot;&gt;Motivation&lt;/h2&gt;
 
 &lt;p&gt;It’s a well-known [tenet](https://en.wikipedia.org/wiki/Rule_of_three_(computer_programming) of computer programming that if you have to copy and paste code more than twice, you should write a function.&lt;/p&gt;
 
@@ -411,7 +1239,7 @@
 
 &lt;p&gt;And I guess this is really a testament to the process of automation, which usually follows the so-called &lt;a href=&quot;https://www.jimcollins.com/concepts/the-flywheel.html&quot;&gt;flywheel effect&lt;/a&gt;. It takes a lot of effort to get the thing spinning, but once it picks up enough momentum, you get tons of movement with minimal addition effort.&lt;/p&gt;</content><author><name>alice</name></author><category term="functions" /><category term="NHANES" /><category term="R" /><summary type="html">One, two, three times a function</summary></entry><entry><title type="html">Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data</title><link href="http://localhost:4000/correlation/" rel="alternate" type="text/html" title="Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data" /><published>2020-08-24T00:00:00-07:00</published><updated>2020-08-24T00:00:00-07:00</updated><id>http://localhost:4000/correlation-happiness</id><content type="html" xml:base="http://localhost:4000/correlation/">&lt;h2 id=&quot;motivation&quot;&gt;Motivation&lt;/h2&gt;
 
-&lt;p&gt;Although limited in its applications, in the right circumstances, correlation analysis can be a useful skill to have in your tool-box. &lt;a href=&quot;#correlation&quot;&gt;Correlation&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Although limited in its applications, in the right circumstances, correlation analysis can be a useful skill to have in your tool-box.&lt;/p&gt;
 
 &lt;p&gt;Simply put, a correlation coefficient measures the strength of association between two variables. As we will see below, correlation coefficients come in several flavors, but they are all measured on the same scale, ranging from -1 to +1, where +1 means that that the variables are perfectly correlated in the same direction, -1 means they are perfectly correlated in opposite directions, and 0 means the two variables are completely independent (Schober, Boer, and Schwarte, 2018):&lt;/p&gt;
 
@@ -1340,7 +2168,7 @@ You can explore a full gallery of &lt;code class=&quot;language-plaintext highli
       &lt;p&gt;This does not tell us anything about happiness on the individual level. These data cannot be used to determine whether an &lt;strong&gt;individual’s&lt;/strong&gt; social support is correlated to their happiness. These are ecologic measures and using them for individual-level inference might lead to &lt;a href=&quot;https://en.wikipedia.org/wiki/Ecological_fallacy&quot;&gt;ecologic fallacy&lt;/a&gt; &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>alice</name></author><category term="correlation" /><category term="mental health" /><category term="R" /><summary type="html">What makes some countries happier than others?</summary></entry><entry><title type="html">Summarizing Covid-19 with flexdashboard</title><link href="http://localhost:4000/blog/2020/07/covid_dashboard/" rel="alternate" type="text/html" title="Summarizing Covid-19 with flexdashboard" /><published>2020-08-05T00:00:00-07:00</published><updated>2020-08-05T00:00:00-07:00</updated><id>http://localhost:4000/blog/2020/07/covid-dash</id><content type="html" xml:base="http://localhost:4000/blog/2020/07/covid_dashboard/">&lt;p&gt;Dashboards are fantastic.&lt;/p&gt;
+&lt;/div&gt;</content><author><name>alice</name></author><category term="correlation" /><category term="mental health" /><category term="R" /><summary type="html">What factors are most closely correlated with nation-level happiness?</summary></entry><entry><title type="html">Summarizing Covid-19 with flexdashboard</title><link href="http://localhost:4000/blog/2020/07/covid_dashboard/" rel="alternate" type="text/html" title="Summarizing Covid-19 with flexdashboard" /><published>2020-08-05T00:00:00-07:00</published><updated>2020-08-05T00:00:00-07:00</updated><id>http://localhost:4000/blog/2020/07/covid-dash</id><content type="html" xml:base="http://localhost:4000/blog/2020/07/covid_dashboard/">&lt;p&gt;Dashboards are fantastic.&lt;/p&gt;
 
 &lt;figure&gt;
     &lt;a href=&quot;/assets/covid_dash&quot;&gt;&lt;img src=&quot;/assets/images/covid.png&quot; /&gt;&lt;/a&gt;

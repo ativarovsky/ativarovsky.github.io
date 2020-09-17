@@ -1,0 +1,1429 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Modeling Global Life Expectancy vs Education  using  Least Squares Regression | Alice Tivarovsky</title>
+<meta name="description" content="Life expectancy, simple least squares regression, residuals, model diagnostics, outliers, asssumptions, and a bit of unsolicited philosphizing">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Alice Tivarovsky">
+<meta property="og:title" content="Modeling Global Life Expectancy vs Education  using  Least Squares Regression">
+<meta property="og:url" content="http://localhost:4000/modeling/regression/global%20health/regression/">
+
+
+  <meta property="og:description" content="Life expectancy, simple least squares regression, residuals, model diagnostics, outliers, asssumptions, and a bit of unsolicited philosphizing">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2020-09-10T00:00:00-07:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/modeling/regression/global%20health/regression/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Alice Tivarovsky",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Alice Tivarovsky Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+<!-- add htmlwidgets files -->
+
+<!-- end htmlwidgets files -->
+
+
+    <!-- start custom head snippets -->
+<link href="https://fonts.googleapis.com/css?family=News+Cycle:400,700" rel="stylesheet" type="text/css">
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Alice Tivarovsky
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/_pages/posts">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="/_pages/resume">Resum&eacute;</a>
+            </li><li class="masthead__menu-item">
+              <a href="/_pages/about">About</a>
+            </li><li class="masthead__menu-item">
+              <a href="/_pages/contact">Contact</a>
+            </li><li class="masthead__menu-item">
+              <a href="https://github.com/ativarovsky">Github</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person">
+
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name"></h3>
+    
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Modeling Global Life Expectancy vs Education  using  Least Squares Regression">
+    <meta itemprop="description" content="Life expectancy, simple least squares regression, residuals, model diagnostics, outliers, asssumptions, and a bit of unsolicited philosphizing">
+    <meta itemprop="datePublished" content="2020-09-10T00:00:00-07:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Modeling Global Life Expectancy vs Education  using  Least Squares Regression
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  21 minute read
+
+</p>
+          
+          
+            <p class="page__date"><strong>Updated:</strong> <time datetime="2020-09-10T00:00:00-07:00">September 10, 2020</time></p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right ">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#motivation">Motivation</a></li>
+  <li><a href="#data-preparation">Data Preparation</a>
+    <ul>
+      <li><a href="#data-source">Data Source</a></li>
+      <li><a href="#libraries">Libraries</a></li>
+      <li><a href="#data-import-and-tidy">Data Import and Tidy</a></li>
+    </ul>
+  </li>
+  <li><a href="#analysis">Analysis</a>
+    <ul>
+      <li><a href="#step-1-fit-and-interpret-models">Step 1: Fit and Interpret Model(s)</a>
+        <ul>
+          <li><a href="#ordinary-least-squares-regression---single-variable">Ordinary Least Squares Regression - Single Variable</a></li>
+          <li><a href="#ols---multi-variable-modeling">OLS - Multi-variable Modeling</a></li>
+        </ul>
+      </li>
+      <li><a href="#step-2-figure-out-how-good-your-model-is">Step 2: Figure out how “good” your model is</a>
+        <ul>
+          <li><a href="#outliers--influential-observations">Outliers &amp; Influential Observations</a></li>
+        </ul>
+      </li>
+      <li><a href="#step-3-validate-regression-assumptions">Step 3: Validate Regression Assumptions</a></li>
+    </ul>
+  </li>
+  <li><a href="#conclusions">Conclusions</a></li>
+  <li><a href="#further-reading">Further Reading</a></li>
+  <li><a href="#references">References</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <h2 id="motivation">Motivation</h2>
+
+<p>I realize that it’s not 1774, and that no serious data person spends any amount of time thinking about ordinary least squares regression. Even calling it “ordinary” implies that it’s mundane and uninteresting.</p>
+
+<p>But honestly, when I first learned the mechanics of OLS in an intro stats class, I found it incredibly insightful. It blew my mind that there is so much data being collected and analyzed by super powerful computers and being passed into fancy machine learning models that can literally predict the future. And yet, when you really dig down and get to the fundamentals, all of it came from simple equations for distances between points.</p>
+
+<p>In this post, we’ll explore the mechanics of ordinary least squares regression using global data on life expectancy collected by the World Health Organization. We’ll get down to some bare-bones concepts of regression modeling, analyze model diagnostics, compare two models, and attempt to validate the assumptions for performing linear regression in the first place.</p>
+
+<h2 id="data-preparation">Data Preparation</h2>
+
+<h3 id="data-source">Data Source</h3>
+
+<p>We’ll be using the WHO’s life expectancy dataset, found on Kaggle <a href="https://www.kaggle.com/kumarajarshi/life-expectancy-who">here</a>.</p>
+
+<h3 id="libraries">Libraries</h3>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">knitr</span><span class="o">::</span><span class="n">opts_chunk</span><span class="o">$</span><span class="n">set</span><span class="p">(</span><span class="n">echo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">warning</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
+
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">skimr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">broom</span><span class="p">)</span><span class="w">
+
+</span><span class="n">theme_set</span><span class="p">(</span><span class="n">theme_bw</span><span class="p">())</span><span class="w">
+
+</span></code></pre></div></div>
+
+<h3 id="data-import-and-tidy">Data Import and Tidy</h3>
+
+<p>Reading in and having a quick look at the dataset:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lifexp_df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read.csv</span><span class="p">(</span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"../data/regression/who_life_expectancy.csv"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">janitor</span><span class="o">::</span><span class="n">clean_names</span><span class="p">()</span><span class="w"> 
+
+</span><span class="n">glimpse</span><span class="p">(</span><span class="n">lifexp_df</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Rows: 2,938
+## Columns: 22
+## $ country                         &lt;fct&gt; Afghanistan, Afghanistan, Afghanistan, Afghani…
+## $ year                            &lt;int&gt; 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008…
+## $ status                          &lt;fct&gt; Developing, Developing, Developing, Developing…
+## $ life_expectancy                 &lt;dbl&gt; 65.0, 59.9, 59.9, 59.5, 59.2, 58.8, 58.6, 58.1…
+## $ adult_mortality                 &lt;int&gt; 263, 271, 268, 272, 275, 279, 281, 287, 295, 2…
+## $ infant_deaths                   &lt;int&gt; 62, 64, 66, 69, 71, 74, 77, 80, 82, 84, 85, 87…
+## $ alcohol                         &lt;dbl&gt; 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.03…
+## $ percentage_expenditure          &lt;dbl&gt; 71.279624, 73.523582, 73.219243, 78.184215, 7.…
+## $ hepatitis_b                     &lt;int&gt; 65, 62, 64, 67, 68, 66, 63, 64, 63, 64, 66, 67…
+## $ measles                         &lt;int&gt; 1154, 492, 430, 2787, 3013, 1989, 2861, 1599, …
+## $ bmi                             &lt;dbl&gt; 19.1, 18.6, 18.1, 17.6, 17.2, 16.7, 16.2, 15.7…
+## $ under_five_deaths               &lt;int&gt; 83, 86, 89, 93, 97, 102, 106, 110, 113, 116, 1…
+## $ polio                           &lt;int&gt; 6, 58, 62, 67, 68, 66, 63, 64, 63, 58, 58, 5, …
+## $ total_expenditure               &lt;dbl&gt; 8.16, 8.18, 8.13, 8.52, 7.87, 9.20, 9.42, 8.33…
+## $ diphtheria                      &lt;int&gt; 65, 62, 64, 67, 68, 66, 63, 64, 63, 58, 58, 5,…
+## $ hiv_aids                        &lt;dbl&gt; 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0…
+## $ gdp                             &lt;dbl&gt; 584.25921, 612.69651, 631.74498, 669.95900, 63…
+## $ population                      &lt;dbl&gt; 33736494, 327582, 31731688, 3696958, 2978599, …
+## $ thinness_1_19_years             &lt;dbl&gt; 17.2, 17.5, 17.7, 17.9, 18.2, 18.4, 18.6, 18.8…
+## $ thinness_5_9_years              &lt;dbl&gt; 17.3, 17.5, 17.7, 18.0, 18.2, 18.4, 18.7, 18.9…
+## $ income_composition_of_resources &lt;dbl&gt; 0.479, 0.476, 0.470, 0.463, 0.454, 0.448, 0.43…
+## $ schooling                       &lt;dbl&gt; 10.1, 10.0, 9.9, 9.8, 9.5, 9.2, 8.9, 8.7, 8.4,…
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">skim</span><span class="p">(</span><span class="n">lifexp_df</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Table: Data summary</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left"> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Name</td>
+      <td style="text-align: left">lifexp_df</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Number of rows</td>
+      <td style="text-align: left">2938</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Number of columns</td>
+      <td style="text-align: left">22</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>__</strong><strong>__</strong><strong>__</strong>_____</td>
+      <td style="text-align: left"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Column type frequency:</td>
+      <td style="text-align: left"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">factor</td>
+      <td style="text-align: left">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">numeric</td>
+      <td style="text-align: left">20</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>__</strong><strong>__</strong><strong>__</strong><strong>__</strong></td>
+      <td style="text-align: left"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Group variables</td>
+      <td style="text-align: left">None</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Variable type: factor</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">skim_variable</th>
+      <th style="text-align: right">n_missing</th>
+      <th style="text-align: right">complete_rate</th>
+      <th style="text-align: left">ordered</th>
+      <th style="text-align: right">n_unique</th>
+      <th style="text-align: left">top_counts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">country</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: left">FALSE</td>
+      <td style="text-align: right">193</td>
+      <td style="text-align: left">Afg: 16, Alb: 16, Alg: 16, Ang: 16</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">status</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: left">FALSE</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: left">Dev: 2426, Dev: 512</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Variable type: numeric</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">skim_variable</th>
+      <th style="text-align: right">n_missing</th>
+      <th style="text-align: right">complete_rate</th>
+      <th style="text-align: right">mean</th>
+      <th style="text-align: right">sd</th>
+      <th style="text-align: right">p0</th>
+      <th style="text-align: right">p25</th>
+      <th style="text-align: right">p50</th>
+      <th style="text-align: right">p75</th>
+      <th style="text-align: right">p100</th>
+      <th style="text-align: left">hist</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">year</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1.00</td>
+      <td style="text-align: right">2007.52</td>
+      <td style="text-align: right">4.61</td>
+      <td style="text-align: right">2000.00</td>
+      <td style="text-align: right">2004.00</td>
+      <td style="text-align: right">2008.00</td>
+      <td style="text-align: right">2012.00</td>
+      <td style="text-align: right">2.015000e+03</td>
+      <td style="text-align: left">▇▆▆▆▆</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">life_expectancy</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">1.00</td>
+      <td style="text-align: right">69.22</td>
+      <td style="text-align: right">9.52</td>
+      <td style="text-align: right">36.30</td>
+      <td style="text-align: right">63.10</td>
+      <td style="text-align: right">72.10</td>
+      <td style="text-align: right">75.70</td>
+      <td style="text-align: right">8.900000e+01</td>
+      <td style="text-align: left">▁▂▃▇▂</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">adult_mortality</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">1.00</td>
+      <td style="text-align: right">164.80</td>
+      <td style="text-align: right">124.29</td>
+      <td style="text-align: right">1.00</td>
+      <td style="text-align: right">74.00</td>
+      <td style="text-align: right">144.00</td>
+      <td style="text-align: right">228.00</td>
+      <td style="text-align: right">7.230000e+02</td>
+      <td style="text-align: left">▇▆▂▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">infant_deaths</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1.00</td>
+      <td style="text-align: right">30.30</td>
+      <td style="text-align: right">117.93</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">3.00</td>
+      <td style="text-align: right">22.00</td>
+      <td style="text-align: right">1.800000e+03</td>
+      <td style="text-align: left">▇▁▁▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">alcohol</td>
+      <td style="text-align: right">194</td>
+      <td style="text-align: right">0.93</td>
+      <td style="text-align: right">4.60</td>
+      <td style="text-align: right">4.05</td>
+      <td style="text-align: right">0.01</td>
+      <td style="text-align: right">0.88</td>
+      <td style="text-align: right">3.75</td>
+      <td style="text-align: right">7.70</td>
+      <td style="text-align: right">1.787000e+01</td>
+      <td style="text-align: left">▇▃▃▂▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">percentage_expenditure</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1.00</td>
+      <td style="text-align: right">738.25</td>
+      <td style="text-align: right">1987.91</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">4.69</td>
+      <td style="text-align: right">64.91</td>
+      <td style="text-align: right">441.53</td>
+      <td style="text-align: right">1.947991e+04</td>
+      <td style="text-align: left">▇▁▁▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">hepatitis_b</td>
+      <td style="text-align: right">553</td>
+      <td style="text-align: right">0.81</td>
+      <td style="text-align: right">80.94</td>
+      <td style="text-align: right">25.07</td>
+      <td style="text-align: right">1.00</td>
+      <td style="text-align: right">77.00</td>
+      <td style="text-align: right">92.00</td>
+      <td style="text-align: right">97.00</td>
+      <td style="text-align: right">9.900000e+01</td>
+      <td style="text-align: left">▁▁▁▂▇</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">measles</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1.00</td>
+      <td style="text-align: right">2419.59</td>
+      <td style="text-align: right">11467.27</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">17.00</td>
+      <td style="text-align: right">360.25</td>
+      <td style="text-align: right">2.121830e+05</td>
+      <td style="text-align: left">▇▁▁▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">bmi</td>
+      <td style="text-align: right">34</td>
+      <td style="text-align: right">0.99</td>
+      <td style="text-align: right">38.32</td>
+      <td style="text-align: right">20.04</td>
+      <td style="text-align: right">1.00</td>
+      <td style="text-align: right">19.30</td>
+      <td style="text-align: right">43.50</td>
+      <td style="text-align: right">56.20</td>
+      <td style="text-align: right">8.730000e+01</td>
+      <td style="text-align: left">▅▅▅▇▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">under_five_deaths</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1.00</td>
+      <td style="text-align: right">42.04</td>
+      <td style="text-align: right">160.45</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">4.00</td>
+      <td style="text-align: right">28.00</td>
+      <td style="text-align: right">2.500000e+03</td>
+      <td style="text-align: left">▇▁▁▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">polio</td>
+      <td style="text-align: right">19</td>
+      <td style="text-align: right">0.99</td>
+      <td style="text-align: right">82.55</td>
+      <td style="text-align: right">23.43</td>
+      <td style="text-align: right">3.00</td>
+      <td style="text-align: right">78.00</td>
+      <td style="text-align: right">93.00</td>
+      <td style="text-align: right">97.00</td>
+      <td style="text-align: right">9.900000e+01</td>
+      <td style="text-align: left">▁▁▁▂▇</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">total_expenditure</td>
+      <td style="text-align: right">226</td>
+      <td style="text-align: right">0.92</td>
+      <td style="text-align: right">5.94</td>
+      <td style="text-align: right">2.50</td>
+      <td style="text-align: right">0.37</td>
+      <td style="text-align: right">4.26</td>
+      <td style="text-align: right">5.75</td>
+      <td style="text-align: right">7.49</td>
+      <td style="text-align: right">1.760000e+01</td>
+      <td style="text-align: left">▃▇▃▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">diphtheria</td>
+      <td style="text-align: right">19</td>
+      <td style="text-align: right">0.99</td>
+      <td style="text-align: right">82.32</td>
+      <td style="text-align: right">23.72</td>
+      <td style="text-align: right">2.00</td>
+      <td style="text-align: right">78.00</td>
+      <td style="text-align: right">93.00</td>
+      <td style="text-align: right">97.00</td>
+      <td style="text-align: right">9.900000e+01</td>
+      <td style="text-align: left">▁▁▁▂▇</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">hiv_aids</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1.00</td>
+      <td style="text-align: right">1.74</td>
+      <td style="text-align: right">5.08</td>
+      <td style="text-align: right">0.10</td>
+      <td style="text-align: right">0.10</td>
+      <td style="text-align: right">0.10</td>
+      <td style="text-align: right">0.80</td>
+      <td style="text-align: right">5.060000e+01</td>
+      <td style="text-align: left">▇▁▁▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">gdp</td>
+      <td style="text-align: right">448</td>
+      <td style="text-align: right">0.85</td>
+      <td style="text-align: right">7483.16</td>
+      <td style="text-align: right">14270.17</td>
+      <td style="text-align: right">1.68</td>
+      <td style="text-align: right">463.94</td>
+      <td style="text-align: right">1766.95</td>
+      <td style="text-align: right">5910.81</td>
+      <td style="text-align: right">1.191727e+05</td>
+      <td style="text-align: left">▇▁▁▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">population</td>
+      <td style="text-align: right">652</td>
+      <td style="text-align: right">0.78</td>
+      <td style="text-align: right">12753375.12</td>
+      <td style="text-align: right">61012096.51</td>
+      <td style="text-align: right">34.00</td>
+      <td style="text-align: right">195793.25</td>
+      <td style="text-align: right">1386542.00</td>
+      <td style="text-align: right">7420359.00</td>
+      <td style="text-align: right">1.293859e+09</td>
+      <td style="text-align: left">▇▁▁▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">thinness_1_19_years</td>
+      <td style="text-align: right">34</td>
+      <td style="text-align: right">0.99</td>
+      <td style="text-align: right">4.84</td>
+      <td style="text-align: right">4.42</td>
+      <td style="text-align: right">0.10</td>
+      <td style="text-align: right">1.60</td>
+      <td style="text-align: right">3.30</td>
+      <td style="text-align: right">7.20</td>
+      <td style="text-align: right">2.770000e+01</td>
+      <td style="text-align: left">▇▃▁▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">thinness_5_9_years</td>
+      <td style="text-align: right">34</td>
+      <td style="text-align: right">0.99</td>
+      <td style="text-align: right">4.87</td>
+      <td style="text-align: right">4.51</td>
+      <td style="text-align: right">0.10</td>
+      <td style="text-align: right">1.50</td>
+      <td style="text-align: right">3.30</td>
+      <td style="text-align: right">7.20</td>
+      <td style="text-align: right">2.860000e+01</td>
+      <td style="text-align: left">▇▃▁▁▁</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">income_composition_of_resources</td>
+      <td style="text-align: right">167</td>
+      <td style="text-align: right">0.94</td>
+      <td style="text-align: right">0.63</td>
+      <td style="text-align: right">0.21</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">0.49</td>
+      <td style="text-align: right">0.68</td>
+      <td style="text-align: right">0.78</td>
+      <td style="text-align: right">9.500000e-01</td>
+      <td style="text-align: left">▁▁▅▇▆</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">schooling</td>
+      <td style="text-align: right">163</td>
+      <td style="text-align: right">0.94</td>
+      <td style="text-align: right">11.99</td>
+      <td style="text-align: right">3.36</td>
+      <td style="text-align: right">0.00</td>
+      <td style="text-align: right">10.10</td>
+      <td style="text-align: right">12.30</td>
+      <td style="text-align: right">14.30</td>
+      <td style="text-align: right">2.070000e+01</td>
+      <td style="text-align: left">▁▂▇▇▁</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The dataset contains 2938 rows, spanning 22 variables. Every row represents a country and year combination - a total of 193 unique countries for every year from 2000 to 2015. We’ll limit the analysis to one year since having the same country repeated as a new row constitutes a repeated measure, which requires more sophisticated analysis than what we’re doing here. I’m going to (arbitrarily) choose 2012.</p>
+
+<p>We also notice from the <code class="language-plaintext highlighter-rouge">glimpse()</code> output that we have quite a few missing values, so we’ll need to drop them from our analysis. Of the 22 variables available, we’re really only going to focus on the following variables:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">life_expectancy</code>: average life expectancy at birth, measured in years</li>
+  <li><code class="language-plaintext highlighter-rouge">schooling</code>: national average of years of formal education</li>
+  <li><code class="language-plaintext highlighter-rouge">status</code>: binary variable coded “Developed” or “Developing” (this will allow for some interesting stratification later on)</li>
+</ul>
+
+<p>We will ignore the other variables for this analysis. Thus, our final dataset is as follows:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">final_df</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">lifexp_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">year</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"2012"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">drop_na</span><span class="p">(</span><span class="n">life_expectancy</span><span class="p">,</span><span class="w"> </span><span class="n">schooling</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="analysis">Analysis</h2>
+
+<h3 id="step-1-fit-and-interpret-models">Step 1: Fit and Interpret Model(s)</h3>
+
+<h4 id="ordinary-least-squares-regression---single-variable">Ordinary Least Squares Regression - Single Variable</h4>
+
+<p>To visualize the math behind OLS, let’s take a look at a scatterplot of life expectancy vs schooling.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">final_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">schooling</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">life_expectancy</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="w">
+    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Figure 1: Life Expectancy vs Schooling"</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/figs/2020-09-10-regression/unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" /></p>
+
+<p>We have a pretty linear relationship with potentially some heteroscedasticity, which we’ll talk about in the assumptions <a href="#step-3-validate-regression-assumptions">section</a> below. We’re going to ask R to fit a line through these data points and then we’ll break down how R came up with this line.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">model_1</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">lm</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">final_df</span><span class="p">,</span><span class="w"> </span><span class="n">life_expectancy</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">schooling</span><span class="p">)</span><span class="w">
+
+</span><span class="n">summary</span><span class="p">(</span><span class="n">model_1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 
+## Call:
+## lm(formula = life_expectancy ~ schooling, data = final_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -14.8459  -2.5066   0.3488   3.2111  12.4766 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  41.8211     1.7213   24.30   &lt;2e-16 ***
+## schooling     2.2932     0.1319   17.38   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.003 on 171 degrees of freedom
+## Multiple R-squared:  0.6386,	Adjusted R-squared:  0.6365 
+## F-statistic: 302.1 on 1 and 171 DF,  p-value: &lt; 2.2e-16
+</code></pre></div></div>
+<p>The coefficients, also known as the <strong>beta terms</strong>, are our regression parameters: the intercept, \(b_0\), estimated as 41.821 years, represents the average life expectancy in a theoretical nation where the average years of schooling was 0. This value is meaningless because there are no nations with this average education level and to interpret a regression line beyond the scope of the data that generated it is an epic no-no of cardinal sin magnitude. The slope, \(b_1 \), is estimated as 2.293, and represents the rate of change in life expectancy per additional year of schooling, give or take an error term, \(\epsilon_i \). So on average, countries with one additional year of schooling add 2.293 years their average life expectancy.</p>
+
+<p>Thus, from the “true” population model: 
+\[y_i = \beta_0 + \beta_1*x_i + \epsilon_i \]</p>
+
+<p>we get our fitted model:
+\[y = 41.821 + 2.293*x  \]</p>
+
+<p>Note that the F-statistic has a very small p-value  (F = 302.1 on 1 and 171 DF,  p-value: &lt; 2.2e-16). This means that our model is statistically significant. But since we only have one predictor term, the statistical significance of the model is same as the significance of the <code class="language-plaintext highlighter-rouge">schooling</code> predictor.</p>
+
+<p>To visualize the line, we use <code class="language-plaintext highlighter-rouge">geom_smooth</code> with a method = “lm” argument:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">final_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">schooling</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">life_expectancy</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_smooth</span><span class="p">(</span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lm"</span><span class="p">,</span><span class="w"> </span><span class="n">se</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="w">
+    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Figure 2: Fitted Model"</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/figs/2020-09-10-regression/unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4" /></p>
+
+<p>We want to look closely at the distances between the datapoints and the line. Unfortunately, <code class="language-plaintext highlighter-rouge">lm()</code> doesn’t give us a dataframe output we can work with. This is where the <code class="language-plaintext highlighter-rouge">broom</code> package comes in handy. Specifically, the <code class="language-plaintext highlighter-rouge">augment()</code> function within <code class="language-plaintext highlighter-rouge">broom</code> allows us to build a dataframe with all kinds of useful information:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">model_1_df</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">broom</span><span class="o">::</span><span class="n">augment</span><span class="p">(</span><span class="n">model_1</span><span class="p">)</span><span class="w">
+</span><span class="n">model_1_df</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 173 x 9
+##    life_expectancy schooling .fitted .se.fit .resid    .hat .sigma   .cooksd .std.resid
+##              &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+##  1            59.5       9.8    64.3   0.542 -4.79  0.0117    5.00 0.00551      -0.964 
+##  2            76.9      14.2    74.4   0.427  2.52  0.00729   5.01 0.000936      0.505 
+##  3            75.1      14.4    74.8   0.440  0.257 0.00773   5.02 0.0000104     0.0516
+##  4            56        10.3    65.4   0.497 -9.44  0.00987   4.96 0.0179       -1.90  
+##  5            75.9      13.8    73.5   0.406  2.43  0.00658   5.01 0.000789      0.488 
+##  6            75.9      17.2    81.3   0.702 -5.36  0.0197    5.00 0.0118       -1.08  
+##  7            74.4      12.7    70.9   0.380  3.46  0.00578   5.01 0.00139       0.693 
+##  8            82.3      20.1    87.9   1.04  -5.61  0.0436    5.00 0.0300       -1.15  
+##  9            88        15.7    77.8   0.547 10.2   0.0119    4.96 0.0253        2.05  
+## 10            71.9      11.8    68.9   0.399  3.02  0.00637   5.01 0.00118       0.605 
+## # … with 163 more rows
+</code></pre></div></div>
+
+<p>The critical column here is the <strong>residuals</strong> vector, <code class="language-plaintext highlighter-rouge">.resid</code>, i.e. the vertical distances between the observed points and the fitted line. These values form the basis of regression modeling. To formalize, the residual (also known as the error term) is given as: 
+\[ \epsilon_i = Y_i - \hat{Y_i} \]
+where the little hat on the Y indicates that it’s the model estimate, meaning the y-value of the point on the blue line.</p>
+
+<p>If we were to look at just the data points, close one eye, and draw a line through them, we’d probably come with something close to the blue line R gave us. But while we would be using the complex machinery of our brain’s pattern-recognition capacity, the actual math behind the blue line is fairly straightforward. It all comes down to finding a line that optimizes these residuals. In fact, when we say “least squares”, we’re referring to minimizing the squares of these values. Let’s visualize them here using <code class="language-plaintext highlighter-rouge">geom_segment()</code>:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">model_1_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">schooling</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">life_expectancy</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_segment</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">xend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">schooling</span><span class="p">,</span><span class="w"> </span><span class="n">yend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.fitted</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"red"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_smooth</span><span class="p">(</span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lm"</span><span class="p">,</span><span class="w"> </span><span class="n">se</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="w">
+    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Figure 3: Model Residuals"</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/figs/2020-09-10-regression/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" /></p>
+
+<p>The red lines are the residuals and the way R computes the fitted model is by minimizing the squares of these red lines. The residuals  are squared to avoid cancellation when adding positive and negative values.</p>
+
+<h4 id="ols---multi-variable-modeling">OLS - Multi-variable Modeling</h4>
+
+<p>In the real world, we’re hardly ever working with just one predictor. The beauty of regression modeling lies in its flexibility - we can add as many predictors to the right side of the equation as we want, and they don’t need to be continuous variables. We can add categorical predictors using “dummy variables” (explained <a href="https://sphweb.bumc.bu.edu/otlt/MPH-Modules/PH717-QuantCore/PH717_MultipleVariableRegression/PH717_MultipleVariableRegression4.html">here</a>). There is of course a trade-off in flexibility if you add tons of predictors, and generally speaking, you should only add predictors that make theoretical sense and keep your model parsimonious.</p>
+
+<p>It should also be clear that when you add a second predictor, you’re no longer working in two-dimensional space. You need a third dimension to describe the relationship between the dependent and independent variables. You will also no longer be fitting a regression line, but a regression plane, which is very cool. We won’t make a plane here, but you can find an example <a href="https://data-se.netlify.app/2018/12/13/visualizing-a-regression-plane-two-predictors/">here</a>.</p>
+
+<p>Let’s take a look at our third variable, <code class="language-plaintext highlighter-rouge">status</code>, indicating whether the observation (nation) is considered developed or developing by the WHO’s definition. First, let’s do some visualization:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">final_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">row_number</span><span class="p">())</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">index</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">life_expectancy</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">status</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">status</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="w">
+    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Figure 4: Life Expectancy Difference by Status "</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/figs/2020-09-10-regression/unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7" /></p>
+
+<p>Clearly, countries in the developed world have higher life expectancy. But the question we want to answer is whether the relationship between schooling and life expectancy <strong>changes</strong> between developed and developing countries. In other words, if we fit a line using just the green points, and another using just the red points, would the slopes of those lines be different? And if so, how different? Regression modeling gives us an easy way to find out - all we need to do is add <code class="language-plaintext highlighter-rouge">status</code> as a predictor term:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">model_2</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">lm</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">final_df</span><span class="p">,</span><span class="w"> </span><span class="n">life_expectancy</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">schooling</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">status</span><span class="p">)</span><span class="w">
+</span><span class="n">summary</span><span class="p">(</span><span class="n">model_2</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 
+## Call:
+## lm(formula = life_expectancy ~ schooling + status, data = final_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -14.7545  -3.1520   0.5462   3.5773  12.4017 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)       45.4937     2.7312  16.657   &lt;2e-16 ***
+## schooling          2.1420     0.1578  13.578   &lt;2e-16 ***
+## statusDeveloping  -2.1010     1.2176  -1.725   0.0863 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 4.975 on 170 degrees of freedom
+## Multiple R-squared:  0.6448,	Adjusted R-squared:  0.6406 
+## F-statistic: 154.3 on 2 and 170 DF,  p-value: &lt; 2.2e-16
+</code></pre></div></div>
+
+<p>Again, the p-value on our F-statistic is significant, meaning that there is a statistically significant relationship between the outcome and the combination of predictors.</p>
+
+<p>Our new model statement is: 
+\[ life\,expectancy = 45.4937 + 2.1420<em>schooling - 2.1010</em>status \]</p>
+
+<p>where the coefficient of the <code class="language-plaintext highlighter-rouge">status</code> variable indicates that, on average, after we control for schooling, there is a difference in life expectancy of 2.1 years between developing and developed countries. However, note that the p-value for the status predictor is 0.08 (p &gt; 0.05), meaning that controlling for education, status is <strong>not</strong> a significant predictor of life expectancy. This does not mean that status <strong>alone</strong> is not a significant predictor of life expectancy. It just means that after we control for education by putting it in the model, the effect of status mostly washes away.</p>
+
+<p>To illustrate:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">model_3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lm</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">final_df</span><span class="p">,</span><span class="w"> </span><span class="n">life_expectancy</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">status</span><span class="p">)</span><span class="w">
+</span><span class="n">summary</span><span class="p">(</span><span class="n">model_3</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 
+## Call:
+## lm(formula = life_expectancy ~ status, data = final_df)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -19.408  -5.408   1.307   5.592  14.892 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        80.393      1.330  60.456  &lt; 2e-16 ***
+## statusDeveloping  -11.285      1.458  -7.742 8.17e-13 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 7.161 on 171 degrees of freedom
+## Multiple R-squared:  0.2596,	Adjusted R-squared:  0.2552 
+## F-statistic: 59.94 on 1 and 171 DF,  p-value: 8.169e-13
+</code></pre></div></div>
+
+<p>Clearly, status is a highly significant factor in life expectancy when considered by itself. This is even clearer in a plot:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">final_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">life_expectancy</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">stat_smooth</span><span class="p">(</span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lm"</span><span class="p">,</span><span class="w"> </span><span class="n">se</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="w">
+    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Figure 5: Status vs Life Expectancy"</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/figs/2020-09-10-regression/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10" /></p>
+
+<p>What the p-value for status in <code class="language-plaintext highlighter-rouge">model_2</code> <strong>does</strong> tell us is that the relationship between schooling and life expectancy does not change significantly between developed and developing countries.</p>
+
+<p>Again, to visualize:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">final_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">schooling</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">life_expectancy</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">status</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">status</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/figs/2020-09-10-regression/unnamed-chunk-11-1.png" alt="plot of chunk unnamed-chunk-11" /></p>
+
+<p>The point is that even though we have two distinct clusters, the regression line is more or less the same between them.</p>
+
+<p>For our purposes, we’re going to take all of this to mean that we should get rid of the <code class="language-plaintext highlighter-rouge">status</code> term in our model. This is not to say that all predictors with p-values &lt; 0.05 don’t belong in your model. We’re not going to go down that rabbit hole, but you can find people arguing the matter at length on <a href="https://stackexchange.com/">stackexchange</a>. This is just a decision I’m making based on the evidence.</p>
+
+<p>So now that we’ve settled on <code class="language-plaintext highlighter-rouge">model_1</code>, how do we figure out how “good” it is? That’s where regression diagnostics come in.</p>
+
+<h3 id="step-2-figure-out-how-good-your-model-is">Step 2: Figure out how “good” your model is</h3>
+
+<p>Smith et al (2017) describe regression diagnostics as an art, referring to the absence of a structured process for model evaluation. After looking through a digital bushel of papers, I would have to agree. If you spend any time looking at scientific work employing linear regression models, you’ll be hard-pressed to find any consistency in the measures scientists use to evaluate their models (if they use such measures at all).</p>
+
+<p>However, it’s clear that simply fitting a linear model is not enough. While there are many different constructs and measures to evaluate model performance, I would like to, at minimum, understand the magnitude of a model’s error, its predictive capacity, the impact of outliers and influential observations, and whether it meets the assumptions for linear modeling in the first place. We’ll look at this last topic in the <a href="#step-3-validate-regression-assumptions">next section</a></p>
+
+<p>First, let’s look at perhaps the most common model diagnostic, \(R^2\), or, more formally, the coefficient of determination. For a single-variable model, \(R^2\), is just the square of our friend, the Pearson correlation coefficient. It turns out that this is actually a much more useful quantity:</p>
+
+<p>\[ R^2 = \frac {\Sigma_{i=1}^n (y_i - \hat y_i)^2} {\Sigma_{i=1}^n (y_i - \bar y_i)^2} \]</p>
+
+<p>\( R^2 \) is powerful because it’s completely intuitive - it equals the percentage of variance in the outcome explained by the predictor(s). This is part of the <code class="language-plaintext highlighter-rouge">summary()</code> output:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">summary</span><span class="p">(</span><span class="n">model_1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## 
+## Call:
+## lm(formula = life_expectancy ~ schooling, data = final_df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -14.8459  -2.5066   0.3488   3.2111  12.4766 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  41.8211     1.7213   24.30   &lt;2e-16 ***
+## schooling     2.2932     0.1319   17.38   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.003 on 171 degrees of freedom
+## Multiple R-squared:  0.6386,	Adjusted R-squared:  0.6365 
+## F-statistic: 302.1 on 1 and 171 DF,  p-value: &lt; 2.2e-16
+</code></pre></div></div>
+
+<p>For the single-variable model, \( R^2 = 0.6386 \), so 63.86% of the variance in a nation’s life expectancy can be explained by its linear relationship to education. For a single variable model, this is a pretty high \( R^2 \). Note that when we fit <code class="language-plaintext highlighter-rouge">model_2</code>, the \( R^2 \) only went up to 64.48%, all while taking away a degree of freedom from the model - further evidence that <code class="language-plaintext highlighter-rouge">status</code> is not a worthwhile predictor in this context.</p>
+
+<p>To quantify the model’s error, which, again, comes down to residuals, we can look at Root Mean Square Error (<strong>RMSE</strong>), another highly common regression diagnostic. It is defined as:
+\[ RMSE = \sqrt \frac {\Sigma_{i=1}^n (\hat y_i - y_i)^2}  {n}\]</p>
+
+<p>and as you might intuit from the formula, RMSE is a measure of the standard deviation of residuals. RMSE can be computed using the <code class="language-plaintext highlighter-rouge">metrics</code> package, or just using a quick manual calculation:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">sqrt</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">model_1_df</span><span class="o">$</span><span class="n">.resid</span><span class="o">^</span><span class="m">2</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 4.97418
+</code></pre></div></div>
+
+<p>Our calculated RMSE of 4.974 indicates that actual life expectancy deviates from life expectancy predicted by the model by about 5 years, on average.</p>
+
+<h4 id="outliers--influential-observations">Outliers &amp; Influential Observations</h4>
+
+<p>Another way to assess model performance is to figure out whether it was influenced by a small set of influential observations. Perhaps our model started out as a perfectly nice model, chugging along, predicting stuff with few mistakes. But then it came across some highly influential characters - data points that don’t hang with the pack, non-conformers, and they applied heavy influence and ultimately swayed our model off its course.</p>
+
+<p>In truth, the study of outliers and influential observation is a whole thing and worthy of its own project. For now, let’s do two things. First, let’s look at Figure 2 and acknowledge that there’s not much visual evidence of outliers. Second, let’s do a quick check using <a href="https://www.mathworks.com/help/stats/cooks-distance.html#:~:text=Cook's%20distance%20is%20the%20scaled,on%20the%20fitted%20response%20values.">Cook’s distance</a>, <code class="language-plaintext highlighter-rouge">.cooksd</code> in our <code class="language-plaintext highlighter-rouge">augment()</code> dataframe.</p>
+
+<p>Cook’s distance is a metric based on <a href="https://online.stat.psu.edu/stat501/lesson/11/11.4">deleted residuals</a> and is calculated for each data point in the set. It is a measure of the difference that would occur in our predicted values if we were to re-run the regression model without that point. Let’s look at the Cook’s distances in <code class="language-plaintext highlighter-rouge">model_1</code>:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">model_1_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">arrange</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="n">.cooksd</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">inner_join</span><span class="p">(</span><span class="n">lifexp_df</span><span class="p">,</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">life_expectancy</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">head</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## # A tibble: 6 x 29
+##   life_expectancy schooling .fitted .se.fit .resid    .hat .sigma .cooksd .std.resid
+##             &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+## 1            63.6       5      53.3   1.09   10.3  0.0473    4.95  0.111        2.11
+## 2            63         5.1    53.5   1.08    9.48 0.0462    4.96  0.0912       1.94
+## 3            49.7       9.1    62.7   0.611 -13.0  0.0149    4.92  0.0518      -2.62
+## 4            77         9.9    64.5   0.532  12.5  0.0113    4.92  0.0360       2.51
+## 5            52.2      11      67.0   0.443 -14.8  0.00785   4.89  0.0351      -2.98
+## 6            52.7       9.7    64.1   0.551 -11.4  0.0121    4.94  0.0321      -2.29
+## # … with 20 more variables: country &lt;fct&gt;, year &lt;int&gt;, status &lt;fct&gt;,
+## #   adult_mortality &lt;int&gt;, infant_deaths &lt;int&gt;, alcohol &lt;dbl&gt;,
+## #   percentage_expenditure &lt;dbl&gt;, hepatitis_b &lt;int&gt;, measles &lt;int&gt;, bmi &lt;dbl&gt;,
+## #   under_five_deaths &lt;int&gt;, polio &lt;int&gt;, total_expenditure &lt;dbl&gt;, diphtheria &lt;int&gt;,
+## #   hiv_aids &lt;dbl&gt;, gdp &lt;dbl&gt;, population &lt;dbl&gt;, thinness_1_19_years &lt;dbl&gt;,
+## #   thinness_5_9_years &lt;dbl&gt;, income_composition_of_resources &lt;dbl&gt;
+</code></pre></div></div>
+
+<p>We can see that our top five most influential observations are Eritrea, Niger, Sierra Leone, Bangladesh, and Lesotho. To complement using a quick visualization:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">model_1_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">row_number</span><span class="p">())</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.cooksd</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">theme_bw</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/figs/2020-09-10-regression/unnamed-chunk-15-1.png" alt="plot of chunk unnamed-chunk-15" /></p>
+
+<p>We see three points (Eritrea, Niger, Sierra Leone) that stand out from the pack. These observations are not just outliers, but <strong>influential outliers</strong>, meaning they swayed our model towards themselves, compromising its predictive capability.</p>
+
+<p>So what do we do with them? You can find lots of different “rules of thumb” online, dictating which Cook’s distance might prompt removal of a data point from your set, but what makes most sense to me in this situation is to accept the data as they are. We don’t have any super high leverage points here, and even if we did, we would need justification for removing them. As you can probably intuit, few natural processes are simple enough to be accurately explained by a linear model. Hence the discovery/invention of more sophisticated probabilistic models and machine learning. But suffice it to say, we’re leaving Eritrea <a href="https://en.wikipedia.org/wiki/Eritrea">where it is</a>.</p>
+
+<h3 id="step-3-validate-regression-assumptions">Step 3: Validate Regression Assumptions</h3>
+
+<p>Now that we’ve done all this work, we need to figure out whether any of it was worthwhile. This is a bit of a nuisance with linear regression - you can’t really check the assumptions before you fit the model because you need the model to know if the assumptions were satisfied.</p>
+
+<p>You’ll often see regression assumptions summarized as follows:</p>
+<ol>
+  <li><strong>Linearity</strong>: If the data aren’t linear, don’t fit a linear model. We looked at the scatterplot in <a href="#step-1-fit-and-interpret-models">step 1</a> and found it was pretty linear.</li>
+  <li><strong>Independence</strong>: Observations shouldn’t be clustered or have any influence on other observations. It’s hard to say this is the case in our situation, since it’s pretty clear that developing countries and developed countries cluster together and through political and economic means influence their neighbors’ policies and practices.</li>
+  <li><strong>Normality of residuals</strong>: If you look at the residuals in Figure 3 and superimpose little sideways bell curves along the regression line, you should see that the residuals are normally distributed. Basically, the majority of the residuals are located close to the line and a few are found further away. This is best explained visually: <figure> <img src="/assets/images/residuals.png" /> &lt;figcaption&gt; <a href="https://bookdown.org/ripberjt/qrmbook/ols-assumptions-and-simple-regression-diagnostics.html">Source</a> &lt;/figcaption&gt; </figure> It looks like this is generally the case for our model, using the trusty eyeball method.</li>
+  <li><strong>Homoscedasticity</strong> <sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>: Homoscedasticity means that the variance of the residual terms is somewhat constant. If your data are heteroscedastic, linear regression modeling is probably not a good choice. Here’s an example of heteroscedasticity:</li>
+</ol>
+<figure>
+    <img src="/assets/images/heteroscedasticity.png" />
+    <figcaption><a href="https://www.statisticshowto.com/homoscedasticity/">Source</a></figcaption>
+</figure>
+
+<p>When we first looked at our data in scatterplot form, we noted some definite heteroscedasticity. Let’s look at it again:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">final_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">schooling</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">life_expectancy</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_smooth</span><span class="p">(</span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"lm"</span><span class="p">,</span><span class="w"> </span><span class="n">se</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="w">
+    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Life Expectancy vs Schooling"</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><img src="/figs/2020-09-10-regression/unnamed-chunk-16-1.png" alt="plot of chunk unnamed-chunk-16" /></p>
+
+<p>Below 10 years of schooling, our residuals are much wider than on the other side of 10. There might be some intuitive explanation for this observation. For instance, it’s possible that there’s a distinction between countries where a majority of the population finishes what is considered high school in the US and countries where that isn’t the case. In these countries, years of schooling doesn’t matter as much as other factors - like access to clean water and nutritious foods.</p>
+
+<p>All in all, checking regression assumptions convinced me that linear regression might not be the best choice here. Or at least not on its own. But we did learn some good fundamental principles about how statistical modeling works.</p>
+
+<h2 id="conclusions">Conclusions</h2>
+
+<p>After going through a fairly brief analysis, we learned that:</p>
+
+<ul>
+  <li>Globally, the relationship between life expectancy and education based on WHO data is fairly linear, with a simple model resulting in an  \( R^2 \) of 0.64.</li>
+  <li>Few influential outliers were present in the data.</li>
+  <li>In order to build a more robust model, data should be limited to a range where the linear regression assumptions (namely, homoscedasticity) are met. Otherwise, a more robust modeling strategy should be used.</li>
+</ul>
+
+<h2 id="further-reading">Further Reading</h2>
+<ul>
+  <li>In-depth <a href="https://quantdev.ssri.psu.edu/sites/qdev/files/02_RegressionReview_Continuous%2C_Ordinal%2C_and_Binary_Outcomes__2018_0.html">overview</a> of regression modeling with different types of predictor variables</li>
+  <li>Good intro to <a href="https://uc-r.github.io/model_selection">model selection</a></li>
+  <li><a href="https://medium.com/@amanbamrah/how-to-evaluate-the-accuracy-of-regression-results-b38e5512afd3">Explanation</a> of differences between RMSE, \( R^2 \), and other measures of model error</li>
+  <li>A nice interactive OLS <a href="https://setosa.io/ev/ordinary-least-squares-regression/">explainer</a></li>
+  <li>Everything you ever wanted to know about residuals <a href="https://drsimonj.svbtle.com/visualising-residuals">here</a></li>
+  <li>Great <a href="http://www.stat.cmu.edu/~cshalizi/mreg/15/lectures/20/lecture-20.pdf">lecture</a> on outliers</li>
+</ul>
+
+<h2 id="references">References</h2>
+<ul>
+  <li>Jenkins-Smith, H. C. (2017). Quantitative Research Methods for Political Science, Public Policy and Public Administration (With Applications in R): 3rd Edition. University of Oklahoma</li>
+  <li>Field, A. P., Miles, J., &amp; Field, Z. (2012). Discovering statistics using R. Thousand Oaks, CA.</li>
+</ul>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>If you’re a spelling bee organizer, I recommend adding this word (mostly because I still misspell it almost every time I write it). <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/categories/#global-health" class="page__taxonomy-item" rel="tag">global health</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/categories/#modeling" class="page__taxonomy-item" rel="tag">modeling</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/categories/#regression" class="page__taxonomy-item" rel="tag">regression</a>
+    
+    </span>
+  </p>
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2020-09-10T00:00:00-07:00">September 10, 2020</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Modeling+Global+Life+Expectancy+vs+Education++using++Least+Squares+Regression%20http%3A%2F%2Flocalhost%3A4000%2Fmodeling%2Fregression%2Fglobal%2520health%2Fregression%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fmodeling%2Fregression%2Fglobal%2520health%2Fregression%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fmodeling%2Fregression%2Fglobal%2520health%2Fregression%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/import-function/" class="pagination--pager" title="Importing Data Files using purrr and stringr
+">Previous</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You may also enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/import-function/" rel="permalink">Importing Data Files using <code class="language-plaintext highlighter-rouge">purrr</code> and <code class="language-plaintext highlighter-rouge">stringr</code>
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  21 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">One, two, three times a function
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/correlation/" rel="permalink">Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  23 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">What factors are most closely correlated with nation-level happiness?
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/blog/2020/07/covid_dashboard/" rel="permalink">Summarizing Covid-19 with flexdashboard
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  less than 1 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">Dashboards are fantastic.
+
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/car-crashes/" rel="permalink">Visualizing Motor Vehicle Fatalities with ggplot2
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  24 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">An analysis of car fatalities by state using data from the Big Cities Health Initiative.
+
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <!--other footer stuff I don't want
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+--> 
+
+<div class="page__footer-copyright">&copy; 2020 Alice Tivarovsky. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <script src="https://kit.fontawesome.com/4eee35f757.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" defer
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+
+  </body>
+</html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.19.3 by Michael Rose
+  Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
