@@ -1,0 +1,172 @@
+---
+title: Plotting Comparative Covid-19 Incidence with 'ggplot2'
+author: "alice"
+date: '2022-01-30'
+excerpt: "A DIY Epi Curve, Just for Fun"
+layout: single
+toc: true
+tags:
+  - Epidemics
+  - Modeling
+--- 
+
+## Motivation
+
+Covid-19 - the bug that won't go away. It's hard to believe we've been here for over 2 years. Perhaps like you, I went from checking the Epi curves daily back in 2019, to loneliness and pandemic fatigue, to baking sourdough and planting stuff, to kind of, sort of, almost going back to normal. And then... Omicron. So here we are, back in the familiar bubble.
+
+Speaking of Epi curves, it's very easy to make one of your own - certainly easier than sourdough starter. Here's one using `ggplot2` and the Covid-19 global dataset maintained by [Our World in Data, OWID](https://ourworldindata.org/coronavirus-source-data). OWID compiles this dataset from several sources including the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University, national government reports, and the Human Mortality Database (2021). 
+
+```{r libraries}
+library(tidyverse)
+
+```
+
+## Data Preparation
+
+First, let's import and examine the .csv from the "Our World in Data" Github [repo](https://github.com/owid/covid-19-data/tree/master/public/data). 
+
+```{r import}
+raw_data = read.csv("../data/epi_curves/owid-covid-data.csv")
+str(raw_data)
+head(raw_data)
+
+```
+
+The dataset is clean and in wide format. Countries are contained in the `location` variable (with corresponding values for `iso_code` given), and we have daily values for quite a few variables including `new_cases` (we'll use this to plot disease incidence), `new_cases_per_million`, `new_tests`, `total_vaccinations` and booster data is now available as `total_boosters`.
+
+## Analysis
+
+Let's first plot disease incidence using the `new_cases` variable.
+```{r new_cases plot, warning = FALSE}
+us_data = 
+  raw_data %>% 
+  filter(location == "United States") %>% 
+  mutate(date = as.Date(date)) 
+
+ggplot(us_data, aes(x = date, y = new_cases)) +
+  geom_point()
+
+```
+
+It looks a little crazy, almost like there are several superimposed curves. What's really happening is that we're seeing a lot of noise from day-to-day fluctuation. Data aren't reported uniformly, so it's not uncommon to observe a "spike" in reports on, say, Mondays when reporting for the weekend is done. 
+
+For this reason, we used smoothed data, usually amounting to a 7-day average. This technique allows us to eliminate the noise attributable to reporting fluctuations through the week. OWID gives us a smoothed version of `new_cases` which achieves just that. 
+
+```{r us plot, warning = FALSE}
+us_plot = 
+  ggplot(us_data, aes(x = date, y = new_cases_smoothed)) +
+  geom_point() + 
+  labs(title = "Covid-19 Incidence in the United States")
+
+us_plot
+```
+
+Much better. Let's now compare the US to a few other (arbitrarily chosen) countries. Here's Peru. 
+
+```{r peru, warning = FALSE}
+peru_plot = 
+  raw_data %>% 
+  filter(location == "Peru") %>% 
+  mutate(date = as.Date(date)) %>% 
+  ggplot(aes(x = date, y = new_cases_smoothed)) +
+  geom_point() + 
+  labs(title = "Covid-19 Incidence in Peru")
+
+peru_plot
+```
+
+
+And here's Japan. 
+
+```{r japan plot, warning = FALSE}
+japan_plot = 
+  raw_data %>% 
+  filter(location == "Japan") %>% 
+  mutate(date = as.Date(date)) %>% 
+  ggplot(aes(x = date, y = new_cases_smoothed)) +
+  geom_point() + 
+  labs(title = "Covid-19 Incidence in Japan")
+
+japan_plot
+```
+
+
+Here's Australia. 
+
+```{r australia plot, warning = FALSE}
+aus_plot = 
+  raw_data %>% 
+  filter(location == "Australia") %>% 
+  mutate(date = as.Date(date)) %>% 
+  ggplot(aes(x = date, y = new_cases_smoothed)) +
+  geom_point() + 
+  labs(title = "Covid-19 Incidence in Australia")
+
+aus_plot
+```
+
+Here's Zimbabwe. 
+
+```{r zimbabwe plot, warning = FALSE}
+zimbabwe_plot = 
+  raw_data %>% 
+  filter(location == "Zimbabwe") %>% 
+  mutate(date = as.Date(date)) %>% 
+  ggplot(aes(x = date, y = new_cases_smoothed)) +
+  geom_point() + 
+  labs(title = "Covid-19 Incidence in Zimbabwe")
+
+zimbabwe_plot
+```
+
+
+Finally, here's Turkey. 
+
+```{r turkey plot, warning=FALSE}
+turkey_plot = 
+  raw_data %>% 
+  filter(location == "Turkey") %>% 
+  mutate(date = as.Date(date)) %>% 
+  ggplot(aes(x = date, y = new_cases_smoothed)) +
+  geom_point() + 
+  labs(title = "Covid-19 Incidence in Turkey")
+
+turkey_plot
+```
+
+It's evident that Omicron has a foothold all over the world, but to really compare the penetration we'll need to scale the case loads to the population. Again, OWID gives us a variable where cases/population is already calculated: `new_cases_per_million` and `new_cases_smoothed_per_million`. We'll used the smoothed version and combine the incidence of all six countries onto one plot. 
+
+```{r new cases per population combined, warning = FALSE}
+
+combined_plot = 
+  raw_data %>% 
+  filter(location %in% c("United States", "Peru", "Japan", "Australia", "Zimbabwe", "Turkey")) %>% 
+  mutate(date = as.Date(date)) %>% 
+  ggplot(aes(x = date, y = new_cases_smoothed_per_million, group = location)) +
+  geom_line(aes(color = location))
+
+combined_plot
+```
+
+Interestingly, Australia has had the highest Omicron peak, almost double that of the US. This is particularly unfortunate, given Australia's [ultra-high vaccination rate](https://www.aljazeera.com/news/2022/1/10/australia-to-push-through-omicron-as-total-cases-hit-1-million). 
+
+Now, having learned something, let's polish up the curves. 
+
+```{r final plot, warning=FALSE}
+final_plot = 
+  combined_plot +
+  labs(title = "Covid-19 Incidence in Australia, Japan, Peru, Turkey, the United States, and Zimbabwe, Cases per Million, Smoothed 7-Day Average", 
+       x = "Date", 
+       y = "Cases per Million")
+
+final_plot + theme_minimal()
+  
+```
+
+
+## Conclusion
+
+While you can certainly just google Covid-19 in any country that interests you, getting to an accurate, scaled comparison between countries probably requires a bit more effort. Thankfully, Our World in Data and `ggplot2` make the task entirely painless. 
+
+
+

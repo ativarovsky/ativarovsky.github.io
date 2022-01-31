@@ -46,4 +46,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/modeling/regression/global%20health/regression/",
         "teaser": null
+      },{
+        "title": "Plotting Comparative Covid-19 Incidence with 'ggplot2'",
+        "excerpt":"Motivation Covid-19 - the bug that won’t go away. It’s hard to believe we’ve been here for over 2 years. Perhaps like you, I went from checking the Epi curves daily back in 2019, to loneliness and pandemic fatigue, to baking sourdough and planting stuff, to kind of, sort of,...","categories": [],
+        "tags": ["Epidemics","Modeling"],
+        "url": "http://localhost:4000/comp-epi-curve/",
+        "teaser": null
       }]
