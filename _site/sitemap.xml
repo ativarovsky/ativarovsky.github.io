@@ -33,6 +33,10 @@
 <lastmod>2020-09-10T00:00:00-07:00</lastmod>
 </url>
 <url>
+<loc>http://localhost:4000/comp-epi-curve/</loc>
+<lastmod>2022-01-30T00:00:00-08:00</lastmod>
+</url>
+<url>
 <loc>http://localhost:4000/_pages/about/</loc>
 </url>
 <url>
@@ -58,6 +62,10 @@
 </url>
 <url>
 <loc>http://localhost:4000/page2/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/_pages/about.html</loc>
+<lastmod>2022-08-28T13:37:59-07:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/assets/covid_dash.html</loc>

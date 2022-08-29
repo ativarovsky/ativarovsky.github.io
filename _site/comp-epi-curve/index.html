@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Plotting Comparative Covid-19 Incidence with ‘ggplot2’ | Alice Tivarovsky</title>
+<meta name="description" content="A DIY Epi Curve, Just for Fun">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Alice Tivarovsky">
+<meta property="og:title" content="Plotting Comparative Covid-19 Incidence with ‘ggplot2’">
+<meta property="og:url" content="http://localhost:4000/comp-epi-curve/">
+
+
+  <meta property="og:description" content="A DIY Epi Curve, Just for Fun">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-01-30T00:00:00-08:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/comp-epi-curve/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Alice Tivarovsky",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Alice Tivarovsky Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+<!-- add htmlwidgets files -->
+
+<!-- end htmlwidgets files -->
+
+
+    <!-- start custom head snippets -->
+<link href="https://fonts.googleapis.com/css?family=News+Cycle:400,700" rel="stylesheet" type="text/css">
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Alice Tivarovsky
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/_pages/posts">Blog</a>
+            </li><li class="masthead__menu-item">
+              <a href="/_pages/resume">Resum&eacute;</a>
+            </li><li class="masthead__menu-item">
+              <a href="/_pages/about">About</a>
+            </li><li class="masthead__menu-item">
+              <a href="/_pages/contact">Contact</a>
+            </li><li class="masthead__menu-item">
+              <a href="https://github.com/ativarovsky">Github</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person">
+
+  
+
+  <div class="author__content">
+    
+      <h3 class="author__name" itemprop="name"></h3>
+    
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Plotting Comparative Covid-19 Incidence with ‘ggplot2’">
+    <meta itemprop="description" content="A DIY Epi Curve, Just for Fun">
+    <meta itemprop="datePublished" content="2022-01-30T00:00:00-08:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Plotting Comparative Covid-19 Incidence with ‘ggplot2’
+</h1>
+          
+            <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  11 minute read
+
+</p>
+          
+          
+            <p class="page__date"><strong>Updated:</strong> <time datetime="2022-01-30T00:00:00-08:00">January 30, 2022</time></p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right ">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#motivation">Motivation</a></li>
+  <li><a href="#data-preparation">Data Preparation</a></li>
+  <li><a href="#analysis">Analysis</a></li>
+  <li><a href="#conclusion">Conclusion</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <h2 id="motivation">Motivation</h2>
+
+<p>Covid-19 - the bug that won’t go away. It’s hard to believe we’ve been here for over 2 years. Perhaps like you, I went from checking the Epi curves daily back in 2019, to loneliness and pandemic fatigue, to baking sourdough and planting stuff, to kind of, sort of, almost going back to normal. And then… Omicron. So here we are, back in the familiar bubble.</p>
+
+<p>Speaking of Epi curves, it’s very easy to make one of your own - certainly easier than sourdough starter. Here’s one using <code class="language-plaintext highlighter-rouge">ggplot2</code> and the Covid-19 global dataset maintained by <a href="https://ourworldindata.org/coronavirus-source-data">Our World in Data, OWID</a>. OWID compiles this dataset from several sources including the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University, national government reports, and the Human Mortality Database (2021).</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span></code></pre></figure>
+
+<h2 id="data-preparation">Data Preparation</h2>
+
+<p>First, let’s import and examine the .csv from the “Our World in Data” Github <a href="https://github.com/owid/covid-19-data/tree/master/public/data">repo</a>.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">raw_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read.csv</span><span class="p">(</span><span class="s2">"../data/epi_curves/owid-covid-data.csv"</span><span class="p">)</span><span class="w">
+</span><span class="n">str</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## 'data.frame':	157936 obs. of  67 variables:
+##  $ iso_code                                  : chr  "AFG" "AFG" "AFG" "AFG" ...
+##  $ continent                                 : chr  "Asia" "Asia" "Asia" "Asia" ...
+##  $ location                                  : chr  "Afghanistan" "Afghanistan" "Afghanistan" "Afghanistan" ...
+##  $ date                                      : chr  "2020-02-24" "2020-02-25" "2020-02-26" "2020-02-27" ...
+##  $ total_cases                               : num  5 5 5 5 5 5 5 5 5 5 ...
+##  $ new_cases                                 : num  5 0 0 0 0 0 0 0 0 0 ...
+##  $ new_cases_smoothed                        : num  NA NA NA NA NA 0.714 0.714 0 0 0 ...
+##  $ total_deaths                              : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ new_deaths                                : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ new_deaths_smoothed                       : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ total_cases_per_million                   : num  0.126 0.126 0.126 0.126 0.126 0.126 0.126 0.126 0.126 0.126 ...
+##  $ new_cases_per_million                     : num  0.126 0 0 0 0 0 0 0 0 0 ...
+##  $ new_cases_smoothed_per_million            : num  NA NA NA NA NA 0.018 0.018 0 0 0 ...
+##  $ total_deaths_per_million                  : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ new_deaths_per_million                    : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ new_deaths_smoothed_per_million           : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ reproduction_rate                         : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ icu_patients                              : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ icu_patients_per_million                  : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ hosp_patients                             : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ hosp_patients_per_million                 : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ weekly_icu_admissions                     : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ weekly_icu_admissions_per_million         : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ weekly_hosp_admissions                    : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ weekly_hosp_admissions_per_million        : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ new_tests                                 : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ total_tests                               : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ total_tests_per_thousand                  : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ new_tests_per_thousand                    : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ new_tests_smoothed                        : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ new_tests_smoothed_per_thousand           : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ positive_rate                             : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ tests_per_case                            : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ tests_units                               : chr  "" "" "" "" ...
+##  $ total_vaccinations                        : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ people_vaccinated                         : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ people_fully_vaccinated                   : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ total_boosters                            : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ new_vaccinations                          : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ new_vaccinations_smoothed                 : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ total_vaccinations_per_hundred            : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ people_vaccinated_per_hundred             : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ people_fully_vaccinated_per_hundred       : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ total_boosters_per_hundred                : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ new_vaccinations_smoothed_per_million     : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ new_people_vaccinated_smoothed            : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ new_people_vaccinated_smoothed_per_hundred: num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ stringency_index                          : num  8.33 8.33 8.33 8.33 8.33 ...
+##  $ population                                : num  39835428 39835428 39835428 39835428 39835428 ...
+##  $ population_density                        : num  54.4 54.4 54.4 54.4 54.4 ...
+##  $ median_age                                : num  18.6 18.6 18.6 18.6 18.6 18.6 18.6 18.6 18.6 18.6 ...
+##  $ aged_65_older                             : num  2.58 2.58 2.58 2.58 2.58 ...
+##  $ aged_70_older                             : num  1.34 1.34 1.34 1.34 1.34 ...
+##  $ gdp_per_capita                            : num  1804 1804 1804 1804 1804 ...
+##  $ extreme_poverty                           : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ cardiovasc_death_rate                     : num  597 597 597 597 597 ...
+##  $ diabetes_prevalence                       : num  9.59 9.59 9.59 9.59 9.59 9.59 9.59 9.59 9.59 9.59 ...
+##  $ female_smokers                            : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ male_smokers                              : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ handwashing_facilities                    : num  37.7 37.7 37.7 37.7 37.7 ...
+##  $ hospital_beds_per_thousand                : num  0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 ...
+##  $ life_expectancy                           : num  64.8 64.8 64.8 64.8 64.8 ...
+##  $ human_development_index                   : num  0.511 0.511 0.511 0.511 0.511 0.511 0.511 0.511 0.511 0.511 ...
+##  $ excess_mortality_cumulative_absolute      : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ excess_mortality_cumulative               : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ excess_mortality                          : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ excess_mortality_cumulative_per_million   : num  NA NA NA NA NA NA NA NA NA NA ...</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">head</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">##   iso_code continent    location       date total_cases new_cases new_cases_smoothed total_deaths
+## 1      AFG      Asia Afghanistan 2020-02-24           5         5                 NA           NA
+## 2      AFG      Asia Afghanistan 2020-02-25           5         0                 NA           NA
+## 3      AFG      Asia Afghanistan 2020-02-26           5         0                 NA           NA
+## 4      AFG      Asia Afghanistan 2020-02-27           5         0                 NA           NA
+## 5      AFG      Asia Afghanistan 2020-02-28           5         0                 NA           NA
+## 6      AFG      Asia Afghanistan 2020-02-29           5         0              0.714           NA
+##   new_deaths new_deaths_smoothed total_cases_per_million new_cases_per_million
+## 1         NA                  NA                   0.126                 0.126
+## 2         NA                  NA                   0.126                 0.000
+## 3         NA                  NA                   0.126                 0.000
+## 4         NA                  NA                   0.126                 0.000
+## 5         NA                  NA                   0.126                 0.000
+## 6         NA                  NA                   0.126                 0.000
+##   new_cases_smoothed_per_million total_deaths_per_million new_deaths_per_million
+## 1                             NA                       NA                     NA
+## 2                             NA                       NA                     NA
+## 3                             NA                       NA                     NA
+## 4                             NA                       NA                     NA
+## 5                             NA                       NA                     NA
+## 6                          0.018                       NA                     NA
+##   new_deaths_smoothed_per_million reproduction_rate icu_patients icu_patients_per_million
+## 1                              NA                NA           NA                       NA
+## 2                              NA                NA           NA                       NA
+## 3                              NA                NA           NA                       NA
+## 4                              NA                NA           NA                       NA
+## 5                              NA                NA           NA                       NA
+## 6                              NA                NA           NA                       NA
+##   hosp_patients hosp_patients_per_million weekly_icu_admissions weekly_icu_admissions_per_million
+## 1            NA                        NA                    NA                                NA
+## 2            NA                        NA                    NA                                NA
+## 3            NA                        NA                    NA                                NA
+## 4            NA                        NA                    NA                                NA
+## 5            NA                        NA                    NA                                NA
+## 6            NA                        NA                    NA                                NA
+##   weekly_hosp_admissions weekly_hosp_admissions_per_million new_tests total_tests
+## 1                     NA                                 NA        NA          NA
+## 2                     NA                                 NA        NA          NA
+## 3                     NA                                 NA        NA          NA
+## 4                     NA                                 NA        NA          NA
+## 5                     NA                                 NA        NA          NA
+## 6                     NA                                 NA        NA          NA
+##   total_tests_per_thousand new_tests_per_thousand new_tests_smoothed new_tests_smoothed_per_thousand
+## 1                       NA                     NA                 NA                              NA
+## 2                       NA                     NA                 NA                              NA
+## 3                       NA                     NA                 NA                              NA
+## 4                       NA                     NA                 NA                              NA
+## 5                       NA                     NA                 NA                              NA
+## 6                       NA                     NA                 NA                              NA
+##   positive_rate tests_per_case tests_units total_vaccinations people_vaccinated
+## 1            NA             NA                             NA                NA
+## 2            NA             NA                             NA                NA
+## 3            NA             NA                             NA                NA
+## 4            NA             NA                             NA                NA
+## 5            NA             NA                             NA                NA
+## 6            NA             NA                             NA                NA
+##   people_fully_vaccinated total_boosters new_vaccinations new_vaccinations_smoothed
+## 1                      NA             NA               NA                        NA
+## 2                      NA             NA               NA                        NA
+## 3                      NA             NA               NA                        NA
+## 4                      NA             NA               NA                        NA
+## 5                      NA             NA               NA                        NA
+## 6                      NA             NA               NA                        NA
+##   total_vaccinations_per_hundred people_vaccinated_per_hundred people_fully_vaccinated_per_hundred
+## 1                             NA                            NA                                  NA
+## 2                             NA                            NA                                  NA
+## 3                             NA                            NA                                  NA
+## 4                             NA                            NA                                  NA
+## 5                             NA                            NA                                  NA
+## 6                             NA                            NA                                  NA
+##   total_boosters_per_hundred new_vaccinations_smoothed_per_million new_people_vaccinated_smoothed
+## 1                         NA                                    NA                             NA
+## 2                         NA                                    NA                             NA
+## 3                         NA                                    NA                             NA
+## 4                         NA                                    NA                             NA
+## 5                         NA                                    NA                             NA
+## 6                         NA                                    NA                             NA
+##   new_people_vaccinated_smoothed_per_hundred stringency_index population population_density
+## 1                                         NA             8.33   39835428             54.422
+## 2                                         NA             8.33   39835428             54.422
+## 3                                         NA             8.33   39835428             54.422
+## 4                                         NA             8.33   39835428             54.422
+## 5                                         NA             8.33   39835428             54.422
+## 6                                         NA             8.33   39835428             54.422
+##   median_age aged_65_older aged_70_older gdp_per_capita extreme_poverty cardiovasc_death_rate
+## 1       18.6         2.581         1.337       1803.987              NA               597.029
+## 2       18.6         2.581         1.337       1803.987              NA               597.029
+## 3       18.6         2.581         1.337       1803.987              NA               597.029
+## 4       18.6         2.581         1.337       1803.987              NA               597.029
+## 5       18.6         2.581         1.337       1803.987              NA               597.029
+## 6       18.6         2.581         1.337       1803.987              NA               597.029
+##   diabetes_prevalence female_smokers male_smokers handwashing_facilities hospital_beds_per_thousand
+## 1                9.59             NA           NA                 37.746                        0.5
+## 2                9.59             NA           NA                 37.746                        0.5
+## 3                9.59             NA           NA                 37.746                        0.5
+## 4                9.59             NA           NA                 37.746                        0.5
+## 5                9.59             NA           NA                 37.746                        0.5
+## 6                9.59             NA           NA                 37.746                        0.5
+##   life_expectancy human_development_index excess_mortality_cumulative_absolute
+## 1           64.83                   0.511                                   NA
+## 2           64.83                   0.511                                   NA
+## 3           64.83                   0.511                                   NA
+## 4           64.83                   0.511                                   NA
+## 5           64.83                   0.511                                   NA
+## 6           64.83                   0.511                                   NA
+##   excess_mortality_cumulative excess_mortality excess_mortality_cumulative_per_million
+## 1                          NA               NA                                      NA
+## 2                          NA               NA                                      NA
+## 3                          NA               NA                                      NA
+## 4                          NA               NA                                      NA
+## 5                          NA               NA                                      NA
+## 6                          NA               NA                                      NA</code></pre></figure>
+
+<p>The dataset is clean and in wide format. Countries are contained in the <code class="language-plaintext highlighter-rouge">location</code> variable (with corresponding values for <code class="language-plaintext highlighter-rouge">iso_code</code> given), and we have daily values for quite a few variables including <code class="language-plaintext highlighter-rouge">new_cases</code> (we’ll use this to plot disease incidence), <code class="language-plaintext highlighter-rouge">new_cases_per_million</code>, <code class="language-plaintext highlighter-rouge">new_tests</code>, <code class="language-plaintext highlighter-rouge">total_vaccinations</code> and booster data is now available as <code class="language-plaintext highlighter-rouge">total_boosters</code>.</p>
+
+<h2 id="analysis">Analysis</h2>
+
+<p>Let’s first plot disease incidence using the <code class="language-plaintext highlighter-rouge">new_cases</code> variable.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">us_data</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">raw_data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">location</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"United States"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.Date</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="w"> 
+
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">us_data</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_cases</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span></code></pre></figure>
+
+<p><img src="/figs/2022-01-30-comp-epi-curve/new_cases plot-1.png" alt="center" /></p>
+
+<p>It looks a little crazy, almost like there are several superimposed curves. What’s really happening is that we’re seeing a lot of noise from day-to-day fluctuation. Data aren’t reported uniformly, so it’s not uncommon to observe a “spike” in reports on, say, Mondays when reporting for the weekend is done.</p>
+
+<p>For this reason, we used smoothed data, usually amounting to a 7-day average. This technique allows us to eliminate the noise attributable to reporting fluctuations through the week. OWID gives us a smoothed version of <code class="language-plaintext highlighter-rouge">new_cases</code> which achieves just that.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">us_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">us_data</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_cases_smoothed</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Covid-19 Incidence in the United States"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">us_plot</span></code></pre></figure>
+
+<p><img src="/figs/2022-01-30-comp-epi-curve/us plot-1.png" alt="center" /></p>
+
+<p>Much better. Let’s now compare the US to a few other (arbitrarily chosen) countries. Here’s Peru.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">peru_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">raw_data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">location</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"Peru"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.Date</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_cases_smoothed</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Covid-19 Incidence in Peru"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">peru_plot</span></code></pre></figure>
+
+<p><img src="/figs/2022-01-30-comp-epi-curve/peru-1.png" alt="center" /></p>
+
+<p>And here’s Japan.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">japan_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">raw_data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">location</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"Japan"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.Date</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_cases_smoothed</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Covid-19 Incidence in Japan"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">japan_plot</span></code></pre></figure>
+
+<p><img src="/figs/2022-01-30-comp-epi-curve/japan plot-1.png" alt="center" /></p>
+
+<p>Here’s Australia.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">aus_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">raw_data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">location</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"Australia"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.Date</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_cases_smoothed</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Covid-19 Incidence in Australia"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">aus_plot</span></code></pre></figure>
+
+<p><img src="/figs/2022-01-30-comp-epi-curve/australia plot-1.png" alt="center" /></p>
+
+<p>Here’s Zimbabwe.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">zimbabwe_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">raw_data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">location</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"Zimbabwe"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.Date</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_cases_smoothed</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Covid-19 Incidence in Zimbabwe"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">zimbabwe_plot</span></code></pre></figure>
+
+<p><img src="/figs/2022-01-30-comp-epi-curve/zimbabwe plot-1.png" alt="center" /></p>
+
+<p>Finally, here’s Turkey.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">turkey_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">raw_data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">location</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"Turkey"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.Date</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_cases_smoothed</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Covid-19 Incidence in Turkey"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">turkey_plot</span></code></pre></figure>
+
+<p><img src="/figs/2022-01-30-comp-epi-curve/turkey plot-1.png" alt="center" /></p>
+
+<p>It’s evident that Omicron has a foothold all over the world, but to really compare the penetration we’ll need to scale the case loads to the population. Again, OWID gives us a variable where cases/population is already calculated: <code class="language-plaintext highlighter-rouge">new_cases_per_million</code> and <code class="language-plaintext highlighter-rouge">new_cases_smoothed_per_million</code>. We’ll used the smoothed version and combine the incidence of all six countries onto one plot.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">combined_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">raw_data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">filter</span><span class="p">(</span><span class="n">location</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"United States"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Peru"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Japan"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Australia"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Zimbabwe"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Turkey"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.Date</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_cases_smoothed_per_million</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">location</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_line</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">location</span><span class="p">))</span><span class="w">
+
+</span><span class="n">combined_plot</span></code></pre></figure>
+
+<p><img src="/figs/2022-01-30-comp-epi-curve/new cases per population combined-1.png" alt="center" /></p>
+
+<p>Interestingly, Australia has had the highest Omicron peak, almost double that of the US. This is particularly unfortunate, given Australia’s <a href="https://www.aljazeera.com/news/2022/1/10/australia-to-push-through-omicron-as-total-cases-hit-1-million">ultra-high vaccination rate</a>.</p>
+
+<p>Now, having learned something, let’s polish up the curves.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">final_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+  </span><span class="n">combined_plot</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Covid-19 Incidence in Australia, Japan, Peru, Turkey, the United States, and Zimbabwe, Cases per Million, Smoothed 7-Day Average"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Date"</span><span class="p">,</span><span class="w"> 
+       </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Cases per Million"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">final_plot</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">theme_minimal</span><span class="p">()</span></code></pre></figure>
+
+<p><img src="/figs/2022-01-30-comp-epi-curve/final plot-1.png" alt="center" /></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>While you can certainly just google Covid-19 in any country that interests you, getting to an accurate, scaled comparison between countries probably requires a bit more effort. Thankfully, Our World in Data and <code class="language-plaintext highlighter-rouge">ggplot2</code> make the task entirely painless.</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/tags/#epidemics" class="page__taxonomy-item" rel="tag">Epidemics</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/tags/#modeling" class="page__taxonomy-item" rel="tag">Modeling</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time datetime="2022-01-30T00:00:00-08:00">January 30, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Plotting+Comparative+Covid-19+Incidence+with+%27ggplot2%27%20http%3A%2F%2Flocalhost%3A4000%2Fcomp-epi-curve%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fcomp-epi-curve%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fcomp-epi-curve%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/modeling/regression/global%20health/regression/" class="pagination--pager" title="Modeling Global Life Expectancy vs Education  using  Least Squares Regression
+">Previous</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">You may also enjoy</h4>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/modeling/regression/global%20health/regression/" rel="permalink">Modeling Global Life Expectancy vs Education  using  Least Squares Regression
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  21 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">Life expectancy, simple least squares regression, residuals, model diagnostics, outliers, asssumptions, and a bit of unsolicited philosphizing
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/import-function/" rel="permalink">Importing Data Files using <code class="language-plaintext highlighter-rouge">purrr</code> and <code class="language-plaintext highlighter-rouge">stringr</code>
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  21 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">One, two, three times a function
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/correlation/" rel="permalink">Correlation Analysis (Pearson, Spearman, and Kendall) using World Happiness Data
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  23 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">What factors are most closely correlated with nation-level happiness?
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/blog/2020/07/covid_dashboard/" rel="permalink">Summarizing Covid-19 with flexdashboard
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  less than 1 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">Dashboards are fantastic.
+
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <!--other footer stuff I don't want
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+--> 
+
+<div class="page__footer-copyright">&copy; 2022 Alice Tivarovsky. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+  <script src="https://kit.fontawesome.com/4eee35f757.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" defer
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+
+  </body>
+</html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.19.3 by Michael Rose
+  Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->

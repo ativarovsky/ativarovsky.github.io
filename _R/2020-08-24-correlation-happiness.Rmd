@@ -157,7 +157,7 @@ glimpse(happy_df)
 
 ```
 
-Everything looks kosher: we have 153 observations (countries) across 20 variables. The countries and regions are categorical variables, while the happiness outcome measure (`ladder_score`) and all the potentially associated variables (`social_support`, `perception_of_corruption`, etc) are numerical. 
+Everything looks good: we have 153 observations (countries) across 20 variables. The countries and regions are categorical variables, while the happiness outcome measure (`ladder_score`) and all the potentially associated variables (`social_support`, `perception_of_corruption`, etc) are numerical. 
 
 Next, we will scan for missing values and get a feel for some basic measures of central tendency across our variables of interest. `skimr::skim()` is a great function that packs a lot of information in one line of code: 
 

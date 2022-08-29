@@ -920,9 +920,9 @@ where the little hat on the Y indicates that it’s the model estimate, meaning 
 <p>Again, the p-value on our F-statistic is significant, meaning that there is a statistically significant relationship between the outcome and the combination of predictors.</p>
 
 <p>Our new model statement is: 
-\[ life\,expectancy = 45.4937 + 2.1420<em>schooling - 2.1010</em>status \]</p>
+\[y = 45.4937 + 2.142schooling - 2.101status  \]</p>
 
-<p>where the coefficient of the <code class="language-plaintext highlighter-rouge">status</code> variable indicates that, on average, after we control for schooling, there is a difference in life expectancy of 2.1 years between developing and developed countries. However, note that the p-value for the status predictor is 0.08 (p &gt; 0.05), meaning that controlling for education, status is <strong>not</strong> a significant predictor of life expectancy. This does not mean that status <strong>alone</strong> is not a significant predictor of life expectancy. It just means that after we control for education by putting it in the model, the effect of status mostly washes away.</p>
+<p>The coefficient of the <code class="language-plaintext highlighter-rouge">status</code> variable indicates that, on average, after we control for schooling, there is a difference in life expectancy of 2.1 years between developing and developed countries. However, note that the p-value for the status predictor is 0.08 (p &gt; 0.05), meaning that controlling for education, status is <strong>not</strong> a significant predictor of life expectancy. This does not mean that status <strong>alone</strong> is not a significant predictor of life expectancy. It just means that after we control for education by putting it in the model, the effect of status mostly washes away.</p>
 
 <p>To illustrate:</p>
 
@@ -969,7 +969,10 @@ where the little hat on the Y indicates that it’s the model estimate, meaning 
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">final_df</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
   </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">schooling</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">life_expectancy</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">status</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
-  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">status</span><span class="p">))</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">status</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">labs</span><span class="p">(</span><span class="w">
+  </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Figure 6: Schooling vs Life Expectancy by Status"</span><span class="w">
+  </span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
 <p><img src="/figs/2020-09-10-regression/unnamed-chunk-11-1.png" alt="plot of chunk unnamed-chunk-11" /></p>
@@ -1084,12 +1087,12 @@ where the little hat on the Y indicates that it’s the model estimate, meaning 
 <ol>
   <li><strong>Linearity</strong>: If the data aren’t linear, don’t fit a linear model. We looked at the scatterplot in <a href="#step-1-fit-and-interpret-models">step 1</a> and found it was pretty linear.</li>
   <li><strong>Independence</strong>: Observations shouldn’t be clustered or have any influence on other observations. It’s hard to say this is the case in our situation, since it’s pretty clear that developing countries and developed countries cluster together and through political and economic means influence their neighbors’ policies and practices.</li>
-  <li><strong>Normality of residuals</strong>: If you look at the residuals in Figure 3 and superimpose little sideways bell curves along the regression line, you should see that the residuals are normally distributed. Basically, the majority of the residuals are located close to the line and a few are found further away. This is best explained visually: <figure> <img src="/assets/images/residuals.png" /> &lt;figcaption&gt; <a href="https://bookdown.org/ripberjt/qrmbook/ols-assumptions-and-simple-regression-diagnostics.html">Source</a> &lt;/figcaption&gt; </figure> It looks like this is generally the case for our model, using the trusty eyeball method.</li>
+  <li><strong>Normality of residuals</strong>: If you look at the residuals in Figure 3 and superimpose little sideways bell curves along the regression line, you should see that the residuals are normally distributed. Basically, the majority of the residuals are located close to the line and a few are found further away. This is best explained visually: <figure> <img src="/assets/images/residuals.png" />  <a href="https://bookdown.org/ripberjt/qrmbook/ols-assumptions-and-simple-regression-diagnostics.html">Source</a>  </figure> It looks like this is generally the case for our model, using the trusty eyeball method.</li>
   <li><strong>Homoscedasticity</strong> <sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>: Homoscedasticity means that the variance of the residual terms is somewhat constant. If your data are heteroscedastic, linear regression modeling is probably not a good choice. Here’s an example of heteroscedasticity:</li>
 </ol>
 <figure>
     <img src="/assets/images/heteroscedasticity.png" />
-    <figcaption><a href="https://www.statisticshowto.com/homoscedasticity/">Source</a></figcaption>
+    <a href="https://www.statisticshowto.com/homoscedasticity/">Source</a>
 </figure>
 
 <p>When we first looked at our data in scatterplot form, we noted some definite heteroscedasticity. Let’s look at it again:</p>
@@ -1204,7 +1207,8 @@ where the little hat on the Y indicates that it’s the model estimate, meaning 
 ">Previous</a>
     
     
-      <a href="#" class="pagination--pager disabled">Next</a>
+      <a href="/comp-epi-curve/" class="pagination--pager" title="Plotting Comparative Covid-19 Incidence with ‘ggplot2’
+">Next</a>
     
   </nav>
 
@@ -1218,6 +1222,35 @@ where the little hat on the Y indicates that it’s the model estimate, meaning 
     <div class="page__related">
       <h4 class="page__related-title">You may also enjoy</h4>
       <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title" itemprop="headline">
+      
+        <a href="/comp-epi-curve/" rel="permalink">Plotting Comparative Covid-19 Incidence with ‘ggplot2’
+</a>
+      
+    </h2>
+    
+      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
+
+
+
+
+  12 minute read
+
+</p>
+    
+    <p class="archive__item-excerpt" itemprop="description">A DIY Epi Curve, Just for Fun
+</p>
+  </article>
+</div>
+
         
           
 
@@ -1307,36 +1340,6 @@ where the little hat on the Y indicates that it’s the model estimate, meaning 
 </div>
 
         
-          
-
-
-
-<div class="grid__item">
-  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
-    
-    <h2 class="archive__item-title" itemprop="headline">
-      
-        <a href="/car-crashes/" rel="permalink">Visualizing Motor Vehicle Fatalities with ggplot2
-</a>
-      
-    </h2>
-    
-      <p class="page__meta"><i class="far fa-clock" aria-hidden="true"></i> 
-
-
-
-
-  24 minute read
-
-</p>
-    
-    <p class="archive__item-excerpt" itemprop="description">An analysis of car fatalities by state using data from the Big Cities Health Initiative.
-
-</p>
-  </article>
-</div>
-
-        
       </div>
     </div>
   
@@ -1392,7 +1395,7 @@ where the little hat on the Y indicates that it’s the model estimate, meaning 
 
 --> 
 
-<div class="page__footer-copyright">&copy; 2020 Alice Tivarovsky. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+<div class="page__footer-copyright">&copy; 2022 Alice Tivarovsky. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
 
       </footer>
     </div>
