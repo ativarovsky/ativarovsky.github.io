@@ -1,0 +1,414 @@
+I" �<h2 id="motivation">Motivation</h2>
+
+<p>It’s a well-known [tenet](https://en.wikipedia.org/wiki/Rule_of_three_(computer_programming) of computer programming that if you have to copy and paste code more than twice, you should write a function.</p>
+
+<p>In my <a href="../phthalates/">phthalates exposure project</a>, I imported 21 text files for tidying and analysis. This is clearly a task well-suited for a function, but instead, I tediously copied and pasted code 21 times. Why? Honestly, I just didn’t have much experience writing functions and I was too eager to get data into R to actually sit down and figure out how to automate it.</p>
+
+<p>I knew, though, that one day, I’d sit down and figure out how to write that function. Today was that day.</p>
+
+<p>A few things to note:</p>
+<ol>
+  <li>I’m working with two file types here, and neither one is in a common .csv format. I downloaded these files from <a href="https://wwwn.cdc.gov/nchs/nhanes/default.aspx">NHANES</a>, which plays nicely with SAS, but less nicely with R. Some of the raw data they provide is in .txt format and some of it is in the SAS-ready .xport format. I’m using the <code class="language-plaintext highlighter-rouge">read.xport</code> function in the <code class="language-plaintext highlighter-rouge">foreign</code> library to import both types, but the function can easily be extended to more common file types.</li>
+  <li>The function below is specific to the situation, wherein the files are downloaded not only in .xport/.txt format, but they are named using the years first and survey type second. This led to error messages when I tried to save the imported dataframes using their original filenames (R doesn’t like objects named with numbers first), so I did some character re-shuffling using a few <code class="language-plaintext highlighter-rouge">stringr</code> functions. If your files are named more appropriately, you won’t need this feature.</li>
+</ol>
+
+<h2 id="code">Code</h2>
+
+<p>As mentioned above, we’ll need the <code class="language-plaintext highlighter-rouge">foreign</code> library to read the xport files. We’ll also need <code class="language-plaintext highlighter-rouge">stringr</code> for some of the naming manipulations we’ll be doing within the function.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">foreign</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">stringr</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>First, we create a vector of filenames from the data folder and check its length.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">list.files</span><span class="p">(</span><span class="s2">"../data/phthalates"</span><span class="p">)</span><span class="w">
+</span><span class="n">files</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##  [1] "2003_2004_DEMO_C.XPT"       "2003_2004_PHTHTE_C.XPT.txt"
+##  [3] "2005_2006_DEMO_D.XPT"       "2005_2006_PHTHTE_D.XPT.txt"
+##  [5] "2007_2008_DEMO_E.XPT"       "2007_2008_PHTHTE_E.XPT.txt"
+##  [7] "2009_2010_DEMO_F.XPT"       "2009_2010_PHTHTE_F.XPT.txt"
+##  [9] "2011_2012_DBQ_G.XPT.txt"    "2011_2012_DEMO_G.XPT.txt"  
+## [11] "2011_2012_EPH_G.XPT.txt"    "2011_2012_PHTHTE_G.XPT.txt"
+## [13] "2013_2014_DBQ_H.XPT.txt"    "2013_2014_DEMO_H.XPT.txt"  
+## [15] "2013_2014_EPHPP_H.XPT.txt"  "2013_2014_PHTHTE_H.XPT.txt"
+## [17] "2015_2016_ALB_CR_I.XPT.txt" "2015_2016_DBQ_I.XPT.txt"   
+## [19] "2015_2016_DEMO_I.XPT.txt"   "2015_2016_EPHPP_I.XPT.txt" 
+## [21] "2015_2016_PHTHTE_I.XPT.txt"
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">length</span><span class="p">(</span><span class="n">files</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## [1] 21
+</code></pre></div></div>
+
+<p>Next, we write a function that does the following:</p>
+<ol>
+  <li>Reads in a vector of names and concatenates it with the folder path, resulting in a vector of file path names called <code class="language-plaintext highlighter-rouge">y</code></li>
+  <li>Reads in the dataset represented by filepath <code class="language-plaintext highlighter-rouge">y</code></li>
+  <li>Removes the file extensions from y, since we’ll want these strings to name our imported dataframes</li>
+  <li>Extracts the years, which originally come first in our filenames vector - otherwise, R will throw errors when we try to access the dataframes</li>
+  <li>Rearranges the strings so that the years are at the end</li>
+  <li>Stores the imported datasets, assigning a name using the resulting string from steps 3-5.</li>
+</ol>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mult_import</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span><span class="w">
+  </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str_c</span><span class="p">(</span><span class="s2">"../data/phthalates/"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> 
+  </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">read.xport</span><span class="p">(</span><span class="n">y</span><span class="p">))</span><span class="w">
+  </span><span class="n">name_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str_replace_all</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="s2">".txt|.XPT"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w">
+  </span><span class="n">years</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str_sub</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">9</span><span class="p">)</span><span class="w">
+  </span><span class="n">name_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str_sub</span><span class="p">(</span><span class="n">name_1</span><span class="p">,</span><span class="w"> </span><span class="m">11</span><span class="p">,</span><span class="w"> </span><span class="m">20</span><span class="p">)</span><span class="w">
+  </span><span class="n">new_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str_c</span><span class="p">(</span><span class="n">name_2</span><span class="p">,</span><span class="w"> </span><span class="n">years</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"_"</span><span class="p">)</span><span class="w">
+  </span><span class="n">assign</span><span class="p">(</span><span class="n">new_name</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="n">envir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.GlobalEnv</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Next, we use <code class="language-plaintext highlighter-rouge">purrr</code> to apply <code class="language-plaintext highlighter-rouge">mult_import</code> to our datafiles. And voila! We have 21 neat dataframes to work with. I’m only going to print 3 of them here (just to prove that it worked).</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data_sets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map</span><span class="p">(</span><span class="n">files</span><span class="p">,</span><span class="w"> </span><span class="n">mult_import</span><span class="p">)</span><span class="w">
+
+</span><span class="n">DEMO_C_2003_2004</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##     SEQN SDDSRVYR RIDSTATR RIDEXMON RIAGENDR RIDAGEYR RIDAGEMN RIDAGEEX RIDRETH1
+## 1  21005        3        2        1        1       19      232      233        4
+## 2  21006        3        2        2        2       16      203      205        4
+## 3  21007        3        2        1        2       14      172      172        3
+## 4  21008        3        2        2        1       17      208      209        4
+## 5  21009        3        2        2        1       55      671      672        3
+## 6  21010        3        2        2        2       52      633      634        3
+## 7  21011        3        2        1        1        0        3        4        1
+## 8  21012        3        2        2        1       63      765      766        4
+## 9  21013        3        2        1        2       13      163      164        4
+## 10 21014        3        2        2        1        3       42       42        4
+## 11 21015        3        2        2        1       83     1006     1007        3
+## 12 21016        3        2        1        1       13      165      166        4
+## 13 21017        3        2        1        2       37      444      445        1
+## 14 21018        3        2        2        2       33      404      405        4
+## 15 21019        3        2        2        2       50      606      607        1
+## 16 21020        3        2        1        2       55      666      667        4
+## 17 21021        3        1       NA        2       72      864       NA        3
+## 18 21022        3        2        1        2        2       32       32        1
+## 19 21023        3        2        1        2       19      239      241        4
+## 20 21024        3        2        2        1       14      178      179        3
+## 21 21025        3        2        1        2       18      217      218        2
+## 22 21026        3        2        1        1       16      195      196        4
+##    RIDRETH2 DMQMILIT DMDBORN DMDCITZN DMDYRSUS DMDEDUC3 DMDEDUC2 DMDEDUC DMDSCHOL
+## 1         2        2       1        1       NA       11       NA       1        1
+## 2         2       NA       1        1       NA       11       NA       1        2
+## 3         1       NA       1        1       NA        8       NA       1        1
+## 4         2        2       1        1       NA       10       NA       1        1
+## 5         1        2       1        1       NA       NA        3       2       NA
+## 6         1        2       1        1       NA       NA        4       3       NA
+## 7         3       NA       1        1       NA       NA       NA      NA       NA
+## 8         2        2       1        1       NA       NA        3       2       NA
+## 9         2       NA       1        1       NA        6       NA       1        1
+## 10        2       NA       1        1       NA       NA       NA      NA       NA
+## 11        1        1       1        1       NA       NA        4       3       NA
+## 12        2       NA       1        1       NA        7       NA       1        1
+## 13        3        2       2        2        2       NA        2       1       NA
+## 14        2        2       1        1       NA       NA        3       2       NA
+## 15        3        2       2        2        2       NA        1       1       NA
+## 16        2        2       1        1       NA       NA        2       1       NA
+## 17        1        2       3        2        8       NA        3       2       NA
+## 18        3       NA       1        1       NA       NA       NA      NA       NA
+## 19        2        2       1        1       NA       11       NA       1        3
+## 20        1       NA       1        1       NA        7       NA       1        1
+## 21        5        2       3        1        5       11       NA       1        1
+## 22        2       NA       1        1       NA        9       NA       1        1
+##    DMDMARTL DMDHHSIZ INDHHINC INDFMINC INDFMPIR RIDEXPRG DMDHRGND DMDHRAGE
+## 1         5        2        6        6     2.44       NA        1       39
+## 2         5        6        7        6     2.47        1        2       27
+## 3         5        5       NA        6     1.60        2        1       39
+## 4         5        7       11        7     2.75       NA        2       40
+## 5         1        2        8        8     3.79       NA        1       55
+## 6         6        3        6        4     1.24        2        1       54
+## 7        NA        7       13       13       NA       NA        2       22
+## 8         6        2        2        2     0.89       NA        1       63
+## 9        NA        3        2        2     0.59        2        2       30
+## 10       NA        7        4        4     0.63       NA        2       31
+## 11        1        2        4        4     1.20       NA        2       82
+## 12       NA        6       10       10     2.58       NA        2       30
+## 13        6        2        4        1     0.21        2        1       22
+## 14        1        6        8        8     2.06        2        1       36
+## 15        1        7        4        1     0.16        2        2       30
+## 16        1        2        6        6     2.48        2        1       60
+## 17        2        1       NA       NA       NA       NA        2       72
+## 18       NA        7        7        4     0.88       NA        1       32
+## 19        5        5        4        1     0.00        2        2       48
+## 20        5        3        9        9     3.51       NA        2       43
+## 21        5        7        6        6     1.13        2        1       38
+## 22        5        4        7        7     2.17       NA        2       32
+##    DMDHRBRN DMDHREDU DMDHRMAR DMDHSEDU SIALANG SIAPROXY SIAINTRP FIALANG FIAPROXY
+## 1         1        5        3       NA       1        2        2       1        2
+## 2         1        2        5       NA       1        2        2       1        2
+## 3         1        4       NA       NA       1        1        2       1        2
+## 4         1        4        5       NA       1        2        2       1        2
+## 5         1        3        1        4       1        2        2       1        2
+## 6         1        1        6       NA       1        2        2       1        2
+## 7         2        1        1        3       2        1        2       1        2
+## 8         1        3        6       NA       1        2        2       1        2
+## 9         1        4        3       NA       1        1        2       1        2
+## 10        1        4        1        4       1        1        2       1        2
+## 11        1        4        1        4       1        2        2       1        2
+## 12        1        4        1        3       1        1        2       1        2
+## 13        2        2        6       NA       2        2        2       1        2
+## 14        1        1        1        3       1        2        2       1        2
+## 15        2        2        1        1       2        2        2       2        2
+## 16        1        4        1        2       1        2        2       1        2
+## 17        3        3        2       NA       1        2        2      NA       NA
+## 18        2        2        1        2       2        1        2       1        2
+## 19        3        1        1        2       1        2        2       1        2
+## 20        1        5        3       NA       1        1        2       1        2
+## 21       NA       NA        1        4       1        2        2       2        2
+## 22        1        3        1        3       1        2        2       1        2
+##    FIAINTRP MIALANG MIAPROXY MIAINTRP AIALANG  WTINT2YR  WTMEC2YR SDMVPSU SDMVSTRA
+## 1         2       1        2        2       1  5512.321  5824.782       2       39
+## 2         2       1        2        2       1  5422.140  5564.040       1       41
+## 3         2       1        2        2       1 39764.177 40591.066       2       35
+## 4         2       1        2        2       1  5599.499  5696.751       1       32
+## 5         2       1        2        2       1 97593.679 97731.727       2       31
+## 6         2       1        2        2       1 39599.363 43286.576       1       29
+## 7         2      NA       NA       NA      NA  1647.618  1692.168       2       40
+## 8         2      NA       NA       NA      NA 12629.440 12947.338       2       33
+## 9         2       1        2        2       1  7174.371  7304.946       1       37
+## 10        2      NA       NA       NA      NA  7498.031  8385.246       1       33
+## 11        2       1        2        2      NA 17625.876 19994.160       2       33
+## 12        2       1        2        2       1  7689.833  7832.795       2       36
+## 13        2       2        2        2       2 26619.834 26802.589       2       42
+## 14        2       1        2        2       1 34998.530 36208.263       2       33
+## 15        2       2        2        2       2 14746.454 15876.719       1       41
+## 16        2       1        2        2       1 28232.100 29102.084       1       38
+## 17       NA      NA       NA       NA      NA 46999.264     0.000       2       39
+## 18        2      NA       NA       NA      NA  6359.287  6329.696       1       39
+## 19        2       1        2        2       1  5709.033  6114.820       1       35
+## 20        2       1        2        2       1 38125.946 40061.772       2       33
+## 21        2       1        2        2       1 13493.831 13772.570       2       43
+## 22        2       1        2        2       1  5816.415  5924.548       1       37
+##  [ reached 'max' / getOption("max.print") -- omitted 10100 rows ]
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">DBQ_G_2011_2012</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##     SEQN DBQ010 DBD030 DBD041 DBD050 DBD055 DBD061 DBQ073A DBQ073B DBQ073C DBQ073D
+## 1  62161     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 2  62162      1    121      1    365    243    365      10      NA      NA      NA
+## 3  62163     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 4  62164     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 5  62165     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 6  62166     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 7  62167      1    182    182      0    212      0      NA      NA      NA      NA
+## 8  62168      1    182    182    730    121    730      10      NA      NA      NA
+## 9  62169     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 10 62170     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 11 62171     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 12 62172     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 13 62173      1    365      1    365    212    365      10      NA      NA      NA
+## 14 62174     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 15 62175      1    243    243    365    273    365      10      NA      NA      NA
+## 16 62176     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 17 62177     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 18 62178     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 19 62179     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 20 62180     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 21 62181     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 22 62182     NA     NA     NA     NA     NA     NA      NA      NA      NA      NA
+## 23 62183      1    364      0     NA    182    365      NA      NA      NA      NA
+##    DBQ073E DBQ073U DBQ700 DBQ197 DBQ223A DBQ223B DBQ223C DBQ223D DBQ223E DBQ223U
+## 1       NA      NA      2      3      NA      NA      NA      13      NA      NA
+## 2       NA      NA     NA      3      10      NA      NA      NA      NA      NA
+## 3       NA      NA     NA      3      NA      NA      NA      13      NA      NA
+## 4       NA      NA      1      0      NA      NA      NA      NA      NA      NA
+## 5       NA      NA     NA      3      10      NA      NA      NA      NA      NA
+## 6       NA      NA     NA      3      NA      NA      12      NA      NA      NA
+## 7       NA      NA     NA     NA      NA      NA      NA      NA      NA      NA
+## 8       NA      NA     NA      3      NA      11      NA      NA      NA      NA
+## 9       NA      NA      3      1      NA      11      NA      NA      NA      NA
+## 10      NA      NA     NA      3      NA      11      NA      NA      NA      NA
+## 11      NA      NA     NA      3      10      NA      NA      NA      NA      NA
+## 12      NA      NA      3      3      NA      11      NA      NA      NA      NA
+## 13      NA      NA     NA      3      NA      11      NA      NA      NA      NA
+## 14      NA      NA      2      2      NA      11      NA      NA      NA      NA
+## 15      NA      NA     NA      3      10      NA      NA      NA      NA      NA
+## 16      NA      NA      2      3      NA      NA      NA      13      NA      NA
+## 17      NA      NA      3      2      NA      11      NA      NA      NA      NA
+## 18      NA      NA      4      3      NA      11      NA      NA      NA      NA
+## 19      NA      NA      3      0      NA      NA      NA      NA      NA      NA
+## 20      NA      NA      4      3      NA      NA      NA      NA      NA      30
+## 21      NA      NA     NA      3      10      11      NA      NA      NA      NA
+## 22      NA      NA      2      1      NA      NA      NA      13      NA      NA
+## 23      14      NA     NA      3      NA      11      NA      NA      NA      NA
+##    DBQ229 DBQ235A DBQ235B DBQ235C DBQ301 DBQ330 DBQ360 DBQ370 DBD381 DBQ390 DBQ400
+## 1       1       3       3       3     NA     NA     NA     NA     NA     NA     NA
+## 2      NA      NA      NA      NA     NA     NA     NA     NA     NA     NA     NA
+## 3      NA      NA      NA      NA     NA     NA      1      1      5      3      1
+## 4       2      NA      NA      NA     NA     NA     NA     NA     NA     NA     NA
+## 5      NA      NA      NA      NA     NA     NA      1      1      5      1      1
+## 6      NA      NA      NA      NA     NA     NA      1      1      5      3      2
+## 7      NA      NA      NA      NA     NA     NA     NA     NA     NA     NA     NA
+## 8      NA      NA      NA      NA     NA     NA      1      1      1      3      1
+## 9       3       2       3       1     NA     NA     NA     NA     NA     NA     NA
+## 10     NA      NA      NA      NA     NA     NA      1      1      5      3      2
+## 11     NA      NA      NA      NA     NA     NA      1      1      4      2      1
+## 12      1       3       3       3     NA     NA     NA     NA     NA     NA     NA
+## 13     NA      NA      NA      NA     NA     NA     NA     NA     NA     NA     NA
+## 14      1       3       3       3      2      2     NA     NA     NA     NA     NA
+## 15     NA      NA      NA      NA     NA     NA      1      1      5      1      1
+## 16      1       3       3       3     NA     NA     NA     NA     NA     NA     NA
+## 17      2      NA      NA      NA     NA     NA     NA     NA     NA     NA     NA
+## 18      1       3       3       3      1      2     NA     NA     NA     NA     NA
+## 19      3       3       3       2     NA     NA     NA     NA     NA     NA     NA
+## 20      1       3       3       3     NA     NA     NA     NA     NA     NA     NA
+## 21     NA      NA      NA      NA     NA     NA      1      1      5      1      1
+## 22      3       3       3       1      2      2     NA     NA     NA     NA     NA
+## 23     NA      NA      NA      NA     NA     NA      1      1      5      3      1
+##    DBD411 DBQ421 DBQ424 DBD895 DBD900 DBD905 DBD910 CBQ595 CBQ600 CBQ605 CBQ610
+## 1      NA     NA     NA      2      2      0      0      2      2     NA     NA
+## 2      NA     NA     NA      0     NA      0      1     NA     NA     NA     NA
+## 3       0     NA     NA      0     NA      0      2     NA     NA     NA     NA
+## 4      NA     NA     NA      3      0      0      0      1     NA      2      2
+## 5       5      1      3      2      2      5      3     NA     NA     NA     NA
+## 6      NA     NA     NA      1      0      2      2     NA     NA     NA     NA
+## 7      NA     NA     NA     NA     NA     NA     NA     NA     NA     NA     NA
+## 8       0     NA     NA      2      1      0      8     NA     NA     NA     NA
+## 9      NA     NA     NA      7      7      0      1      2      2     NA     NA
+## 10     NA     NA     NA      0     NA      0      0     NA     NA     NA     NA
+## 11      1      1      3      3      3      4      0     NA     NA     NA     NA
+## 12     NA     NA     NA      5      5      0      0      2      1     NA      2
+## 13     NA     NA     NA      0     NA      0      0     NA     NA     NA     NA
+## 14     NA     NA     NA      0     NA      1      1      2      1     NA      1
+## 15      0     NA      3      2      1     30     30     NA     NA     NA     NA
+## 16     NA     NA     NA      3      1      0      1      2      1     NA      2
+## 17     NA     NA     NA      0     NA      0      0      2      2     NA     NA
+## 18     NA     NA     NA      1      0      6     17      2      2     NA     NA
+## 19     NA     NA     NA      3      0      2      0      2      1     NA      2
+## 20     NA     NA     NA      8      4      0      4      1     NA      2      2
+## 21      0     NA      3      1      1      0      0     NA     NA     NA     NA
+## 22     NA     NA     NA      2      0      1      1      1     NA      2      2
+## 23      5      3     NA      1      1      5      0     NA     NA     NA     NA
+##  [ reached 'max' / getOption("max.print") -- omitted 9733 rows ]
+</code></pre></div></div>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">PHTHTE_C_2003_2004</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##     SEQN    WTSB2YR URXMBP URDMBPLC URXMCP URDMCPLC   URXMEP URDMEPLC URXMHP
+## 1  21006  15983.728  375.6        0 0.2843        1  221.232        0    3.2
+## 2  21013  20984.800   86.7        0 0.2843        1  306.702        0   33.8
+## 3  21015  64191.400   12.6        0 0.2843        1  154.110        0    0.6
+## 4  21016  23989.437   62.7        0 1.2060        0  132.528        0   10.6
+## 5  21023  17565.945  206.1        0 0.2843        1  199.716        0   21.7
+## 6  21026  18145.065  135.8        0 0.2843        1  108.966        0    2.5
+## 7  21027  36738.941   28.4        0 0.2843        1   90.750        0    2.6
+## 8  21031 263724.086    8.7        0 0.2843        1   16.434        0    0.6
+## 9  21033  82316.528   32.9        0 0.2843        1  604.230        0    1.3
+## 10 21036  71447.158    4.4        0 0.2843        1    7.524        0    0.6
+## 11 21037  65800.789   39.9        0 0.2843        1  216.942        0   20.0
+## 12 21038  21609.425   11.9        0 0.2843        1   30.558        0    1.0
+## 13 21039  59483.964   17.5        0 0.2843        1   63.954        0    1.4
+## 14 21041   9929.473   20.2        0 0.2843        1  142.494        0   15.6
+## 15 21045 143827.869   21.1        0 0.2843        1  369.930        0    1.5
+## 16 21047  19972.693    9.7        0 0.2843        1   57.420        0    2.3
+## 17 21057 108477.791   22.6        0 0.2843        1   93.390        0   95.7
+## 18 21064  34942.731   49.5        0 0.8040        0   64.350        0    7.5
+## 19 21066      0.000     NA       NA     NA       NA       NA       NA     NA
+## 20 21068 143113.714   10.0        0 0.2843        1   14.256        0    0.6
+## 21 21083  16978.037   34.4        0 0.2843        1   83.094        0    1.5
+## 22 21084 279483.714   13.0        0 0.2843        1   19.008        0    0.6
+## 23 21086  85456.720   17.3        0 0.2843        1   12.936        0    1.3
+## 24 21087 121948.671   11.9        0 0.2843        1  344.850        0    1.0
+## 25 21090  55912.651  102.1        0 0.2843        1  380.094        0    4.0
+## 26 21094  27317.087   71.4        0 0.2843        1   50.358        0    4.8
+## 27 21095  14642.227    7.7        0 0.2843        1  124.146        0    0.6
+## 28 21098  23448.273   27.8        0 0.2843        1  101.640        0    2.3
+## 29 21100  91017.017    9.5        0 0.2843        1  152.724        0    0.6
+## 30 21101  36738.941   46.4        0 0.2843        1  142.164        0    2.1
+## 31 21104  41615.836    5.5        0 0.2843        1 1370.094        0    0.6
+## 32 21107 197655.715   29.9        0 0.2843        1   93.720        0    0.6
+## 33 21119 146985.242   34.1        0 1.2060        0   54.714        0   17.5
+## 34 21124  66504.682   29.7        0 0.2843        1   26.994        0    1.7
+##    URDMHPLC URXMNP URDMNPLC URXMOP URDMOPLC URXMZP URDMZPLC URXMNM URDMNMLC URXMC1
+## 1         0 1.0889        1 1.1879        1 17.784        0    5.4        0    4.1
+## 2         0 1.0889        1 1.1879        1 40.464        0   23.8        0    7.9
+## 3         1 1.0889        1 1.1879        1  2.880        0    3.6        0    2.0
+## 4         0 1.0889        1 1.1879        1 49.392        0    8.0        0    6.1
+## 5         0 1.0889        1 1.1879        1 15.984        0    3.2        0    7.6
+## 6         0 1.0889        1 1.1879        1  9.720        0    5.6        0    4.6
+## 7         0 1.0889        1 1.1879        1 23.976        0    0.7        1    9.0
+## 8         1 1.0889        1 1.1879        1  1.728        0    1.3        0    1.0
+## 9         0 1.0889        1 1.1879        1  5.976        0    3.9        0    2.4
+## 10        1 1.0889        1 1.1879        1  0.504        0    0.7        1    0.3
+## 11        0 1.0889        1 1.1879        1 22.248        0    2.6        0    4.2
+## 12        0 1.0889        1 1.1879        1  9.648        0    0.7        1    1.9
+## 13        0 1.0889        1 1.1879        1  2.736        0    4.1        0    3.7
+## 14        0 1.0889        1 1.1879        1 17.352        0    0.7        1    5.1
+## 15        0 1.0889        1 1.1879        1 13.824        0    1.4        0    3.2
+## 16        0 1.0889        1 1.1879        1  5.184        0    0.7        1    2.4
+## 17        0 1.0889        1 1.1879        1 12.600        0    3.9        0    2.3
+## 18        0 1.0889        1 1.1879        1 71.352        0    1.1        0   17.2
+## 19       NA     NA       NA     NA       NA     NA       NA     NA       NA     NA
+## 20        1 1.0889        1 1.1879        1  5.256        0   17.0        0    0.8
+## 21        0 1.0889        1 1.1879        1 27.216        0    0.7        1    7.2
+## 22        1 1.0889        1 1.1879        1  3.960        0    0.7        1    1.3
+## 23        0 1.0889        1 1.1879        1  5.400        0    0.7        1    2.3
+## 24        0 1.0889        1 1.1879        1  9.432        0    1.8        0    5.0
+## 25        0 1.0889        1 1.1879        1 17.352        0   13.4        0    4.5
+## 26        0 1.0889        1 1.1879        1 24.984        0    0.7        1    2.7
+## 27        1 1.0889        1 1.1879        1  1.944        0    0.7        1    1.5
+## 28        0 1.0889        1 1.1879        1 26.280        0   57.2        0    4.1
+## 29        1 1.0889        1 1.1879        1  1.944        0    1.8        0    0.5
+## 30        0 1.0889        1 1.1879        1 39.672        0    5.8        0   13.9
+## 31        1 1.0889        1 1.1879        1  5.472        0    0.7        1    1.5
+## 32        1 1.0889        1 1.1879        1 19.584        0    4.2        0    2.4
+## 33        0 4.9280        0 1.1879        1 12.240        0    0.7        1    8.3
+## 34        0 1.0889        1 1.1879        1 20.736        0    1.0        0    4.8
+##    URDMC1LC URXMHH URDMHHLC URXMOH URDMOHLC URXMIB URDMIBLC URXECP URDECPLC URXUCR
+## 1         0   21.7        0   16.9        0   52.8        0   22.8        0    289
+## 2         0  351.7        0  210.5        0   47.4        0  472.8        0    302
+## 3         0    9.1        0    7.4        0    3.4        0   13.6        0     98
+## 4         0   57.8        0   33.9        0   21.7        0   48.3        0    200
+## 5         0  176.4        0  115.8        0   22.4        0  257.2        0    213
+## 6         0   71.7        0   44.0        0    5.1        0   87.9        0    185
+## 7         0   24.1        0   14.8        0   11.3        0   27.8        0    107
+## 8         0   10.2        0    7.1        0    1.8        0   10.3        0     60
+## 9         0   18.8        0   11.1        0    4.6        0   46.9        0    270
+## 10        0    1.2        0    0.7        0    0.2        1    4.8        0     14
+## 11        0  115.2        0   90.1        0    3.3        0  235.5        0    175
+## 12        0   11.6        0    8.5        0    2.4        0   18.0        0    141
+## 13        0   14.0        0   11.4        0    1.3        0   18.9        0    108
+## 14        0   61.5        0   36.0        0   11.7        0  116.7        0    113
+## 15        0   21.7        0   14.1        0    4.6        0   24.8        0     94
+## 16        0   24.2        0   14.7        0    6.0        0   38.6        0     80
+## 17        0  530.0        0  325.5        0    2.4        0  472.1        0    122
+## 18        0   85.6        0   63.6        0   11.3        0  174.8        0    189
+## 19       NA     NA       NA     NA       NA     NA       NA     NA       NA     28
+## 20        0    6.1        0    4.2        0    2.9        0    6.6        0    103
+## 21        0   21.8        0   13.3        0    2.5        0   48.4        0     88
+## 22        0    5.2        0    2.9        0    1.0        0   15.0        0     41
+## 23        0   20.7        0   12.0        0    5.5        0   29.5        0    119
+## 24        0   20.6        0   13.8        0    2.8        0   38.8        0    157
+## 25        0   50.8        0   30.7        0    6.8        0   56.6        0    259
+## 26        0   67.2        0   39.1        0    8.0        0   87.5        0    137
+## 27        0    3.5        0    2.7        0    1.3        0   10.8        0     72
+## 28        0   32.4        0   23.6        0    5.3        0   64.4        0    112
+## 29        0   37.4        0   29.6        0    0.2        1   62.0        0     70
+## 30        0   25.3        0   18.8        0   16.3        0   45.7        0    101
+## 31        0    6.1        0    3.4        0    3.6        0    8.6        0     72
+## 32        0   13.0        0    8.3        0    5.5        0   22.7        0    155
+## 33        0  286.2        0  214.7        0   11.3        0  397.2        0    135
+## 34        0   24.7        0   16.6        0   38.9        0   27.1        0    328
+##  [ reached 'max' / getOption("max.print") -- omitted 2663 rows ]
+</code></pre></div></div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Writing these 10 lines definitely took me about 5 hours and a lot of debugging. Quite frankly, it would have taken me about 10 minutes to just copy and paste slightly modified version of the same code 21 times. But then I wouldn’t have had the experience of the happy dance that resulted from the function running.</p>
+
+<p>And I guess this is really a testament to the process of automation, which usually follows the so-called <a href="https://www.jimcollins.com/concepts/the-flywheel.html">flywheel effect</a>. It takes a lot of effort to get the thing spinning, but once it picks up enough momentum, you get tons of movement with minimal addition effort.</p>
+
+:ET

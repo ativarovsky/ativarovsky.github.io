@@ -3,8 +3,10 @@ title: Plotting Comparative Covid-19 Incidence with 'ggplot2'
 author: "alice"
 date: '2022-01-30'
 excerpt: "A DIY Epi Curve, Just for Fun"
-layout: single
+layout: redirected
 toc: true
+permalink: /comp-epi-curve/
+redirect_to: https://www.alicetivarovsky.com/blog/2022-01-30-comp-epi-curve/
 tags:
   - Epidemics
   - Modeling
